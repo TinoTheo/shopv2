@@ -9,6 +9,7 @@
     <meta name="apple-mobile-web-app-title" content="ShopMate">
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
     <link rel="apple-touch-startup-image" href="/splash.png">
+    <link rel="stylesheet" href="style.css  ">
 
     <!-- Android/Chrome -->
     <meta name="mobile-web-app-capable" content="yes">
@@ -18,616 +19,10 @@
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#008751">
 
-    <!-- CRYPTOJS LIBRARY ADDED FOR FALLBACK ON file:// -->
+    <!-- CRYPTOJS LIBRARY: Required for file:// compatibility -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <title>Shopmate</title>
-    <style>
-        :root {
-            --primary: #008751; /* EcoCash Green inspiration */
-            --primary-dark: #005e38;
-            --accent: #f39c12; /* Orange for actions */
-            --danger: #e74c3c;
-            --dark: #2c3e50;
-            --light: #ecf0f1;
-            --white: #ffffff;
-            --gray: #95a5a6;
-            --shadow: 0 2px 5px rgba(0,0,0,0.1);
-            --radius: 8px;
-            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: var(--font);
-            background-color: var(--light);
-            margin: 0;
-            padding: 0;
-            color: var(--dark);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* --- Header & Nav --- */
-        header {
-            background-color: var(--dark);
-            color: var(--white);
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow);
-            z-index: 10;
-        }
-
-        .brand {
-            font-size: 1.2rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        nav {
-            background-color: var(--white);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-bottom: 1px solid #ddd;
-            flex-shrink: 0;
-        }
-
-        .nav-btn {
-            background: none;
-            border: none;
-            font-size: 0.9rem;
-            color: var(--gray);
-            font-weight: 600;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            padding: 5px 15px;
-            border-radius: var(--radius);
-            transition: all 0.2s;
-        }
-
-        .nav-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
-        }
-
-        .nav-btn.active {
-            color: var(--primary);
-            background-color: rgba(0, 135, 81, 0.1);
-        }
-
-        /* --- Main Views --- */
-        main {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .view {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow-y: auto;
-            padding: 15px;
-            background: var(--light);
-            display: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .view.active {
-            display: block;
-            opacity: 1;
-        }
-
-        /* --- POS View --- */
-        .pos-layout {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            gap: 10px;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 12px;
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: var(--radius);
-            outline: none;
-        }
-
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 10px;
-            overflow-y: auto;
-            padding-bottom: 80px;
-        }
-
-        .product-card {
-            background: var(--white);
-            border-radius: var(--radius);
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            cursor: pointer;
-            box-shadow: var(--shadow);
-            border: 2px solid transparent;
-            position: relative;
-            height: 140px;
-        }
-
-        .product-card:active {
-            background-color: #f9f9f9;
-            transform: scale(0.98);
-        }
-
-        .product-card.low-stock {
-            border-color: var(--danger);
-        }
-
-        .product-card.out-of-stock {
-            opacity: 0.5;
-            pointer-events: none;
-            background-color: #eee;
-        }
-
-        .prod-name {
-            font-weight: 600;
-            font-size:1rem;
-            margin-bottom: 5px;
-            line-height: 1.2;
-        }
-
-        .prod-price {
-            color: var(--primary);
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        .prod-stock {
-            font-size: 0.8rem;
-            color: var(--gray);
-            margin-top: auto;
-        }
-
-        /* --- Cart / Checkout --- */
-        .cart-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: var(--white);
-            padding: 15px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            transform: translateY(100%);
-            transition: transform 0.3s ease-out;
-        }
-
-        .cart-bar.visible {
-            transform: translateY(0);
-        }
-
-        .cart-info h3 {
-            margin: 0;
-            font-size: 1.2rem;
-        }
-
-        .cart-count {
-            font-size: 0.9rem;
-            color: var(--gray);
-        }
-
-        .btn-checkout {
-            background-color: var(--primary);
-            color: var(--white);
-            border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: var(--radius);
-            cursor: pointer;
-        }
-
-        /* --- Inventory View --- */
-        .inventory-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border-radius: var(--radius);
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            white-space: nowrap;
-        }
-
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-secondary { background: var(--gray); color: white; }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-sm { padding: 4px 8px; font-size: 0.8rem; }
-        .btn-outline { background: transparent; border: 1px solid var(--gray); color: var(--dark); }
-        .btn-ghost { background: transparent; color: var(--danger); border: none; padding:4px 8px; font-size: 1.2rem; line-height: 1; }
-
-        .inv-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .inv-item {
-            background: var(--white);
-            padding: 12px;
-            border-radius: var(--radius);
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--shadow);
-            gap: 4px;
-            transition: border 0.2s;
-        }
-
-        .inv-item.editing {
-            border: 2px solid var(--primary);
-            background-color: #f9fff9;
-        }
-
-        .inv-details {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            width: 100%;
-        }
-
-        .inv-actions {
-            display: flex;
-            gap: 5px;
-            margin-top: 5px;
-        }
-
-        /* --- INLINE EDIT STYLES --- */
-        .edit-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .edit-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .edit-field {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        
-        .edit-field.full-width {
-            grid-column: span 2;
-        }
-
-        .edit-field label {
-            font-size: 0.75rem;
-            color: var(--gray);
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .edit-field input {
-            padding: 8px;
-            font-size: 0.95rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 100%;
-        }
-
-        /* Voided Item Styling */
-        .transaction-row.voided {
-            background-color: #f8f9fa;
-            color: var(--gray);
-            text-decoration: line-through;
-        }
-       
-        .item-voided {
-            text-decoration: line-through;
-            color: var(--gray);
-            background-color: #f0f0f0;
-            border-radius: 4px;
-            padding: 4px;
-        }
-
-        /* --- Reports View --- */
-        .report-card {
-            background: var(--white);
-            padding: 20px;
-            border-radius: var(--radius);
-            text-align: center;
-            margin-bottom: 15px;
-            box-shadow: var(--shadow);
-        }
-
-        .report-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--primary);
-            margin: 10px 0;
-        }
-
-        .report-label {
-            color: var(--gray);
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .stat-box {
-            background: var(--white);
-            padding: 15px;
-            border-radius: var(--radius);
-            text-align: center;
-        }
-
-        /* --- License Section Styles --- */
-        .license-section {
-            background: var(--white);
-            padding: 15px;
-            border-radius: var(--radius);
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border-left: 5px solid var(--accent);
-        }
-
-        .license-status-banner {
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            font-weight: bold;
-            text-align: center;
-            background-color: #e8f5e9;
-            color: var(--primary-dark);
-            transition: background 0.3s;
-        }
-       
-        .license-status-banner.grace {
-            background-color: #fff3e0;
-            color: #e65100;
-            border: 1px solid #ffe0b2;
-        }
-
-        .license-status-banner.expired {
-            background-color: #ffebee;
-            color: var(--danger);
-        }
-       
-        .license-info-grid {
-            display: grid;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        /* --- Modals --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 200;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-overlay.open {
-            display: flex;
-        }
-
-        .modal {
-            background: var(--white);
-            width: 100%;
-            max-width: 400px;
-            border-radius: var(--radius);
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            animation: slideUp 0.3s ease;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .modal-header {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: var(--radius);
-            font-size: 1rem;
-            transition: border-color 0.2s;
-        }
-
-        .form-control.error {
-            border-color: var(--danger);
-            background-color: #fff5f5;
-        }
-
-        .input-error-msg {
-            color: var(--danger);
-            font-size: 0.8rem;
-            margin-top: 4px;
-            min-height: 1.2em;
-        }
-
-        /* Cart Items List in Modal */
-        .cart-items-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 15px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .cart-item-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .cart-item-row:last-child {
-            border-bottom: none;
-        }
-
-        .payment-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .pay-btn {
-            padding: 20px;
-            border: 2px solid #ddd;
-            border-radius: var(--radius);
-            background: white;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .pay-btn.selected {
-            border-color: var(--primary);
-            background-color: rgba(0, 135, 81, 0.1);
-            color: var(--primary);
-        }
-
-        .modal-footer-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        /* --- Toast Notification --- */
-        #toast-container {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 300;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .toast {
-            background: var(--dark);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 50px;
-            margin-bottom: 10px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .toast.show {
-            opacity: 1;
-        }
-
-        /* Utility */
-        .text-right { text-align: right; }
-        .text-small { font-size: 0.85rem; }
-        .text-danger { color: var(--danger); }
-        .text-gray { color: var(--gray); }
-        .flex-full { flex: 1; }
-        .hidden { display: none !important; }
-        .truncate-text {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-        }
-
-        /* --- RESPONSIVENESS (WIDTH ~344px) --- */
-        @media (max-width: 360px) {
-            :root { --radius: 6px; } 
-            header { padding: 8px 10px; }
-            .brand { font-size: 1rem; }
-            nav { padding: 5px 0; }
-            .nav-btn { padding: 4px 8px; font-size: 0.75rem; }
-            .nav-btn svg { width: 20px; height: 20px; }
-            .view { padding: 10px; }
-            .search-bar { padding: 10px; }
-            .product-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
-            .product-card { height: 120px; padding: 8px; }
-            .prod-name { font-size: 0.9rem; }
-            .btn-sm { padding: 3px 6px; font-size: 0.75rem; }
-            .inventory-header { flex-direction: column; align-items: stretch; gap: 8px; }
-            .edit-row { gap: 8px; }
-            .edit-field label { font-size: 0.7rem; }
-            .edit-field input { padding: 6px; font-size: 0.85rem; }
-        }
-    </style>
 </head>
 <body>
 
@@ -645,7 +40,7 @@
 
     <nav>
         <button class="nav-btn active" onclick="switchTab('pos', this)">
-            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h2v5h5v2h-5v5h-2v-5H7v-2h5V5z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h2v5h5v2h-5v5H7v-2h5V5z"/></svg>
             Sell
         </button>
         <button class="nav-btn" onclick="switchTab('inventory', this)">
@@ -657,7 +52,7 @@
             Report
         </button>
         <button class="nav-btn" onclick="switchTab('settings', this)">
-            <svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l2.49 1c.23.09.49 0 .61.22l2-3.46c.12-.22.07-.49.12-.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l2.11 1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
             Data
         </button>
     </nav>
@@ -939,7 +334,7 @@
             { id: 5, name: "Bottle Water", price: 0.50, cost: 0.30, stock: 100, lowStock: 20 }
         ];
 
-        // --- STORAGE SELF-HEAL UTILS ---
+        // --- 3️⃣ STORAGE SELF-HEAL UTILS ---
         function getSafeItem(key, fallback) {
             try {
                 const item = localStorage.getItem(key);
@@ -972,7 +367,7 @@
             transactionCount: 0
         });
 
-        // --- DAILY PROFIT RE-INTEGRATION ---
+        // --- 4️⃣ DAILY PROFIT RE-INTEGRATION ---
         function recalcTodayStats() {
             const today = new Date().toDateString();
             if (todayStats.date === today && todayStats.transactionCount > 0) return; 
@@ -1127,99 +522,31 @@
             banner.className = 'license-status-banner ' + statusClass;
         }
 
-        // --- CRYPTO UTILITIES ---
-        async function getKeyMaterial(secret) {
-            // Using CryptoJS for key derivation if Web Crypto is unavailable
-            if (window.crypto && window.crypto.subtle) {
-                const enc = new TextEncoder();
-                return window.crypto.subtle.importKey(
-                    "raw",
-                    enc.encode(secret),
-                    { name: "PBKDF2" },
-                    false,
-                    ["deriveKey"]
-                );
-            } else {
-                // Fallback: We can't actually generate a Key object without Web Crypto, 
-                // but we can use CryptoJS for the encryption itself later if needed.
-                // For now, we throw here if Web Crypto is totally missing because deriveKey is complex to polyfill.
-                throw new Error("Web Crypto API not supported. Cannot secure backup without HTTPS/Localhost.");
+        // --- CRYPTO UTILITIES (CryptoJS Implementation) ---
+        // This replaces Web Crypto API to ensure compatibility on file://
+        function digestSHA256(message) {
+            if (typeof CryptoJS === 'undefined') {
+                console.error("CryptoJS library not loaded!");
+                throw new Error("CryptoJS required for file:// compatibility");
             }
+            return CryptoJS.SHA256(message).toString();
         }
 
-        async function getKey(keyMaterial) {
-            if (window.crypto && window.crypto.subtle) {
-                return window.crypto.subtle.deriveKey(
-                    {
-                        name: "PBKDF2",
-                        salt: new TextEncoder().encode("ShopMateSalt"),
-                        iterations: 100000,
-                        hash: "SHA-256"
-                    },
-                    keyMaterial,
-                    { name: "AES-GCM", length: 256 },
-                    true,
-                    ["encrypt", "decrypt"]
-                );
-            } else {
-                throw new Error("Web Crypto API not supported.");
-            }
+        function encryptData(dataString) {
+            if (typeof CryptoJS === 'undefined') throw new Error("CryptoJS library not loaded");
+            // Encrypt
+            const encrypted = CryptoJS.AES.encrypt(dataString, SECRET);
+            // Convert to string to store in file
+            return encrypted.toString();
         }
 
-        // --- FIX: SAFE SHA256 WITH FALLBACK ---
-        async function digestSHA256(message) {
-            // Check for Web Crypto availability
-            if (window.crypto && window.crypto.subtle) {
-                // Native Implementation (Secure Context)
-                const msgBuffer = new TextEncoder().encode(message);
-                const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgBuffer);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            } 
-            // Fallback to CryptoJS (for file:// or older browsers)
-            else if (typeof CryptoJS !== 'undefined') {
-                return CryptoJS.SHA256(message).toString();
-            } else {
-                // If neither is available
-                throw new Error("Cannot generate signature. Web Crypto API not supported and CryptoJS failed to load. Please run on HTTPS/Localhost or ensure CryptoJS is available.");
-            }
-        }
-
-        async function encryptData(dataString, key) {
-            // Note: If keyMaterial generation failed earlier, this won't run.
-            if (!window.crypto || !window.crypto.subtle) {
-                throw new Error("Encryption requires Web Crypto API (HTTPS/Localhost).");
-            }
-
-            const iv = window.crypto.getRandomValues(new Uint8Array(12));
-            const encodedData = new TextEncoder().encode(dataString);
-            const encrypted = await window.crypto.subtle.encrypt(
-                { name: "AES-GCM", iv: iv },
-                key,
-                encodedData
-            );
-            
-            const combined = new Uint8Array(iv.length + encrypted.byteLength);
-            combined.set(iv);
-            combined.set(new Uint8Array(encrypted), iv.length);
-            
-            return combined;
-        }
-
-        async function decryptData(dataBuffer, key) {
-             if (!window.crypto || !window.crypto.subtle) {
-                throw new Error("Decryption requires Web Crypto API (HTTPS/Localhost).");
-            }
-            const iv = dataBuffer.slice(0, 12);
-            const encrypted = dataBuffer.slice(12);
-            
+        function decryptData(encryptedString) {
+            if (typeof CryptoJS === 'undefined') throw new Error("CryptoJS library not loaded");
             try {
-                const decrypted = await window.crypto.subtle.decrypt(
-                    { name: "AES-GCM", iv: iv },
-                    key,
-                    encrypted
-                );
-                return new TextDecoder().decode(decrypted);
+                // Decrypt
+                const decrypted = CryptoJS.AES.decrypt(encryptedString, SECRET);
+                // Convert back to UTF8 string
+                return decrypted.toString(CryptoJS.enc.Utf8);
             } catch (e) {
                 throw new Error("Decryption failed. Invalid key or corrupted file.");
             }
@@ -1560,10 +887,11 @@
             if (index === -1) return;
 
             const name = document.getElementById(`edit-name-${id}`).value.trim();
+            
             const price = Number(document.getElementById(`edit-price-${id}`).value);
             const cost = Number(document.getElementById(`edit-cost-${id}`).value);
             const stock = Number(document.getElementById(`edit-stock-${id}`).value);
-            const lowStock = Number(document.getElementById(`edit-low-${id}`).value); 
+            const lowStock = Number(document.getElementById(`edit-low-${id}`).value);
 
             if (!name) return alert("Product name required.");
             if (isNaN(price) || price < 0) return alert("Invalid selling price.");
@@ -1665,9 +993,11 @@
             }
         }
 
-        // --- BACKUP & RESTORE (Encrypted) ---
+        // --- 1️⃣ BACKUP & RESTORE (CryptoJS Implementation) ---
         async function triggerBackup() {
             try {
+                console.log("Starting backup...");
+
                 const backupPayload = {
                     version: "1.4.0",
                     deviceId: getDeviceID(),
@@ -1683,16 +1013,18 @@
                 };
 
                 const payloadString = JSON.stringify(backupPayload);
-                // Using fixed digestSHA256 with fallback
-                const signature = await digestSHA256(payloadString + SECRET);
+                console.log("Payload for signature:", payloadString);
+                
+                // Signature Generation
+                const signature = digestSHA256(payloadString + SECRET);
+                console.log("Generated signature:", signature);
 
                 const signedPayload = { ...backupPayload, signature };
                 const signedPayloadString = JSON.stringify(signedPayload);
 
-                // Derive Key & Encrypt
-                const keyMaterial = await getKeyMaterial(SECRET);
-                const key = await getKey(keyMaterial);
-                const encryptedData = await encryptData(signedPayloadString, key);
+                // Encryption (CryptoJS)
+                const encryptedData = encryptData(signedPayloadString);
+                console.log("Encrypted data length:", encryptedData.length);
 
                 const blob = new Blob([encryptedData], { type: "application/octet-stream" });
                 const url = URL.createObjectURL(blob);
@@ -1705,7 +1037,7 @@
                 localStorage.setItem("lastBackupDate", new Date().toDateString());
                 showToast("Encrypted Backup downloaded");
             } catch (err) {
-                console.error(err);
+                console.error("Backup Error:", err);
                 alert("Backup failed: " + err.message);
             }
         }
@@ -1718,29 +1050,61 @@
             const reader = new FileReader();
             reader.onload = async function(e) {
                 try {
-                    const encryptedData = new Uint8Array(e.target.result);
+                    const rawFileContent = e.target.result;
+                    console.log("Raw file content type:", typeof rawFileContent);
+                    console.log("Raw file content length:", rawFileContent.length);
                     
-                    // Derive Key & Decrypt
-                    const keyMaterial = await getKeyMaterial(SECRET);
-                    const key = await getKey(keyMaterial);
-                    const decryptedString = await decryptData(encryptedData, key);
-                    
-                    const signedPayload = JSON.parse(decryptedString);
+                    // Step 1: Decrypt
+                    console.log("Attempting decryption...");
+                    const decryptedString = decryptData(rawFileContent);
+                    console.log("Decrypted output:", decryptedString);
 
-                    // Verify Integrity using fixed digestSHA256
-                    const { signature, ...payloadWithoutSignature } = signedPayload;
-                    const expectedSignature = await digestSHA256(JSON.stringify(payloadWithoutSignature) + SECRET);
-
-                    if (signature !== expectedSignature) {
-                        return alert("Security Alert: Backup signature mismatch or file tampered.");
+                    // Step 2: Evaluate Result
+                    if (!decryptedString || decryptedString.length === 0) {
+                        throw new Error("Decryption resulted in empty string. Wrong SECRET or corrupted file.");
+                    }
+                    if (decryptedString.startsWith("U2Fsd") === false && decryptedString.startsWith("{") === false) {
+                        throw new Error("Decryption output is random characters. Encoding mismatch or corrupted file.");
                     }
 
+                    // Step 3: JSON Parse
+                    let signedPayload;
+                    try {
+                        signedPayload = JSON.parse(decryptedString);
+                        console.log("Parsed JSON successfully:", signedPayload);
+                    } catch (parseError) {
+                        console.error("JSON Parsing failed:", parseError);
+                        throw new Error("Backup file content is not valid JSON.");
+                    }
+
+                    // Step 4: Verify Structure
+                    if (!signedPayload.inventory || !signedPayload.sales) {
+                        throw new Error("Backup missing critical data (inventory/sales).");
+                    }
+
+                    // Step 5: Check Signature
+                    const { signature, ...payloadWithoutSignature } = signedPayload;
+                    
+                    // Re-calculate signature for comparison
+                    // IMPORTANT: Must stringify the EXACT same way as backup
+                    const payloadForSigCheck = JSON.stringify(payloadWithoutSignature);
+                    const expectedSignature = digestSHA256(payloadForSigCheck + SECRET);
+                    
+                    console.log("Stored Signature:", signature);
+                    console.log("Expected Signature:", expectedSignature);
+
+                    if (signature !== expectedSignature) {
+                        throw new Error("Security Alert: Backup signature mismatch or file tampered.");
+                    }
+
+                    // Step 6: Confirmation
                     const confirmRestore = confirm(
                         "Valid Backup Detected.\nRestore ID: " + signedPayload.deviceId + "\nThis will overwrite your current inventory and sales. Continue?"
                     );
 
                     if (!confirmRestore) return;
 
+                    // Write to LocalStorage
                     localStorage.setItem('sme_products', JSON.stringify(signedPayload.inventory));
                     localStorage.setItem('sme_sales', JSON.stringify(signedPayload.sales));
                     
@@ -1752,11 +1116,11 @@
                     location.reload();
 
                 } catch (err) {
-                    alert("Restore failed: Invalid file or decryption error.");
-                    console.error(err);
+                    console.error("Restore Logic Error:", err);
+                    alert("Restore failed: " + err.message);
                 }
             };
-            reader.readAsArrayBuffer(file);
+            reader.readAsText(file);
         }
 
         // --- TRANSACTION DISPLAY HELPER ---
@@ -1937,7 +1301,7 @@
             if(item.voided) return; 
 
             item.voided = true;
-            
+           
             let inventory = getSafeItem('sme_products', defaultProducts);
             const product = inventory.find(p => p.id === item.id);
             if(product) {
