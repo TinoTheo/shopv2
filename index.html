@@ -120,6 +120,52 @@ header {
     font-variant-numeric: tabular-nums;
 }
 
+/* Role Indicator Badge */
+#role-indicator {
+    font-size: 11px;
+    padding: 4px 8px;
+    background: var(--primary);
+    color: white;
+    border-radius: 4px;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+#role-indicator.cashier {
+    background: var(--accent);
+}
+
+#role-indicator.manager {
+    background: var(--dark);
+}
+
+#role-indicator.admin {
+    background: #667eea;
+}
+
+#role-indicator.owner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Switch Role Button */
+#role-switch-btn {
+    font-size: 11px;
+    padding: 4px 8px;
+    background: var(--bg-body);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    margin-right: 8px;
+    transition: all 0.2s;
+}
+
+#role-switch-btn:hover {
+    background: var(--border);
+    color: var(--text-main);
+}
+
 #mode-toggle {
     background: var(--bg-body);
     border: 1px solid var(--border);
@@ -239,7 +285,7 @@ main {
     box-shadow: 0 0 0 3px var(--primary-light);
 }
 .form-control[readonly] { background: var(--bg-body); color: var(--text-muted); }
-select.form-control { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; background-size: 16px; padding-right: 32px; }
+select.form-control { appearance: none; background-image: url("image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; background-size: 16px; padding-right: 32px; }
 
 /* --- POS View --- */
 .pos-layout { display: flex; flex-direction: column; height: 100%; gap: var(--space-3); }
@@ -403,6 +449,58 @@ select.form-control { appearance: none; background-image: url("data:image/svg+xm
 }
 .stat-box .report-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
 .stat-box .prod-price { font-size: 18px; font-weight: 700; color: var(--text-main); }
+
+/* Top Sellers Table */
+.top-sellers-table-container {
+    background: var(--bg-surface);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: var(--space-5);
+    border: 1px solid var(--border);
+}
+.top-sellers-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+.top-sellers-table thead {
+    background: #f8f9fa;
+    border-bottom: 2px solid var(--border);
+}
+.top-sellers-table th {
+    padding: 12px;
+    text-align: left;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+.top-sellers-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+}
+.top-sellers-table tbody tr:hover {
+    background: #f9fafb;
+}
+.top-sellers-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.top-sellers-rank {
+    font-weight: 700;
+    color: var(--primary);
+    width: 50px;
+}
+.top-sellers-rank.top-3 {
+    color: var(--accent);
+}
+.top-sellers-empty {
+    padding: 40px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+}
 
 /* Transaction List */
 .transaction-row { cursor: pointer; }
@@ -575,58 +673,6 @@ select.form-control { appearance: none; background-image: url("data:image/svg+xm
 }
 .toast.show { opacity: 1; }
 
-/* Top Sellers Table Styling */
-.top-sellers-table-container {
-    background: var(--bg-surface);
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    margin-bottom: var(--space-5);
-    border: 1px solid var(--border);
-}
-.top-sellers-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-}
-.top-sellers-table thead {
-    background: #f8f9fa;
-    border-bottom: 2px solid var(--border);
-}
-.top-sellers-table th {
-    padding: 12px;
-    text-align: left;
-    color: var(--text-muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 11px;
-    letter-spacing: 0.5px;
-}
-.top-sellers-table td {
-    padding: 12px;
-    border-bottom: 1px solid var(--border);
-}
-.top-sellers-table tbody tr:hover {
-    background: #f9fafb;
-}
-.top-sellers-table tbody tr:last-child td {
-    border-bottom: none;
-}
-.top-sellers-rank {
-    font-weight: 700;
-    color: var(--primary);
-    width: 50px;
-}
-.top-sellers-rank.top-3 {
-    color: var(--accent);
-}
-.top-sellers-empty {
-    padding: 40px;
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 14px;
-}
-
 /* --- Utilities --- */
 .hidden { display: none !important; }
 .flex-full { flex: 1; }
@@ -653,6 +699,10 @@ select.form-control { appearance: none; background-image: url("data:image/svg+xm
     </div>
     <div style="display: flex; align-items: center; gap: 12px;">
         <div id="clock">--:--</div>
+        <!-- ROLE INDICATOR -->
+        <div id="role-indicator">Owner</div>
+        <!-- ✅ ROLE SWITCH BUTTON (Visible to all roles) -->
+        <button id="role-switch-btn" onclick="openRoleSwitchModal()" title="Switch Role">Switch</button>
         <button id="mode-toggle" class="unlocked" onclick="toggleMode()" title="Toggle Read-Only Mode">
             <svg id="icon-unlock" viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm9-15h-3v-3c0-2.76-2.24-5-5-5S8 6.24 8 9v3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-9-5c1.66 0 3 1.34 3 3v3H10V9c0-1.66 1.34-3 3-3zm9 16H5V9h14v11z"/></svg>
             <svg id="icon-lock" viewBox="0 0 24 24" class="hidden"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
@@ -748,7 +798,7 @@ select.form-control { appearance: none; background-image: url("data:image/svg+xm
             </div>
         </div>
 
-        <!-- OFFLINE TOP SELLERS TABLE (REPLACED CHART) -->
+        <!-- OFFLINE TOP SELLERS TABLE -->
         <div class="section-header">
             <h3>Top Selling Products</h3>
             <span class="text-small text-muted" id="top-sellers-period">Today</span>
@@ -805,6 +855,35 @@ select.form-control { appearance: none; background-image: url("data:image/svg+xm
             </div>
         </div>
 
+        <!-- ROLE MANAGEMENT -->
+        <div class="license-section" id="role-management-section" style="border-left-color: var(--primary);">
+            <h3>👥 Role & Access</h3>
+            <div class="license-info-grid">
+                <div class="form-group">
+                    <label>Current Role</label>
+                    <input type="text" id="current-role-display" class="form-control" readonly>
+                </div>
+                <div class="form-group" id="role-change-group">
+                    <label>Switch Role</label>
+                    <select id="role-selector" class="form-control">
+                        <option value="owner">Owner</option>
+                        <option value="admin">Admin</option>
+                        <option value="manager">Manager</option>
+                        <option value="cashier">Cashier</option>
+                    </select>
+                    <button class="btn btn-primary btn-block mt-4" onclick="openRoleChangeModal()">🔐 Switch Role</button>
+                </div>
+                <div class="form-group" id="passcode-group">
+                    <label>Security</label>
+                    <button class="btn btn-secondary btn-block" onclick="openPasscodeModal()">🔑 Change Passcode</button>
+                    <button class="btn btn-outline btn-block mt-2" onclick="openRecoveryModal()">⚠️ Recovery</button>
+                </div>
+            </div>
+            <p class="text-small text-gray">
+                ⚠️ Cashier role restricts access to sales only. Default passcode: <strong>0000</strong>
+            </p>
+        </div>
+
         <div class="form-group">
             <label>Business Name</label>
             <input type="text" id="setting-business-name" class="form-control" onchange="updateSettings()">
@@ -828,7 +907,7 @@ select.form-control { appearance: none; background-image: url("data:image/svg+xm
                 </div>
             </div>
             <button class="btn btn-primary btn-block mb-4" onclick="exportCSV()">Export Sales (CSV)</button>
-            <button class="btn btn-danger btn-block" onclick="clearAllData()">Reset All Data</button>
+            <button class="btn btn-danger btn-block" onclick="clearAllData()">⚠️ Factory Reset All Data</button>
         </div>
     </section>
 </main>
@@ -1014,11 +1093,90 @@ select.form-control { appearance: none; background-image: url("data:image/svg+xm
     <div style="text-align: center; margin-top: 20px; font-size: 10px;">Thank you!</div>
 </div>
 
+<!-- ✅ ROLE SWITCH MODAL (Accessible from anywhere) -->
+<div id="modal-role-switch" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <span>🔄 Switch Role</span>
+            <span style="cursor:pointer" onclick="closeModal('modal-role-switch')">✕</span>
+        </div>
+        <div class="form-group">
+            <label>Select Role</label>
+            <select id="role-switch-select" class="form-control" onchange="onRoleSelectionChange()">
+                <option value="owner">Owner</option>
+                <option value="admin">Admin</option>
+                <option value="manager">Manager</option>
+                <option value="cashier">Cashier</option>
+            </select>
+        </div>
+        <div class="form-group" id="role-switch-passcode-group">
+            <label>Passcode</label>
+            <input type="password" id="role-switch-passcode" class="form-control" placeholder="Enter passcode" maxlength="8" onkeypress="if(event.key==='Enter') confirmRoleSwitch()">
+            <div id="role-switch-error" class="input-error-msg"></div>
+        </div>
+        <p class="text-small text-gray" style="margin-bottom: 15px;">
+            Passcode required for Owner/Admin/Manager. Cashier requires no passcode.
+        </p>
+        <div class="modal-footer-actions">
+            <button class="btn btn-secondary flex-full" onclick="closeModal('modal-role-switch')">Cancel</button>
+            <button class="btn btn-primary flex-full" onclick="confirmRoleSwitch()">Switch</button>
+        </div>
+    </div>
+</div>
+
+<!-- PASSCODE SETUP MODAL -->
+<div id="modal-passcode" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <span>🔑 Set Passcode</span>
+            <span style="cursor:pointer" onclick="closeModal('modal-passcode')">✕</span>
+        </div>
+        <div class="form-group">
+            <label>New Passcode (4-8 digits)</label>
+            <input type="password" id="new-passcode" class="form-control" placeholder="0000" maxlength="8" inputmode="numeric">
+        </div>
+        <div class="form-group">
+            <label>Confirm Passcode</label>
+            <input type="password" id="confirm-passcode" class="form-control" placeholder="0000" maxlength="8" inputmode="numeric">
+            <div id="passcode-error" class="input-error-msg"></div>
+        </div>
+        <div class="modal-footer-actions">
+            <button class="btn btn-secondary flex-full" onclick="closeModal('modal-passcode')">Cancel</button>
+            <button class="btn btn-primary flex-full" onclick="savePasscode()">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- RECOVERY MODAL -->
+<div id="modal-recovery" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <span>⚠️ Passcode Recovery</span>
+            <span style="cursor:pointer" onclick="closeModal('modal-recovery')">✕</span>
+        </div>
+        <p class="text-small" style="margin-bottom: 15px;">
+            This will reset the passcode to default (0000). Your business data will be preserved.
+        </p>
+        <div class="form-group">
+            <label>Confirm by typing: RECOVER</label>
+            <input type="text" id="recovery-confirm" class="form-control" placeholder="Type RECOVER">
+            <div id="recovery-error" class="input-error-msg"></div>
+        </div>
+        <div class="modal-footer-actions">
+            <button class="btn btn-secondary flex-full" onclick="closeModal('modal-recovery')">Cancel</button>
+            <button class="btn btn-danger flex-full" onclick="confirmRecovery()">Reset Passcode</button>
+        </div>
+    </div>
+</div>
+
 <script>
 // --- CONSTANTS & CONFIG ---
 const TRIAL_DAYS = 7;
 const SECRET = "S3cur3Sh0pM4t3K3y-2024";
 const DEFAULT_LOW_STOCK = 5;
+const DEFAULT_PASSCODE = "0000";
+
+// Default products
 const defaultProducts = [
     { id: 1, name: "Bread", price: 1.50, cost: 1.20, stock: 20, lowStock: 5, category: "Food" },
     { id: 2, name: "Cooking Oil 2L", price: 5.00, cost: 4.50, stock: 10, lowStock: 3, category: "Food" },
@@ -1026,6 +1184,74 @@ const defaultProducts = [
     { id: 4, name: "Sugar 2kg", price: 4.50, cost: 4.00, stock: 15, lowStock: 4, category: "Food" },
     { id: 5, name: "Bottle Water", price: 0.50, cost: 0.30, stock: 100, lowStock: 20, category: "Drinks" }
 ];
+
+// --- ROLE DEFINITIONS (Single Source of Truth) ---
+const ROLES = {
+    OWNER: 'owner',
+    ADMIN: 'admin',
+    MANAGER: 'manager',
+    CASHIER: 'cashier'
+};
+
+// --- PERMISSION MAP (Centralized) ---
+const PERMISSIONS = {
+    [ROLES.OWNER]: {
+        canSell: true,
+        canViewInventory: true,
+        canEditInventory: true,
+        canViewReports: true,
+        canExportData: true,
+        canReconcile: true,
+        canAccessSettings: true,
+        canManageLicense: true,
+        canRestoreBackup: true,
+        canResetData: true,
+        canChangeRole: true,
+        canManagePasscode: true
+    },
+    [ROLES.ADMIN]: {
+        canSell: true,
+        canViewInventory: true,
+        canEditInventory: true,
+        canViewReports: true,
+        canExportData: true,
+        canReconcile: true,
+        canAccessSettings: true,
+        canManageLicense: false,
+        canRestoreBackup: true,
+        canResetData: false,
+        canChangeRole: true,
+        canManagePasscode: true
+    },
+    [ROLES.MANAGER]: {
+        canSell: true,
+        canViewInventory: true,
+        canEditInventory: true,
+        canViewReports: true,
+        canExportData: true,
+        canReconcile: true,
+        canAccessSettings: false,
+        canManageLicense: false,
+        canRestoreBackup: false,
+        canResetData: false,
+        canChangeRole: false,
+        canManagePasscode: false
+    },
+    [ROLES.CASHIER]: {
+        canSell: true,
+        canViewInventory: false,
+        canEditInventory: false,
+        canViewReports: false,
+        canExportData: false,
+        canReconcile: false,
+        canAccessSettings: false,
+        canManageLicense: false,
+        canRestoreBackup: false,
+        canResetData: false,
+        canChangeRole: false,
+        canManagePasscode: false
+    }
+};
 
 // --- STORAGE UTILS ---
 function getSafeItem(key, fallback) {
@@ -1049,8 +1275,279 @@ let state = {
     selectedPaymentMethod: null,
     totals: getSafeItem('sme_totals', { gross: 0, profit: 0, transactions: 0 }),
     reconciliations: getSafeItem('sme_reconciliations', []),
-    isReadOnly: localStorage.getItem('sme_readonly_mode') === 'true'
+    isReadOnly: localStorage.getItem('sme_readonly_mode') === 'true',
+    // Role Management
+    currentUserRole: localStorage.getItem('sme_user_role') || ROLES.OWNER,
+    passcode: localStorage.getItem('sme_passcode') || DEFAULT_PASSCODE
 };
+
+// --- DEFENSIVE STARTUP CHECKS ---
+function validateRoleState() {
+    // Ensure role exists and is valid
+    if (!state.currentUserRole || !Object.values(ROLES).includes(state.currentUserRole)) {
+        console.warn("Invalid role detected, resetting to Cashier (safe default)");
+        state.currentUserRole = ROLES.CASHIER;
+        localStorage.setItem('sme_user_role', ROLES.CASHIER);
+    }
+    
+    // Ensure passcode exists
+    if (!state.passcode) {
+        state.passcode = DEFAULT_PASSCODE;
+        localStorage.setItem('sme_passcode', DEFAULT_PASSCODE);
+    }
+    
+    console.log("✅ Role state validated:", state.currentUserRole);
+}
+
+// --- PERMISSION CHECKS ---
+function hasPermission(permission) {
+    const rolePerms = PERMISSIONS[state.currentUserRole];
+    if (!rolePerms) return false;
+    return rolePerms[permission] === true;
+}
+
+function getRoleDisplayName() {
+    const names = {
+        [ROLES.OWNER]: 'Owner',
+        [ROLES.ADMIN]: 'Admin',
+        [ROLES.MANAGER]: 'Manager',
+        [ROLES.CASHIER]: 'Cashier'
+    };
+    return names[state.currentUserRole] || 'Unknown';
+}
+
+// --- PASSCODE FUNCTIONS ---
+function hashPassword(password) {
+    try {
+        if (typeof CryptoJS !== 'undefined') {
+            return CryptoJS.SHA256(password).toString();
+        } else {
+            // Fallback hash (less secure but functional offline)
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(36);
+        }
+    } catch (err) {
+        console.error("Hash failed:", err);
+        return "";
+    }
+}
+
+function verifyPasscode(input) {
+    if (!input) return false;
+    // Simple string comparison (passcode stored as plain text for simplicity)
+    return input === state.passcode;
+}
+
+function savePasscode() {
+    if (!hasPermission('canManagePasscode')) {
+        showToast("⛔ Owner/Admin access required");
+        return;
+    }
+    
+    const newCode = document.getElementById('new-passcode').value;
+    const confirmCode = document.getElementById('confirm-passcode').value;
+    const errorEl = document.getElementById('passcode-error');
+    
+    if (!newCode || newCode.length < 4 || newCode.length > 8 || !/^\d+$/.test(newCode)) {
+        errorEl.innerText = "Passcode must be 4-8 digits";
+        return;
+    }
+    
+    if (newCode !== confirmCode) {
+        errorEl.innerText = "Passcodes do not match";
+        return;
+    }
+    
+    state.passcode = newCode;
+    localStorage.setItem('sme_passcode', newCode);
+    closeModal('modal-passcode');
+    showToast("✅ Passcode updated");
+}
+
+function resetPasscodeToDefault() {
+    state.passcode = DEFAULT_PASSCODE;
+    localStorage.setItem('sme_passcode', DEFAULT_PASSCODE);
+    showToast("⚠️ Passcode reset to 0000");
+}
+
+// --- ✅ ROLE SWITCH FROM ANYWHERE (Cashier-Friendly) ---
+
+/**
+ * Open role switch modal (accessible from header button)
+ */
+function openRoleSwitchModal() {
+    // Set current role as default selection
+    const select = document.getElementById('role-switch-select');
+    select.value = state.currentUserRole;
+    
+    // Reset passcode field
+    document.getElementById('role-switch-passcode').value = '';
+    document.getElementById('role-switch-error').innerText = '';
+    
+    // Show/hide passcode field based on current selection
+    onRoleSelectionChange();
+    
+    openModal('modal-role-switch');
+    document.getElementById('role-switch-passcode').focus();
+}
+
+/**
+ * Show/hide passcode field based on role selection
+ */
+function onRoleSelectionChange() {
+    const selectedRole = document.getElementById('role-switch-select').value;
+    const passcodeGroup = document.getElementById('role-switch-passcode-group');
+    const passcodeInput = document.getElementById('role-switch-passcode');
+    
+    // Passcode required for elevation (Owner, Admin, Manager)
+    // No passcode for downgrade to Cashier
+    if (selectedRole === ROLES.CASHIER) {
+        passcodeGroup.style.display = 'none';
+        passcodeInput.value = '';
+    } else {
+        passcodeGroup.style.display = 'block';
+        passcodeInput.focus();
+    }
+}
+
+/**
+ * Confirm role switch with passcode verification
+ */
+function confirmRoleSwitch() {
+    const newRole = document.getElementById('role-switch-select').value;
+    const passcodeGroup = document.getElementById('role-switch-passcode-group');
+    const passcodeInput = document.getElementById('role-switch-passcode');
+    const errorEl = document.getElementById('role-switch-error');
+    
+    // Defensive check: Validate role exists
+    if (!Object.values(ROLES).includes(newRole)) {
+        errorEl.innerText = "Invalid role";
+        console.error("Role switch attempt with invalid role:", newRole);
+        return;
+    }
+    
+    // Passcode required for elevation (not for Cashier downgrade)
+    if (newRole !== ROLES.CASHIER) {
+        const passcode = passcodeInput.value;
+        
+        if (!passcode) {
+            errorEl.innerText = "Passcode required";
+            passcodeInput.focus();
+            return;
+        }
+        
+        if (!verifyPasscode(passcode)) {
+            errorEl.innerText = "❌ Incorrect passcode";
+            passcodeInput.value = '';
+            passcodeInput.focus();
+            console.warn("Failed role switch attempt:", { from: state.currentUserRole, to: newRole });
+            return;
+        }
+    }
+    
+    // ✅ Role switch successful
+    state.currentUserRole = newRole;
+    localStorage.setItem('sme_user_role', newRole);
+    
+    // Reapply all permission guards immediately
+    applyRoleRestrictions();
+    renderRoleManagement();
+    
+    // Close modal
+    closeModal('modal-role-switch');
+    
+    // Feedback
+    showToast(`✅ Role changed to ${getRoleDisplayName()}`);
+    console.log("Role switched:", { from: state.currentUserRole, to: newRole });
+    
+    // Log anomaly if switching from Cashier to Owner directly
+    if (state.currentUserRole === ROLES.CASHIER && newRole === ROLES.OWNER) {
+        console.warn("Security: Direct Cashier → Owner switch detected");
+    }
+}
+
+// --- UI RESTRICTIONS ---
+function applyRoleRestrictions() {
+    // Update role indicator
+    const roleIndicator = document.getElementById('role-indicator');
+    if (roleIndicator) {
+        roleIndicator.innerText = getRoleDisplayName();
+        roleIndicator.className = '';
+        roleIndicator.classList.add(state.currentUserRole);
+    }
+    
+    // Navigation tabs
+    const inventoryTab = document.querySelector('button[onclick*="inventory"]');
+    const reportsTab = document.querySelector('button[onclick*="reports"]');
+    const settingsTab = document.querySelector('button[onclick*="settings"]');
+    
+    if (inventoryTab) {
+        inventoryTab.style.display = hasPermission('canViewInventory') ? 'flex' : 'none';
+    }
+    if (reportsTab) {
+        reportsTab.style.display = hasPermission('canViewReports') ? 'flex' : 'none';
+    }
+    if (settingsTab) {
+        settingsTab.style.display = hasPermission('canAccessSettings') ? 'flex' : 'none';
+    }
+    
+    // Inventory buttons
+    const addProductBtn = document.getElementById('btn-add-product');
+    if (addProductBtn) {
+        addProductBtn.style.display = hasPermission('canEditInventory') && !state.isReadOnly ? 'block' : 'none';
+    }
+    
+    // Report buttons
+    const exportBtn = document.querySelector('button[onclick*="exportCSV"]');
+    const reconcileBtn = document.querySelector('button[onclick*="openReconcileModal"]');
+    if (exportBtn) {
+        exportBtn.style.display = hasPermission('canExportData') ? 'inline-flex' : 'none';
+    }
+    if (reconcileBtn) {
+        reconcileBtn.style.display = hasPermission('canReconcile') ? 'inline-flex' : 'none';
+    }
+    
+    // Settings sections
+    const roleSection = document.getElementById('role-management-section');
+    const roleChangeGroup = document.getElementById('role-change-group');
+    const passcodeGroup = document.getElementById('passcode-group');
+    const dangerZone = document.getElementById('settings-danger-zone');
+    const restoreSection = document.querySelector('label[for="restoreFile"]')?.parentElement;
+    const resetBtn = document.querySelector('button[onclick*="clearAllData"]');
+    
+    if (roleSection) {
+        roleSection.style.display = hasPermission('canAccessSettings') ? 'block' : 'none';
+    }
+    if (roleChangeGroup) {
+        roleChangeGroup.style.display = hasPermission('canChangeRole') ? 'block' : 'none';
+    }
+    if (passcodeGroup) {
+        passcodeGroup.style.display = hasPermission('canManagePasscode') ? 'block' : 'none';
+    }
+    if (dangerZone) {
+        dangerZone.style.display = hasPermission('canAccessSettings') && !state.isReadOnly ? 'block' : 'none';
+    }
+    if (restoreSection) {
+        restoreSection.style.display = hasPermission('canRestoreBackup') && !state.isReadOnly ? 'block' : 'none';
+    }
+    if (resetBtn) {
+        resetBtn.style.display = hasPermission('canResetData') && !state.isReadOnly ? 'inline-block' : 'none';
+    }
+    
+    console.log("🔐 Role restrictions applied:", getRoleDisplayName());
+}
+
+function renderRoleManagement() {
+    const currentRoleDisplay = document.getElementById('current-role-display');
+    if (currentRoleDisplay) {
+        currentRoleDisplay.value = getRoleDisplayName();
+    }
+}
 
 // --- LICENSE UTILS ---
 function simpleHash(str) {
@@ -1062,6 +1559,7 @@ function simpleHash(str) {
     }
     return Math.abs(hash).toString(36);
 }
+
 function getDeviceID() {
     let did = localStorage.getItem('device_id');
     if (!did) {
@@ -1072,10 +1570,12 @@ function getDeviceID() {
     }
     return did;
 }
+
 function initLicense() {
     if (!localStorage.getItem('first_launch_date')) localStorage.setItem('first_launch_date', Date.now());
     getDeviceID();
 }
+
 function isAppUnlocked() {
     const now = Date.now();
     const firstLaunch = parseInt(localStorage.getItem('first_launch_date'));
@@ -1090,7 +1590,12 @@ function isAppUnlocked() {
         return now < lic.e;
     } catch (e) { return false; }
 }
+
 function activateLicense() {
+    if (!hasPermission('canManageLicense')) {
+        showToast("⛔ Owner access required");
+        return;
+    }
     const input = document.getElementById('setting-license-key').value.trim();
     if (!input) { showToast("Please enter a license key"); return; }
     try {
@@ -1103,54 +1608,103 @@ function activateLicense() {
         showToast("License Activated");
     } catch (e) { showToast("Invalid License JSON Format"); }
 }
+
 function renderLicenseSettings() {
-    const deviceId = getDeviceID();
-    document.getElementById('setting-device-id').value = deviceId;
-    const banner = document.getElementById('license-banner');
-    const now = Date.now();
-    const firstLaunch = parseInt(localStorage.getItem('first_launch_date'));
-    const trialExpiry = firstLaunch + (TRIAL_DAYS * 24 * 60 * 60 * 1000);
-    let statusText = ""; let statusClass = "";
-    if (now < trialExpiry) {
-        const daysLeft = Math.ceil((trialExpiry - now) / (1000 * 60 * 60 * 24));
-        statusText = `Trial: ${daysLeft} days left`;
-    } else {
-        const licStr = localStorage.getItem('license_data');
-        if (licStr) {
-            try {
-                const lic = JSON.parse(licStr);
-                if (lic.e > now) {
-                    const daysDiff = Math.ceil((lic.e - now) / (1000 * 60 * 60 * 24));
-                    statusText = `Active. Expires in ${daysDiff} days`;
-                } else {
-                    statusText = "License Expired.";
+    try {
+        const deviceIdEl = document.getElementById('setting-device-id');
+        const banner = document.getElementById('license-banner');
+        if (!deviceIdEl || !banner) return;
+        
+        const deviceId = getDeviceID();
+        deviceIdEl.value = deviceId;
+        
+        const now = Date.now();
+        const firstLaunch = parseInt(localStorage.getItem('first_launch_date')) || now;
+        const trialExpiry = firstLaunch + (TRIAL_DAYS * 24 * 60 * 60 * 1000);
+        let statusText = "";
+        let statusClass = "";
+        
+        if (now < trialExpiry) {
+            const daysLeft = Math.ceil((trialExpiry - now) / (1000 * 60 * 60 * 24));
+            statusText = `Trial: ${daysLeft} days left`;
+        } else {
+            const licStr = localStorage.getItem('license_data');
+            if (licStr) {
+                try {
+                    const lic = JSON.parse(licStr);
+                    if (lic.e > now) {
+                        const daysDiff = Math.ceil((lic.e - now) / (1000 * 60 * 60 * 24));
+                        statusText = `Active. Expires in ${daysDiff} days`;
+                    } else {
+                        statusText = "License Expired.";
+                        statusClass = "expired";
+                    }
+                } catch(e) {
+                    statusText = "Corrupt License";
                     statusClass = "expired";
                 }
-            } catch(e) { statusText = "Corrupt License"; statusClass = "expired"; }
-        } else {
-            statusText = "Trial Expired. License required.";
-            statusClass = "expired";
+            } else {
+                statusText = "Trial Expired. License required.";
+                statusClass = "expired";
+            }
         }
+        banner.innerText = statusText;
+        banner.className = 'license-status-banner ' + statusClass;
+    } catch (err) {
+        console.error("License render failed:", err);
+        const banner = document.getElementById('license-banner');
+        if (banner) banner.innerText = "Error loading license";
     }
-    banner.innerText = statusText;
-    banner.className = 'license-status-banner ' + statusClass;
 }
 
-// --- CRYPTO ---
+// --- CRYPTO (With Fallback) ---
 function digestSHA256(message) {
-    if (typeof CryptoJS === 'undefined') throw new Error("CryptoJS required");
-    return CryptoJS.SHA256(message).toString();
-}
-function encryptData(dataString) {
-    if (typeof CryptoJS === 'undefined') throw new Error("CryptoJS library not loaded");
-    return CryptoJS.AES.encrypt(dataString, SECRET).toString();
-}
-function decryptData(encryptedString) {
-    if (typeof CryptoJS === 'undefined') throw new Error("CryptoJS library not loaded");
     try {
+        if (typeof CryptoJS === 'undefined') {
+            console.warn("⚠️ CryptoJS not loaded - using fallback");
+            let hash = 0;
+            for (let i = 0; i < message.length; i++) {
+                const char = message.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(36);
+        }
+        return CryptoJS.SHA256(message).toString();
+    } catch (err) {
+        console.error("Crypto error:", err);
+        throw new Error("Crypto operation failed");
+    }
+}
+
+function encryptData(dataString) {
+    try {
+        if (typeof CryptoJS === 'undefined') {
+            console.warn("⚠️ CryptoJS not loaded - backup unencrypted");
+            return "UNENCRYPTED:" + btoa(unescape(encodeURIComponent(dataString)));
+        }
+        return CryptoJS.AES.encrypt(dataString, SECRET).toString();
+    } catch (err) {
+        console.error("Encryption failed:", err);
+        throw new Error("Encryption failed");
+    }
+}
+
+function decryptData(encryptedString) {
+    try {
+        if (typeof CryptoJS === 'undefined') {
+            console.warn("⚠️ CryptoJS not loaded - attempting base64 decode");
+            if (encryptedString.startsWith("UNENCRYPTED:")) {
+                return decodeURIComponent(escape(atob(encryptedString.substring(12))));
+            }
+            throw new Error("Cannot decrypt without CryptoJS");
+        }
         const decrypted = CryptoJS.AES.decrypt(encryptedString, SECRET);
         return decrypted.toString(CryptoJS.enc.Utf8);
-    } catch (e) { throw new Error("Decryption failed."); }
+    } catch (err) {
+        console.error("Decryption failed:", err);
+        throw new Error("Decryption failed");
+    }
 }
 
 // --- INTEGRITY ---
@@ -1168,103 +1722,6 @@ function calculateFinancialsFromItems(items) {
         cost: Math.round(cost * 100) / 100,
         profit: Math.round((total - cost) * 100) / 100
     };
-}
-
-// --- OFFLINE TOP SELLERS CALCULATION ---
-/**
- * CALCULATE TOP SELLERS FROM TRANSACTIONS
- * Derives from localStorage transactions - no separate cache
- * Works offline, updates in real-time
- */
-function calculateTopSellers(timeRange = 'today') {
-    const now = new Date();
-    const today = now.toDateString();
-    
-    // Get transactions from state (already loaded from localStorage)
-    const transactions = state.sales || [];
-    
-    // Aggregate map: productId → { name, totalSold }
-    const productMap = new Map();
-    
-    transactions.forEach(tx => {
-        // Skip voided or refunded transactions
-        if (tx.voided || tx.refunded) return;
-        
-        // Filter by time range
-        const txDate = new Date(tx.timestamp).toDateString();
-        if (timeRange === 'today' && txDate !== today) return;
-        
-        // Process each line item
-        tx.items.forEach(item => {
-            // Skip voided items within valid transactions
-            if (item.voided) return;
-            
-            const productId = item.id;
-            const qty = Number(item.qty) || 0;
-            
-            if (productMap.has(productId)) {
-                const existing = productMap.get(productId);
-                existing.totalSold += qty;
-            } else {
-                productMap.set(productId, {
-                    productId: productId,
-                    name: item.name,
-                    totalSold: qty
-                });
-            }
-        });
-    });
-    
-    // Convert to array and sort by totalSold (descending)
-    const sorted = Array.from(productMap.values())
-        .sort((a, b) => b.totalSold - a.totalSold);
-    
-    return sorted;
-}
-
-/**
- * RENDER TOP SELLERS TABLE
- * Displays rank, product name, quantity sold
- */
-function renderTopSellersTable(data = null) {
-    const tbody = document.getElementById('top-sellers-table-body');
-    const emptyMsg = document.getElementById('top-sellers-empty');
-    
-    if (!tbody) return;
-    
-    // Calculate if no data provided
-    if (!data) {
-        data = calculateTopSellers('today');
-    }
-    
-    // Limit to top 10
-    const top10 = data.slice(0, 10);
-    
-    // Handle empty state
-    if (top10.length === 0) {
-        tbody.innerHTML = '';
-        emptyMsg.style.display = 'block';
-        return;
-    }
-    
-    emptyMsg.style.display = 'none';
-    
-    // Render rows
-    tbody.innerHTML = top10.map((item, index) => {
-        const rank = index + 1;
-        const rankClass = rank <= 3 ? 'top-sellers-rank top-3' : 'top-sellers-rank';
-        const rowBg = index % 2 === 0 ? '' : 'background: #f9fafb;';
-        
-        return `
-            <tr style="${rowBg}">
-                <td class="${rankClass}">#${rank}</td>
-                <td>
-                    <span class="truncate" style="display: block; max-width: 200px;">${item.name}</span>
-                </td>
-                <td style="text-align: right; font-weight: 600;">${item.totalSold}</td>
-            </tr>
-        `;
-    }).join('');
 }
 
 function validateSystemIntegrity() {
@@ -1288,19 +1745,41 @@ function validateSystemIntegrity() {
 
 // --- APP INIT ---
 window.onload = async function() {
-    initLicense();
-    validateSystemIntegrity();
-    document.getElementById('setting-business-name').value = state.settings.name;
-    document.getElementById('setting-currency').value = state.settings.currency;
-    document.getElementById('business-name-display').innerText = state.settings.name;
-    renderModeUI();
-    renderCategoryTabs();
-    renderPOS();
-    renderInventory();
-    renderLicenseSettings();
-    renderBackupStatus();
-    updateClock();
-    setInterval(updateClock, 60000);
+    try {
+        console.log("🚀 App initializing...");
+        
+        initLicense();
+        validateRoleState(); // ✅ Validate role on startup
+        validateSystemIntegrity();
+        
+        // Check CryptoJS status
+        if (typeof CryptoJS === 'undefined') {
+            console.warn("⚠️ CryptoJS failed to load. Backup encryption will be limited.");
+            setTimeout(() => {
+                showToast("⚠️ Security library offline");
+            }, 2000);
+        }
+        
+        document.getElementById('setting-business-name').value = state.settings.name;
+        document.getElementById('setting-currency').value = state.settings.currency;
+        document.getElementById('business-name-display').innerText = state.settings.name;
+        
+        renderModeUI();
+        applyRoleRestrictions(); // ✅ Apply role restrictions
+        renderRoleManagement();
+        renderCategoryTabs();
+        renderPOS();
+        renderInventory();
+        renderLicenseSettings();
+        renderBackupStatus();
+        updateClock();
+        setInterval(updateClock, 60000);
+        
+        console.log("✅ App initialized | Role:", getRoleDisplayName());
+    } catch (err) {
+        console.error("❌ App initialization failed:", err);
+        showToast("Some features may be limited");
+    }
 };
 
 // --- READ ONLY MODE ---
@@ -1314,6 +1793,7 @@ function toggleMode() {
     if(activeView === 'view-settings') renderSettingsView();
     showToast(state.isReadOnly ? "Read-Only Mode Enabled" : "Edit Mode Enabled");
 }
+
 function renderModeUI() {
     const btn = document.getElementById('mode-toggle');
     const unlockIcon = document.getElementById('icon-unlock');
@@ -1335,8 +1815,10 @@ function saveState() {
     localStorage.setItem('sme_totals', JSON.stringify(state.totals));
     localStorage.setItem('sme_reconciliations', JSON.stringify(state.reconciliations));
 }
+
 function formatMoney(amount) { return state.settings.currency + parseFloat(amount).toFixed(2); }
 function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
+
 function showToast(msg) {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
@@ -1345,18 +1827,44 @@ function showToast(msg) {
     container.appendChild(toast);
     setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
 }
+
 function updateClock() {
-    const now = new Date();
-    document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    try {
+        const clockEl = document.getElementById('clock');
+        if (!clockEl) return;
+        const now = new Date();
+        clockEl.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch (err) {
+        console.error("Clock update failed:", err);
+    }
 }
+
 function switchTab(tabId, btn) {
+    // Permission check for restricted tabs
+    if (tabId === 'inventory' && !hasPermission('canViewInventory')) {
+        showToast("⛔ Access denied");
+        return;
+    }
+    if (tabId === 'reports' && !hasPermission('canViewReports')) {
+        showToast("⛔ Access denied");
+        return;
+    }
+    if (tabId === 'settings' && !hasPermission('canAccessSettings')) {
+        showToast("⛔ Access denied");
+        return;
+    }
+    
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(`view-${tabId}`).classList.add('active');
     btn.classList.add('active');
+    
     if(tabId === 'reports') renderReports();
     if(tabId === 'inventory') renderInventory();
-    if(tabId === 'settings') renderSettingsView();
+    if(tabId === 'settings') {
+        renderSettingsView();
+        renderRoleManagement();
+    }
 }
 
 // --- CATEGORY LOGIC ---
@@ -1379,6 +1887,7 @@ function renderCategoryTabs() {
         container.appendChild(btn);
     });
 }
+
 function filterCategory(cat) { state.activeCategory = cat; renderPOS(); }
 
 // --- POS LOGIC ---
@@ -1406,7 +1915,9 @@ function renderPOS() {
         grid.appendChild(card);
     });
 }
+
 function filterPos() { renderPOS(); }
+
 function addToCart(productId) {
     const product = state.products.find(p => p.id == productId);
     if(product.stock <= 0) { showToast("Out of stock!"); return; }
@@ -1418,6 +1929,7 @@ function addToCart(productId) {
     }
     updateCartUI();
 }
+
 function updateCartUI() {
     const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     const count = state.cart.reduce((sum, item) => sum + item.qty, 0);
@@ -1443,6 +1955,7 @@ function openCheckout() {
     renderCheckoutCartItems();
     openModal('modal-checkout');
 }
+
 function renderCheckoutCartItems() {
     const list = document.getElementById('checkout-cart-list');
     list.innerHTML = '';
@@ -1464,6 +1977,7 @@ function renderCheckoutCartItems() {
         list.appendChild(li);
     });
 }
+
 function adjustCart(index, delta) {
     const item = state.cart[index];
     const newQty = item.qty + delta;
@@ -1474,6 +1988,7 @@ function adjustCart(index, delta) {
     document.getElementById('checkout-total-display').innerText = formatMoney(total);
     if(state.cart.length === 0) closeModal('modal-checkout');
 }
+
 function voidCartItem(index) {
     state.cart.splice(index, 1);
     updateCartUI();
@@ -1482,12 +1997,14 @@ function voidCartItem(index) {
     document.getElementById('checkout-total-display').innerText = formatMoney(total);
     if(state.cart.length === 0) closeModal('modal-checkout');
 }
+
 function selectPayment(method) {
     state.selectedPaymentMethod = method;
     document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
     document.getElementById(`pay-${method.toLowerCase()}`).classList.add('selected');
     document.getElementById('btn-finalize').disabled = false;
 }
+
 function calcChange() {
     const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     const received = parseFloat(document.getElementById('pay-received').value) || 0;
@@ -1499,6 +2016,7 @@ function calcChange() {
         document.getElementById('change-display').innerText = `Change: ${formatMoney(change)}`;
     } else { document.getElementById('change-display').innerText = ''; }
 }
+
 function validateCheckout() {
     const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     const input = document.getElementById('pay-received');
@@ -1511,6 +2029,7 @@ function validateCheckout() {
     if (received < total) { input.classList.add('error'); errorMsg.innerText = "Amount less than total"; return false; }
     return true;
 }
+
 function cancelSale() {
     state.cart = [];
     updateCartUI();
@@ -1519,6 +2038,7 @@ function cancelSale() {
     closeModal('modal-checkout');
     showToast("Sale Cancelled");
 }
+
 function showSuccessModal() {
     const modal = document.getElementById('modal-success');
     modal.style.display = 'block';
@@ -1530,6 +2050,7 @@ function showSuccessModal() {
         setTimeout(() => { modal.style.display = 'none'; }, 500);
     }, 2000);
 }
+
 function printReceipt(saleRecord) {
     const dateStr = new Date(saleRecord.timestamp).toLocaleString();
     const timeStr = new Date(saleRecord.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
@@ -1631,7 +2152,7 @@ function renderInventory() {
             div.id = `inv-item-${p.id}`;
             const stockDisplay = isOut ? `<span class="text-danger">Out of Stock</span>` : (isLow ? `<span class="text-accent">Low: ${p.stock}</span>` : `Stock: ${p.stock}`);
             let actionsHtml = '';
-            if(!state.isReadOnly) {
+            if(!state.isReadOnly && hasPermission('canEditInventory')) {
                 actionsHtml = `
                 <div class="inv-actions">
                     <button class="btn btn-secondary btn-sm" onclick="openStockModal(${p.id})">Stock</button>
@@ -1651,8 +2172,9 @@ function renderInventory() {
         }
     });
 }
+
 function enableInlineEdit(id) {
-    if(state.isReadOnly) return;
+    if(!hasPermission('canEditInventory') || state.isReadOnly) return;
     const p = state.products.find(prod => prod.id == id);
     const row = document.getElementById(`inv-item-${id}`);
     if (!row) return;
@@ -1681,8 +2203,9 @@ function enableInlineEdit(id) {
         </div>
     `;
 }
+
 async function saveInlineEdit(id) {
-    if(state.isReadOnly) return;
+    if(!hasPermission('canEditInventory') || state.isReadOnly) return;
     let inventory = getSafeItem('sme_products', []);
     const index = inventory.findIndex(p => p.id == id);
     if (index === -1) return;
@@ -1702,8 +2225,9 @@ async function saveInlineEdit(id) {
     renderCategoryTabs();
     showToast("Product updated");
 }
+
 function openStockModal(id) {
-    if(state.isReadOnly) return;
+    if(!hasPermission('canEditInventory') || state.isReadOnly) return;
     const p = state.products.find(prod => prod.id == id);
     document.getElementById('stock-prod-id').value = id;
     document.getElementById('stock-prod-name').innerText = p.name;
@@ -1711,8 +2235,9 @@ function openStockModal(id) {
     document.getElementById('stock-adj-qty').value = '';
     openModal('modal-stock');
 }
+
 async function processStockAdjustment() {
-    if(state.isReadOnly) return;
+    if(!hasPermission('canEditInventory') || state.isReadOnly) return;
     let inventory = getSafeItem('sme_products', []);
     const id = document.getElementById('stock-prod-id').value;
     const qty = parseInt(document.getElementById('stock-adj-qty').value);
@@ -1729,8 +2254,9 @@ async function processStockAdjustment() {
     closeModal('modal-stock');
     showToast("Stock Updated");
 }
+
 function saveProduct() {
-    if(state.isReadOnly) return;
+    if(!hasPermission('canEditInventory') || state.isReadOnly) return;
     const id = document.getElementById('prod-id').value;
     const name = document.getElementById('prod-name').value;
     const price = parseFloat(document.getElementById('prod-price').value);
@@ -1754,21 +2280,9 @@ function saveProduct() {
     renderPOS();
     renderCategoryTabs();
 }
-function editProduct(id) {
-    const inventory = getSafeItem('sme_products', defaultProducts);
-    const p = inventory.find(prod => prod.id == id);
-    document.getElementById('prod-id').value = p.id;
-    document.getElementById('prod-name').value = p.name;
-    document.getElementById('prod-price').value = p.price;
-    document.getElementById('prod-cost').value = p.cost;
-    document.getElementById('prod-stock').value = p.stock;
-    document.getElementById('prod-min').value = p.lowStock || DEFAULT_LOW_STOCK;
-    document.getElementById('prod-category').value = p.category || '';
-    document.getElementById('prod-modal-title').innerText = "Edit Product";
-    openModal('modal-product');
-}
+
 function deleteProduct(id) {
-    if(state.isReadOnly) return;
+    if(!hasPermission('canEditInventory') || state.isReadOnly) return;
     if(confirm("Delete this product?")) {
         let inventory = getSafeItem('sme_products', defaultProducts);
         inventory = inventory.filter(p => p.id != id);
@@ -1806,12 +2320,15 @@ async function triggerBackup() {
         a.click();
         URL.revokeObjectURL(url);
         
-        // ✅ TRACK BACKUP TIMESTAMP
         const backupTimestamp = Date.now();
         localStorage.setItem("lastBackupDate", new Date(backupTimestamp).toDateString());
         localStorage.setItem("lastBackupTimestamp", backupTimestamp.toString());
         
-        showToast("Encrypted Backup downloaded");
+        if (typeof CryptoJS === 'undefined') {
+            showToast("⚠️ Backup saved (unencrypted)");
+        } else {
+            showToast("✅ Encrypted Backup downloaded");
+        }
         renderBackupStatus();
     } catch (err) {
         console.error(err);
@@ -1819,7 +2336,6 @@ async function triggerBackup() {
     }
 }
 
-// --- BACKUP STATUS UTILS ---
 function renderBackupStatus() {
     const backupTimestamp = localStorage.getItem("lastBackupTimestamp");
     const backupCard = document.getElementById("dash-backup-card");
@@ -1830,7 +2346,6 @@ function renderBackupStatus() {
     
     if (!backupTimestamp) {
         backupValue.innerText = "Never";
-        backupValue.className = "dash-value time";
         backupValue.style.color = "var(--danger)";
         backupText.innerText = "⚠️ No backup found. Create one now.";
         backupCard.classList.add("danger");
@@ -1871,33 +2386,52 @@ function renderBackupStatus() {
 }
 
 async function restoreBackup() {
-    if(state.isReadOnly) return;
+    if(!hasPermission('canRestoreBackup') || state.isReadOnly) return;
     const fileInput = document.getElementById("restoreFile");
     const file = fileInput.files[0];
     if (!file) return alert("Select a backup file.");
     const reader = new FileReader();
     reader.onload = async function(e) {
         try {
-            const decryptedString = decryptData(e.target.result);
+            const fileContent = e.target.result;
+            let decryptedString;
+            
+            if (fileContent.startsWith("UNENCRYPTED:")) {
+                if (typeof CryptoJS === 'undefined') {
+                    decryptedString = decodeURIComponent(escape(atob(fileContent.substring(12))));
+                } else {
+                    throw new Error("Invalid encrypted format");
+                }
+            } else {
+                decryptedString = decryptData(fileContent);
+            }
+            
             if (!decryptedString) throw new Error("Decryption failed.");
             const signedPayload = JSON.parse(decryptedString);
             const { signature, ...payloadWithoutSignature } = signedPayload;
             const expectedSignature = digestSHA256(JSON.stringify(payloadWithoutSignature) + SECRET);
-            if (signature !== expectedSignature) return alert("Security Alert: Backup signature mismatch.");
+            
+            if (signature !== expectedSignature) {
+                return alert("Security Alert: Backup signature mismatch.");
+            }
+            
             if (!confirm("Valid Backup Detected. Restore ID: " + signedPayload.deviceId + "\nThis will overwrite current data. Continue?")) return;
+            
             state.products = signedPayload.inventory.map(p => ({ ...p, category: p.category || "Uncategorized", lowStock: p.lowStock || DEFAULT_LOW_STOCK }));
             state.sales = Array.isArray(signedPayload.sales) ? signedPayload.sales : [];
             state.settings = signedPayload.settings || state.settings;
             state.totals = signedPayload.totals || { gross: 0, profit: 0, transactions: 0 };
             state.reconciliations = Array.isArray(signedPayload.reconciliations) ? signedPayload.reconciliations : [];
             saveState();
+            
             document.getElementById('setting-business-name').value = state.settings.name;
             document.getElementById('setting-currency').value = state.settings.currency;
             document.getElementById('business-name-display').innerText = state.settings.name;
+            
             renderInventory(); renderPOS(); renderCategoryTabs(); renderReports();
             alert("Restore successful. Reloading...");
             location.reload();
-        } catch (err) { alert("Restore failed: Invalid file."); console.error(err); }
+        } catch (err) { alert("Restore failed: Invalid file or corrupted data."); console.error(err); }
     };
     reader.readAsText(file);
 }
@@ -1911,7 +2445,12 @@ function getExpectedCash() {
     });
     return todayCashSales.reduce((sum, s) => sum + s.total, 0);
 }
+
 function openReconcileModal() {
+    if(!hasPermission('canReconcile')) {
+        showToast("⛔ Permission denied");
+        return;
+    }
     const expected = getExpectedCash();
     document.getElementById('rec-expected').value = formatMoney(expected);
     document.getElementById('rec-counted').value = '';
@@ -1919,6 +2458,7 @@ function openReconcileModal() {
     document.getElementById('rec-diff').className = '';
     openModal('modal-reconcile');
 }
+
 function calculateReconciliationDiff() {
     const counted = parseFloat(document.getElementById('rec-counted').value) || 0;
     const expected = getExpectedCash();
@@ -1928,6 +2468,7 @@ function calculateReconciliationDiff() {
     if (diff > 0.01) diffEl.className = 'text-success';
     else if (diff < -0.01) diffEl.className = 'text-danger';
 }
+
 function saveReconciliation() {
     const counted = parseFloat(document.getElementById('rec-counted').value) || 0;
     const expected = getExpectedCash();
@@ -1938,6 +2479,7 @@ function saveReconciliation() {
     renderReconciliationHistory();
     showToast("Reconciliation Saved");
 }
+
 function renderReconciliationHistory() {
     const list = document.getElementById('reconciliation-history');
     list.innerHTML = '';
@@ -1962,7 +2504,10 @@ function renderReconciliationHistory() {
 
 // --- VOID/REFUND ---
 function voidFullSale(saleId) {
-    if(state.isReadOnly) { showToast("Disabled in Read-Only Mode"); return; }
+    if(!hasPermission('canEditInventory') || state.isReadOnly) {
+        showToast("⛔ Permission denied");
+        return;
+    }
     if(!confirm("Void this sale? Stock will be restored.")) return;
     let sales = getSafeItem('sme_sales', []);
     const saleIndex = sales.findIndex(s => s.id === saleId);
@@ -1978,12 +2523,16 @@ function voidFullSale(saleId) {
     localStorage.setItem('sme_products', JSON.stringify(inventory));
     state.sales = sales; state.products = inventory;
     saveState(); recalcTotalsFromHistory();
-    renderReports(); // ✅ Recalculates top sellers
+    renderReports();
     renderPOS();
     showToast("Sale Voided");
 }
+
 function refundSale(saleId) {
-    if(state.isReadOnly) { showToast("Disabled in Read-Only Mode"); return; }
+    if(!hasPermission('canEditInventory') || state.isReadOnly) {
+        showToast("⛔ Permission denied");
+        return;
+    }
     if(!confirm("REFUND: Return stock and mark as Returned?")) return;
     let sales = getSafeItem('sme_sales', []);
     const saleIndex = sales.findIndex(s => s.id === saleId);
@@ -2008,7 +2557,7 @@ function refundSale(saleId) {
     localStorage.setItem('sme_products', JSON.stringify(inventory));
     state.sales = sales; state.products = inventory;
     saveState(); recalcTotalsFromHistory();
-    renderReports(); // ✅ Recalculates top sellers
+    renderReports();
     renderPOS();
     showToast("Sale Refunded");
 }
@@ -2028,6 +2577,75 @@ function searchTransactions(transactions, query) {
 }
 
 // --- REPORTS ---
+function calculateTopSellers(timeRange = 'today') {
+    const now = new Date();
+    const today = now.toDateString();
+    const transactions = state.sales || [];
+    const productMap = new Map();
+    
+    transactions.forEach(tx => {
+        if (tx.voided || tx.refunded) return;
+        const txDate = new Date(tx.timestamp).toDateString();
+        if (timeRange === 'today' && txDate !== today) return;
+        
+        tx.items.forEach(item => {
+            if (item.voided) return;
+            const productId = item.id;
+            const qty = Number(item.qty) || 0;
+            
+            if (productMap.has(productId)) {
+                const existing = productMap.get(productId);
+                existing.totalSold += qty;
+            } else {
+                productMap.set(productId, {
+                    productId: productId,
+                    name: item.name,
+                    totalSold: qty
+                });
+            }
+        });
+    });
+    
+    const sorted = Array.from(productMap.values()).sort((a, b) => b.totalSold - a.totalSold);
+    return sorted;
+}
+
+function renderTopSellersTable(data = null) {
+    const tbody = document.getElementById('top-sellers-table-body');
+    const emptyMsg = document.getElementById('top-sellers-empty');
+    if (!tbody) return;
+    
+    if (!data) {
+        data = calculateTopSellers('today');
+    }
+    
+    const top10 = data.slice(0, 10);
+    
+    if (top10.length === 0) {
+        tbody.innerHTML = '';
+        emptyMsg.style.display = 'block';
+        return;
+    }
+    
+    emptyMsg.style.display = 'none';
+    
+    tbody.innerHTML = top10.map((item, index) => {
+        const rank = index + 1;
+        const rankClass = rank <= 3 ? 'top-sellers-rank top-3' : 'top-sellers-rank';
+        const rowBg = index % 2 === 0 ? '' : 'background: #f9fafb;';
+        
+        return `
+            <tr style="${rowBg}">
+                <td class="${rankClass}">#${rank}</td>
+                <td>
+                    <span class="truncate" style="display: block; max-width: 200px;">${item.name}</span>
+                </td>
+                <td style="text-align: right; font-weight: 600;">${item.totalSold}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
 function renderReports() {
     const today = new Date().toDateString();
     const todaysSales = state.sales.filter(s => new Date(s.timestamp).toDateString() === today);
@@ -2037,6 +2655,7 @@ function renderReports() {
     let productSales = {};
     const lowStockItems = state.products.filter(p => p.stock <= (p.lowStock || DEFAULT_LOW_STOCK));
     const lowStockCount = lowStockItems.length;
+    
     todaysSales.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     todaysSales.forEach(s => {
         if (s.voided || s.refunded) return;
@@ -2053,9 +2672,11 @@ function renderReports() {
         if(s.method === 'Cash') cashTotal += financials.total;
         else ecoTotal += financials.total;
     });
+    
     if (todaysSales.length > 0 && !todaysSales[0].voided && !todaysSales[0].refunded) {
         lastSaleTimeStr = new Date(todaysSales[0].timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
+    
     if (unlocked) {
         document.getElementById('dash-tx-count').innerText = txCount;
         document.getElementById('dash-gross').innerText = formatMoney(grossSales);
@@ -2083,7 +2704,6 @@ function renderReports() {
         document.getElementById('report-ecocash').innerText = "---";
     }
     
-    // ✅ RENDER OFFLINE TOP SELLERS TABLE
     const topSellers = calculateTopSellers('today');
     renderTopSellersTable(topSellers);
     
@@ -2092,6 +2712,7 @@ function renderReports() {
     const searchTerm = document.getElementById('tx-search') ? document.getElementById('tx-search').value : '';
     let displayList = [...todaysSales].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     if (searchTerm) displayList = searchTransactions(displayList, searchTerm);
+    
     if(displayList.length === 0) {
         list.innerHTML = '<div style="text-align:center; color:gray; padding: 20px;">No transactions found.</div>';
     } else {
@@ -2156,8 +2777,12 @@ function openTransactionDetails(saleId) {
     document.getElementById('trans-details-total').innerText = formatMoney(netTotal);
     openModal('modal-transaction-details');
 }
+
 function voidTransactionItem(saleId, itemIndex) {
-    if(state.isReadOnly) { showToast("Disabled in Read-Only Mode"); return; }
+    if(!hasPermission('canEditInventory') || state.isReadOnly) {
+        showToast("⛔ Permission denied");
+        return;
+    }
     if(!confirm("Void this item? Stock will be restored.")) return;
     let sales = getSafeItem('sme_sales', []);
     const sale = sales.find(s => s.id === saleId);
@@ -2186,14 +2811,20 @@ function updateSettings() {
     renderPOS(); renderInventory(); renderReports();
     showToast("Settings Saved");
 }
+
 function renderSettingsView() {
     const dangerZone = document.getElementById('settings-danger-zone');
     if(state.isReadOnly) dangerZone.classList.add('hidden'); else dangerZone.classList.remove('hidden');
 }
+
 function exportCSV() {
+    if (!hasPermission('canExportData')) {
+        showToast("⛔ Permission denied");
+        return;
+    }
     if (!isAppUnlocked()) { showToast("License required"); return; }
     if(state.sales.length === 0) { showToast("No data"); return; }
-    let csvContent = "data:text/csv;charset=utf-8,";
+    let csvContent = "text/csv;charset=utf-8,";
     csvContent += "Date,Time,Total,Cost,Profit,Method,Voided,Items Sold\n";
     state.sales.forEach(s => {
         const d = new Date(s.timestamp);
@@ -2217,7 +2848,12 @@ function exportCSV() {
     link.click();
     document.body.removeChild(link);
 }
+
 function clearAllData() {
+    if(!hasPermission('canResetData')) {
+        showToast("⛔ Owner access required");
+        return;
+    }
     if(confirm("DANGER: Wipe all data?")) {
         localStorage.removeItem('sme_products');
         localStorage.removeItem('sme_sales');
@@ -2225,6 +2861,7 @@ function clearAllData() {
         location.reload();
     }
 }
+
 function recalcTotalsFromHistory() {
     let gross = 0, profit = 0, count = 0;
     state.sales.forEach(s => {
@@ -2239,6 +2876,7 @@ function recalcTotalsFromHistory() {
         saveState();
     }
 }
+
 function getTransactionSummary(items) {
     if (!items || items.length === 0) return "No items";
     const displayLimit = 3;
@@ -2248,6 +2886,7 @@ function getTransactionSummary(items) {
     if (items.length > displayLimit) result += ` +${items.length - displayLimit} more`;
     return result;
 }
+
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) {
     document.getElementById(id).classList.remove('open');
