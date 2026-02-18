@@ -1,29 +1,27 @@
 {
-  "name": "ShopMate",
+  "name": "ShopMate POS",
   "short_name": "ShopMate",
-  "description": "Point of Sale System",
-  "start_url": "/index.html",
-  "scope": "/",
+  "description": "Offline Point of Sale System",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#ecf0f1",
-  "theme_color": "#008751",
+  "background_color": "#f3f4f6",
+  "theme_color": "#005e38",
+  "orientation": "any",
   "icons": [
     {
-      "src": "/icons/android-chrome-192x192.png",
+      "src": "icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "/icons/android-chrome-512x512.png",
+      "src": "icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "/icons/apple-touch-icon.png",
-      "sizes": "180x180",
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "categories": ["business", "finance"],
+  "lang": "en"
 }

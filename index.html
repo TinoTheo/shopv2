@@ -3,709 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<!-- iOS specific -->
+<!-- PWA Meta Tags -->
+<meta name="theme-color" content="#005e38">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="ShopMate">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<link rel="apple-touch-startup-image" href="/splash.png">
-<!-- Android/Chrome -->
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="ShopMate">
-<meta name="theme-color" content="#005e38">
 <meta name="msapplication-TileColor" content="#005e38">
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#005e38">
-<!-- CRYPTOJS for Encryption -->
+<meta name="msapplication-config" content="none">   
+
+<link rel="manifest" href="./manifest.json">
+
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+<link rel="stylesheet" href="style.css">
+
+<!-- CryptoJS for Encryption -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <title>ShopMate POS</title>
-<style>
-:root {
-    /* Professional Palette */
-    --primary: #005e38;
-    --primary-hover: #004d2e;
-    --primary-light: #e8f0ed;
-    --accent: #d97706;
-    --danger: #b91c1c;
-    --danger-hover: #991b1b;
-    --success: #059669;
-    --dark: #1f2937;
-    --text-main: #111827;
-    --text-muted: #6b7280;
-    --bg-body: #f3f4f6;
-    --bg-surface: #ffffff;
-    --border: #e5e7eb;
-    --shadow: 0 1px 3px rgba(0,0,0,0.1);
-    --shadow-md: 0 4px 6px rgba(0,0,0,0.05);
-    --radius: 4px;
-    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    
-    /* Spacing Scale */
-    --space-1: 4px;
-    --space-2: 8px;
-    --space-3: 12px;
-    --space-4: 16px;
-    --space-5: 24px;
-    --space-6: 32px;
-    
-    /* Dimensions */
-    --header-height: 56px;
-    --nav-height: 60px;
-    --input-height: 36px;
-    --btn-height: 36px;
-}
 
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
-
-body {
-    font-family: var(--font);
-    font-size: 14px;
-    line-height: 1.5;
-    background-color: var(--bg-body);
-    margin: 0;
-    padding: 0;
-    color: var(--text-main);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    -webkit-font-smoothing: antialiased;
-}
-
-/* --- Typography --- */
-h1, h2, h3, h4 {
-    margin: 0 0 var(--space-3) 0;
-    font-weight: 600;
-    color: var(--text-main);
-}
-h2 { font-size: 18px; }
-h3 { font-size: 16px; }
-.text-small { font-size: 12px; }
-.text-muted { color: var(--text-muted); }
-.text-danger { color: var(--danger); }
-.text-success { color: var(--success); }
-.text-accent { color: var(--accent); }
-.text-right { text-align: right; }
-.truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-/* --- Header & Nav --- */
-header {
-    background-color: var(--bg-surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 var(--space-4);
-    height: var(--header-height);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-    z-index: 10;
-}
-
-.brand {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    letter-spacing: -0.02em;
-}
-
-#clock {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-}
-
-/* Role Indicator Badge */
-#role-indicator {
-    font-size: 11px;
-    padding: 4px 8px;
-    background: var(--primary);
-    color: white;
-    border-radius: 4px;
-    font-weight: 600;
-    margin-right: 8px;
-}
-
-#role-indicator.cashier {
-    background: var(--accent);
-}
-
-#role-indicator.manager {
-    background: var(--dark);
-}
-
-#role-indicator.admin {
-    background: #667eea;
-}
-
-#role-indicator.owner {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-/* Switch Role Button */
-#role-switch-btn {
-    font-size: 11px;
-    padding: 4px 8px;
-    background: var(--bg-body);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    font-weight: 600;
-    color: var(--text-muted);
-    cursor: pointer;
-    margin-right: 8px;
-    transition: all 0.2s;
-}
-
-#role-switch-btn:hover {
-    background: var(--border);
-    color: var(--text-main);
-}
-
-#mode-toggle {
-    background: var(--bg-body);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: var(--text-muted);
-    transition: all 0.2s;
-}
-#mode-toggle:hover { background: var(--border); }
-#mode-toggle.locked { color: var(--danger); border-color: var(--danger); background: #fef2f2; }
-#mode-toggle svg { width: 18px; height: 18px; fill: currentColor; }
-
-nav {
-    background-color: var(--bg-surface);
-    display: flex;
-    justify-content: space-around;
-    border-top: 1px solid var(--border);
-    flex-shrink: 0;
-    height: var(--nav-height);
-    padding: var(--space-2) 0;
-    z-index: 10;
-}
-
-.nav-btn {
-    background: none;
-    border: none;
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 500;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    cursor: pointer;
-    padding: var(--space-1) var(--space-2);
-    border-radius: var(--radius);
-    transition: color 0.2s;
-    flex: 1;
-    max-width: 100px;
-}
-
-.nav-btn svg { width: 20px; height: 20px; fill: currentColor; margin-bottom: 2px; }
-.nav-btn.active { color: var(--primary); }
-.nav-btn.active svg { fill: var(--primary); }
-
-/* --- Main Views --- */
-main {
-    flex: 1;
-    position: relative;
-    overflow: hidden;
-    background: var(--bg-body);
-}
-
-.view {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    padding: var(--space-4);
-    display: none;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-.view.active { display: block; opacity: 1; }
-
-/* --- Components: Buttons --- */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: var(--btn-height);
-    padding: 0 var(--space-4);
-    border-radius: var(--radius);
-    border: 1px solid transparent;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 13px;
-    transition: all 0.2s;
-    white-space: nowrap;
-    text-decoration: none;
-}
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
-.btn-secondary { background: var(--bg-surface); border-color: var(--border); color: var(--text-main); }
-.btn-secondary:hover:not(:disabled) { background: var(--bg-body); }
-.btn-danger { background: var(--danger); color: white; }
-.btn-danger:hover:not(:disabled) { background: var(--danger-hover); }
-.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
-.btn-ghost { background: transparent; color: var(--text-muted); padding: 4px; }
-.btn-ghost:hover { color: var(--danger); background: #fef2f2; }
-.btn-sm { height: 28px; padding: 0 var(--space-2); font-size: 12px; }
-.btn-block { width: 100%; }
-
-/* --- Components: Inputs --- */
-.form-control, .search-bar {
-    width: 100%;
-    height: var(--input-height);
-    padding: 0 var(--space-3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 14px;
-    background: var(--bg-surface);
-    color: var(--text-main);
-    transition: border-color 0.2s;
-}
-.form-control:focus, .search-bar:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px var(--primary-light);
-}
-.form-control[readonly] { background: var(--bg-body); color: var(--text-muted); }
-select.form-control { appearance: none; background-image: url("image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; background-size: 16px; padding-right: 32px; }
-
-/* --- POS View --- */
-.pos-layout { display: flex; flex-direction: column; height: 100%; gap: var(--space-3); }
-.category-tabs {
-    display: flex;
-    gap: var(--space-2);
-    overflow-x: auto;
-    padding-bottom: var(--space-1);
-    scrollbar-width: none;
-}
-.cat-btn {
-    white-space: nowrap;
-    height: 32px;
-    padding: 0 var(--space-3);
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    font-size: 13px;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-.product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: var(--space-3);
-    overflow-y: auto;
-    padding-bottom: 80px;
-}
-
-.product-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: var(--space-3);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: pointer;
-    transition: all 0.2s;
-    height: 120px;
-    position: relative;
-}
-.product-card:hover { border-color: var(--primary); transform: translateY(-1px); }
-.product-card:active { transform: translateY(0); }
-.product-card.low-stock { border-color: var(--accent); background: #fffbeb; }
-.product-card.out-of-stock { border-color: var(--border); opacity: 0.6; background: #f9fafb; pointer-events: none; }
-
-.prod-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; line-height: 1.3; }
-.prod-price { color: var(--primary); font-weight: 700; font-size: 15px; }
-.prod-stock { font-size: 11px; color: var(--text-muted); margin-top: auto; }
-.prod-stock.alert { color: var(--accent); font-weight: 600; }
-
-/* --- Cart Bar --- */
-.cart-bar {
-    position: fixed;
-    bottom: var(--nav-height);
-    left: 0;
-    width: 100%;
-    background: var(--bg-surface);
-    padding: var(--space-3) var(--space-4);
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 100;
-    transform: translateY(100%);
-    transition: transform 0.3s ease-out;
-    box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
-}
-.cart-bar.visible { transform: translateY(0); }
-.cart-info h3 { margin: 0; font-size: 16px; color: var(--text-main); }
-.cart-count { font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
-.btn-checkout {
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    height: 40px;
-    padding: 0 32px;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: var(--radius);
-    cursor: pointer;
-}
-.btn-checkout:hover { background-color: var(--primary-hover); }
-
-/* --- Inventory View --- */
-.inventory-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--space-4);
-    gap: var(--space-3);
-}
-.inv-list { display: flex; flex-direction: column; gap: var(--space-2); padding-bottom: var(--space-6); }
-.inv-item {
-    background: var(--bg-surface);
-    padding: var(--space-3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    transition: border 0.2s;
-    border-left: 4px solid transparent;
-}
-.inv-item.low-stock { border-left-color: var(--accent); background: #fffbeb; }
-.inv-item.out-of-stock { border-left-color: var(--danger); opacity: 0.8; }
-.inv-details { display: flex; justify-content: space-between; align-items: baseline; width: 100%; }
-.inv-actions { display: flex; gap: var(--space-2); margin-top: var(--space-1); }
-
-/* Inline Edit */
-.edit-container { display: flex; flex-direction: column; gap: var(--space-3); }
-.edit-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
-.edit-field { display: flex; flex-direction: column; gap: 4px; }
-.edit-field label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
-.edit-field input { height: 32px; padding: 0 8px; font-size: 13px; }
-
-/* --- Reports & Dashboard --- */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-3);
-    margin-bottom: var(--space-5);
-}
-.dash-card {
-    background: var(--bg-surface);
-    padding: var(--space-4);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-}
-.dash-card.warning { border-left: 4px solid var(--accent); background: #fffbeb; grid-column: span 2; }
-.dash-card.danger { border-left: 4px solid var(--danger); background: #fef2f2; grid-column: span 2; }
-.dash-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-.dash-value { font-size: 20px; font-weight: 700; color: var(--text-main); }
-.dash-value.money { color: var(--primary); }
-.dash-value.alert { color: var(--accent); }
-.dash-value.time { color: var(--text-main); font-size: 16px; }
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: var(--space-6) 0 var(--space-3) 0;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: var(--space-2);
-}
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); margin-bottom: var(--space-5); }
-.stat-box {
-    background: var(--bg-surface);
-    padding: var(--space-4);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    text-align: center;
-}
-.stat-box .report-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
-.stat-box .prod-price { font-size: 18px; font-weight: 700; color: var(--text-main); }
-
-/* Top Sellers Table */
-.top-sellers-table-container {
-    background: var(--bg-surface);
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    margin-bottom: var(--space-5);
-    border: 1px solid var(--border);
-}
-.top-sellers-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-}
-.top-sellers-table thead {
-    background: #f8f9fa;
-    border-bottom: 2px solid var(--border);
-}
-.top-sellers-table th {
-    padding: 12px;
-    text-align: left;
-    color: var(--text-muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 11px;
-    letter-spacing: 0.5px;
-}
-.top-sellers-table td {
-    padding: 12px;
-    border-bottom: 1px solid var(--border);
-}
-.top-sellers-table tbody tr:hover {
-    background: #f9fafb;
-}
-.top-sellers-table tbody tr:last-child td {
-    border-bottom: none;
-}
-.top-sellers-rank {
-    font-weight: 700;
-    color: var(--primary);
-    width: 50px;
-}
-.top-sellers-rank.top-3 {
-    color: var(--accent);
-}
-.top-sellers-empty {
-    padding: 40px;
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 14px;
-}
-
-/* Transaction List */
-.transaction-row { cursor: pointer; }
-.transaction-row:hover { background: #f9fafb; }
-.transaction-row.voided, .transaction-row.refunded { background-color: #f9fafb; color: var(--text-muted); }
-.transaction-row.refunded { border-left: 4px solid var(--accent); }
-.item-voided { text-decoration: line-through; color: var(--text-muted); background: #f3f4f6; padding: 2px 6px; border-radius: 2px; font-size: 12px; }
-
-/* Reconciliation */
-.rec-history-list { display: flex; flex-direction: column; gap: var(--space-2); }
-.rec-item {
-    background: var(--bg-surface);
-    padding: var(--space-3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-}
-.rec-variance.positive { color: var(--success); font-weight: 600; }
-.rec-variance.negative { color: var(--danger); font-weight: 600; }
-
-/* --- Settings & License --- */
-.license-section {
-    background: var(--bg-surface);
-    padding: var(--space-4);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: var(--space-5);
-    border-left: 4px solid var(--accent);
-}
-.license-status-banner {
-    padding: var(--space-2);
-    border-radius: var(--radius);
-    margin-bottom: var(--space-4);
-    font-weight: 600;
-    text-align: center;
-    background-color: var(--primary-light);
-    color: var(--primary);
-    font-size: 13px;
-}
-.license-status-banner.expired { background-color: #fef2f2; color: var(--danger); }
-.license-info-grid { display: grid; gap: var(--space-3); margin-bottom: var(--space-4); }
-.form-group { margin-bottom: var(--space-4); }
-.form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 13px; }
-.input-error-msg { color: var(--danger); font-size: 11px; margin-top: 4px; min-height: 14px; }
-
-/* --- Modals --- */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 200;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    padding: var(--space-4);
-    backdrop-filter: blur(2px);
-}
-.modal-overlay.open { display: flex; }
-.modal {
-    background: var(--bg-surface);
-    width: 100%;
-    max-width: 400px;
-    border-radius: var(--radius);
-    padding: var(--space-5);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    animation: slideUp 0.2s ease;
-    max-height: 90vh;
-    overflow-y: auto;
-    border: 1px solid var(--border);
-}
-@keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-.modal-header { font-size: 16px; font-weight: 700; margin-bottom: var(--space-4); display: flex; justify-content: space-between; align-items: center; }
-.modal-footer-actions { display: flex; gap: var(--space-3); margin-top: var(--space-5); }
-
-/* Checkout Modal Specifics */
-.cart-items-list { list-style: none; padding: 0; margin: 0 0 var(--space-4) 0; border-top: 1px solid var(--border); }
-.cart-item-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--space-3) 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-}
-.cart-controls { display: flex; align-items: center; gap: 8px; }
-.qty-btn {
-    width: 24px; height: 24px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--bg-surface);
-    color: var(--text-main);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 14px;
-}
-.qty-btn:hover { background: var(--bg-body); }
-
-.payment-options { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); margin-top: var(--space-4); }
-.pay-btn {
-    padding: var(--space-3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--bg-surface);
-    font-weight: 600;
-    font-size: 13px;
-    cursor: pointer;
-    text-align: center;
-    color: var(--text-muted);
-}
-.pay-btn.selected { border-color: var(--primary); background-color: var(--primary-light); color: var(--primary); }
-
-/* Success Modal */
-.modal-success {
-    text-align: center;
-    padding: var(--space-6);
-    background: var(--bg-surface);
-    border-radius: var(--radius);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 300;
-    display: none;
-    opacity: 0;
-    animation: fadeIn 0.3s forwards;
-    border: 1px solid var(--border);
-}
-@keyframes fadeIn { from { opacity: 0; transform: translate(-50%, -40%); } to { opacity: 1; transform: translate(-50%, -50%); } }
-.success-icon { font-size: 40px; color: var(--success); margin-bottom: var(--space-3); line-height: 1; }
-
-/* --- Print Receipt --- */
-#receipt-container {
-    display: none;
-    font-family: 'Courier New', Courier, monospace;
-    padding: 10px;
-    width: 80mm;
-    font-size: 12px;
-    color: black;
-    background: white;
-    margin: 0 auto;
-}
-@media print {
-    body > * { display: none !important; }
-    #receipt-container { display: block !important; position: absolute; top: 0; left: 0; width: 100%; }
-}
-
-/* --- Toast --- */
-#toast-container {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 300;
-    width: 90%;
-    max-width: 320px;
-}
-.toast {
-    background: var(--dark);
-    color: white;
-    padding: 10px 16px;
-    border-radius: var(--radius);
-    margin-bottom: 8px;
-    text-align: center;
-    box-shadow: var(--shadow-md);
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-size: 13px;
-}
-.toast.show { opacity: 1; }
-
-/* --- Utilities --- */
-.hidden { display: none !important; }
-.flex-full { flex: 1; }
-.w-100 { width: 100%; }
-.mt-4 { margin-top: var(--space-4); }
-.mb-4 { margin-bottom: var(--space-4); }
-
-/* --- Responsive --- */
-@media (min-width: 768px) {
-    .dashboard-grid { grid-template-columns: repeat(4, 1fr); }
-    .dash-card.warning { grid-column: span 4; }
-    .dash-card.danger { grid-column: span 4; }
-    nav { justify-content: center; gap: var(--space-6); }
-    .nav-btn { flex: none; max-width: none; flex-direction: row; gap: 8px; }
-    .nav-btn svg { margin-bottom: 0; }
-}
-</style>
 </head>
 <body>
 <header>
     <div class="brand">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+        </svg>
         <span id="business-name-display">My Business</span>
     </div>
     <div style="display: flex; align-items: center; gap: 12px;">
         <div id="clock">--:--</div>
-        <!-- ROLE INDICATOR -->
         <div id="role-indicator">Owner</div>
-        <!-- ✅ ROLE SWITCH BUTTON (Visible to all roles) -->
-        <button id="role-switch-btn" onclick="openRoleSwitchModal()" title="Switch Role">Switch</button>
+        <button id="role-switch-btn" onclick="openRoleSwitchModal()" title="Switch Role">🔄 Switch</button>
         <button id="mode-toggle" class="unlocked" onclick="toggleMode()" title="Toggle Read-Only Mode">
-            <svg id="icon-unlock" viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm9-15h-3v-3c0-2.76-2.24-5-5-5S8 6.24 8 9v3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-9-5c1.66 0 3 1.34 3 3v3H10V9c0-1.66 1.34-3 3-3zm9 16H5V9h14v11z"/></svg>
-            <svg id="icon-lock" viewBox="0 0 24 24" class="hidden"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+            <svg id="icon-unlock" viewBox="0 0 24 24">
+                <path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm9-15h-3v-3c0-2.76-2.24-5-5-5S8 6.24 8 9v3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-9-5c1.66 0 3 1.34 3 3v3H10V9c0-1.66 1.34-3 3-3zm9 16H5V9h14v11z"/>
+            </svg>
+            <svg id="icon-lock" viewBox="0 0 24 24" class="hidden">
+                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+            </svg>
         </button>
     </div>
 </header>
@@ -798,7 +139,6 @@ select.form-control { appearance: none; background-image: url("image/svg+xml,%3C
             </div>
         </div>
 
-        <!-- OFFLINE TOP SELLERS TABLE -->
         <div class="section-header">
             <h3>Top Selling Products</h3>
             <span class="text-small text-muted" id="top-sellers-period">Today</span>
@@ -855,7 +195,6 @@ select.form-control { appearance: none; background-image: url("image/svg+xml,%3C
             </div>
         </div>
 
-        <!-- ROLE MANAGEMENT -->
         <div class="license-section" id="role-management-section" style="border-left-color: var(--primary);">
             <h3>👥 Role & Access</h3>
             <div class="license-info-grid">
@@ -897,6 +236,26 @@ select.form-control { appearance: none; background-image: url("image/svg+xml,%3C
             </select>
         </div>
 
+                <!-- PRINT SETTINGS -->
+        <div class="license-section" style="border-left-color: var(--primary);">
+            <h3>🖨️ Receipt Printing</h3>
+            <div class="print-toggle-container">
+                <div>
+                    <div class="print-toggle-label">Print Receipts</div>
+                    <div class="print-toggle-sub">Toggle receipt printing on/off</div>
+                </div>
+                <div class="toggle-switch" id="print-toggle" onclick="togglePrintSetting()">
+                    <div class="toggle-knob"></div>
+                </div>
+            </div>
+            <div id="print-status-display" class="print-status-badge enabled">
+                ✓ Printing Enabled
+            </div>
+            <p class="text-small text-gray" style="margin-top: 12px;">
+                ⚠️ When disabled, sales will complete without printing. Receipts are still saved in transaction history.
+            </p>
+        </div>
+
         <div id="settings-danger-zone">
             <div class="section-header"><h3>Data Management</h3></div>
             <div style="background: #f9fafb; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px;">
@@ -913,12 +272,15 @@ select.form-control { appearance: none; background-image: url("image/svg+xml,%3C
 </main>
 
 <!-- CART BAR -->
+<!-- FLOATING CART BAR -->
 <div id="cart-bar" class="cart-bar">
     <div class="cart-info">
         <div class="cart-count" id="cart-count">0 items</div>
         <h3 id="cart-total">$0.00</h3>
     </div>
-    <button class="btn-checkout" onclick="openCheckout()">PAY</button>
+    <button class="btn-checkout" onclick="openCheckout()" disabled>
+        PAY
+    </button>
 </div>
 
 <!-- PRODUCT MODAL -->
@@ -980,6 +342,12 @@ select.form-control { appearance: none; background-image: url("image/svg+xml,%3C
                 <div class="pay-btn" id="pay-cash" onclick="selectPayment('Cash')">Cash</div>
                 <div class="pay-btn" id="pay-ecocash" onclick="selectPayment('EcoCash')">EcoCash</div>
             </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                <input type="checkbox" id="checkout-print-toggle" checked onchange="toggleCheckoutPrint()">
+                Print receipt for this sale
+            </label>
         </div>
         <div class="form-group">
             <label>Amount Received</label>
@@ -1093,7 +461,7 @@ select.form-control { appearance: none; background-image: url("image/svg+xml,%3C
     <div style="text-align: center; margin-top: 20px; font-size: 10px;">Thank you!</div>
 </div>
 
-<!-- ✅ ROLE SWITCH MODAL (Accessible from anywhere) -->
+<!-- ROLE SWITCH MODAL -->
 <div id="modal-role-switch" class="modal-overlay">
     <div class="modal">
         <div class="modal-header">
@@ -1124,7 +492,7 @@ select.form-control { appearance: none; background-image: url("image/svg+xml,%3C
     </div>
 </div>
 
-<!-- PASSCODE SETUP MODAL -->
+<!-- PASSCODE MODAL -->
 <div id="modal-passcode" class="modal-overlay">
     <div class="modal">
         <div class="modal-header">
@@ -1170,13 +538,14 @@ select.form-control { appearance: none; background-image: url("image/svg+xml,%3C
 </div>
 
 <script>
-// --- CONSTANTS & CONFIG ---
+// ============================================
+// CONSTANTS & CONFIGURATION
+// ============================================
 const TRIAL_DAYS = 7;
 const SECRET = "S3cur3Sh0pM4t3K3y-2024";
 const DEFAULT_LOW_STOCK = 5;
 const DEFAULT_PASSCODE = "0000";
 
-// Default products
 const defaultProducts = [
     { id: 1, name: "Bread", price: 1.50, cost: 1.20, stock: 20, lowStock: 5, category: "Food" },
     { id: 2, name: "Cooking Oil 2L", price: 5.00, cost: 4.50, stock: 10, lowStock: 3, category: "Food" },
@@ -1185,7 +554,9 @@ const defaultProducts = [
     { id: 5, name: "Bottle Water", price: 0.50, cost: 0.30, stock: 100, lowStock: 20, category: "Drinks" }
 ];
 
-// --- ROLE DEFINITIONS (Single Source of Truth) ---
+// ============================================
+// ROLE DEFINITIONS (Single Source of Truth)
+// ============================================
 const ROLES = {
     OWNER: 'owner',
     ADMIN: 'admin',
@@ -1193,67 +564,36 @@ const ROLES = {
     CASHIER: 'cashier'
 };
 
-// --- PERMISSION MAP (Centralized) ---
 const PERMISSIONS = {
     [ROLES.OWNER]: {
-        canSell: true,
-        canViewInventory: true,
-        canEditInventory: true,
-        canViewReports: true,
-        canExportData: true,
-        canReconcile: true,
-        canAccessSettings: true,
-        canManageLicense: true,
-        canRestoreBackup: true,
-        canResetData: true,
-        canChangeRole: true,
-        canManagePasscode: true
+        canSell: true, canViewInventory: true, canEditInventory: true,
+        canViewReports: true, canExportData: true, canReconcile: true,
+        canAccessSettings: true, canManageLicense: true, canRestoreBackup: true,
+        canResetData: true, canChangeRole: true, canManagePasscode: true
     },
     [ROLES.ADMIN]: {
-        canSell: true,
-        canViewInventory: true,
-        canEditInventory: true,
-        canViewReports: true,
-        canExportData: true,
-        canReconcile: true,
-        canAccessSettings: true,
-        canManageLicense: false,
-        canRestoreBackup: true,
-        canResetData: false,
-        canChangeRole: true,
-        canManagePasscode: true
+        canSell: true, canViewInventory: true, canEditInventory: true,
+        canViewReports: true, canExportData: true, canReconcile: true,
+        canAccessSettings: true, canManageLicense: false, canRestoreBackup: true,
+        canResetData: false, canChangeRole: true, canManagePasscode: true
     },
     [ROLES.MANAGER]: {
-        canSell: true,
-        canViewInventory: true,
-        canEditInventory: true,
-        canViewReports: true,
-        canExportData: true,
-        canReconcile: true,
-        canAccessSettings: false,
-        canManageLicense: false,
-        canRestoreBackup: false,
-        canResetData: false,
-        canChangeRole: false,
-        canManagePasscode: false
+        canSell: true, canViewInventory: true, canEditInventory: true,
+        canViewReports: true, canExportData: true, canReconcile: true,
+        canAccessSettings: false, canManageLicense: false, canRestoreBackup: false,
+        canResetData: false, canChangeRole: false, canManagePasscode: false
     },
     [ROLES.CASHIER]: {
-        canSell: true,
-        canViewInventory: false,
-        canEditInventory: false,
-        canViewReports: false,
-        canExportData: false,
-        canReconcile: false,
-        canAccessSettings: false,
-        canManageLicense: false,
-        canRestoreBackup: false,
-        canResetData: false,
-        canChangeRole: false,
-        canManagePasscode: false
+        canSell: true, canViewInventory: false, canEditInventory: false,
+        canViewReports: false, canExportData: false, canReconcile: false,
+        canAccessSettings: false, canManageLicense: false, canRestoreBackup: false,
+        canResetData: false, canChangeRole: false, canManagePasscode: false
     }
 };
 
-// --- STORAGE UTILS ---
+// ============================================
+// STORAGE UTILS (Self-Healing)
+// ============================================
 function getSafeItem(key, fallback) {
     try {
         const item = localStorage.getItem(key);
@@ -1266,7 +606,9 @@ function getSafeItem(key, fallback) {
     } catch (e) { return fallback; }
 }
 
-// --- DATA STATE ---
+// ============================================
+// DATA STATE
+// ============================================
 let state = {
     products: getSafeItem('sme_products', defaultProducts),
     sales: getSafeItem('sme_sales', []),
@@ -1276,30 +618,33 @@ let state = {
     totals: getSafeItem('sme_totals', { gross: 0, profit: 0, transactions: 0 }),
     reconciliations: getSafeItem('sme_reconciliations', []),
     isReadOnly: localStorage.getItem('sme_readonly_mode') === 'true',
-    // Role Management
     currentUserRole: localStorage.getItem('sme_user_role') || ROLES.OWNER,
-    passcode: localStorage.getItem('sme_passcode') || DEFAULT_PASSCODE
+    passcode: localStorage.getItem('sme_passcode') || DEFAULT_PASSCODE,
+    currentUserRole: localStorage.getItem('sme_user_role') || ROLES.OWNER,
+    passwordHash: localStorage.getItem('sme_password_hash') || DEFAULT_PASSWORD_HASH,
+    // ✅ Print Setting
+    printReceipts: localStorage.getItem('sme_print_receipts') !== 'false'
 };
 
-// --- DEFENSIVE STARTUP CHECKS ---
+// ============================================
+// DEFENSIVE STARTUP CHECKS
+// ============================================
 function validateRoleState() {
-    // Ensure role exists and is valid
     if (!state.currentUserRole || !Object.values(ROLES).includes(state.currentUserRole)) {
         console.warn("Invalid role detected, resetting to Cashier (safe default)");
         state.currentUserRole = ROLES.CASHIER;
         localStorage.setItem('sme_user_role', ROLES.CASHIER);
     }
-    
-    // Ensure passcode exists
     if (!state.passcode) {
         state.passcode = DEFAULT_PASSCODE;
         localStorage.setItem('sme_passcode', DEFAULT_PASSCODE);
     }
-    
     console.log("✅ Role state validated:", state.currentUserRole);
 }
 
-// --- PERMISSION CHECKS ---
+// ============================================
+// PERMISSION CHECKS
+// ============================================
 function hasPermission(permission) {
     const rolePerms = PERMISSIONS[state.currentUserRole];
     if (!rolePerms) return false;
@@ -1316,30 +661,11 @@ function getRoleDisplayName() {
     return names[state.currentUserRole] || 'Unknown';
 }
 
-// --- PASSCODE FUNCTIONS ---
-function hashPassword(password) {
-    try {
-        if (typeof CryptoJS !== 'undefined') {
-            return CryptoJS.SHA256(password).toString();
-        } else {
-            // Fallback hash (less secure but functional offline)
-            let hash = 0;
-            for (let i = 0; i < password.length; i++) {
-                const char = password.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash;
-            }
-            return Math.abs(hash).toString(36);
-        }
-    } catch (err) {
-        console.error("Hash failed:", err);
-        return "";
-    }
-}
-
+// ============================================
+// PASSCODE FUNCTIONS
+// ============================================
 function verifyPasscode(input) {
     if (!input) return false;
-    // Simple string comparison (passcode stored as plain text for simplicity)
     return input === state.passcode;
 }
 
@@ -1348,7 +674,6 @@ function savePasscode() {
         showToast("⛔ Owner/Admin access required");
         return;
     }
-    
     const newCode = document.getElementById('new-passcode').value;
     const confirmCode = document.getElementById('confirm-passcode').value;
     const errorEl = document.getElementById('passcode-error');
@@ -1357,7 +682,6 @@ function savePasscode() {
         errorEl.innerText = "Passcode must be 4-8 digits";
         return;
     }
-    
     if (newCode !== confirmCode) {
         errorEl.innerText = "Passcodes do not match";
         return;
@@ -1366,7 +690,7 @@ function savePasscode() {
     state.passcode = newCode;
     localStorage.setItem('sme_passcode', newCode);
     closeModal('modal-passcode');
-    showToast("✅ Passcode updated");
+    showToast("✅ Passcode updated successfully");
 }
 
 function resetPasscodeToDefault() {
@@ -1375,37 +699,24 @@ function resetPasscodeToDefault() {
     showToast("⚠️ Passcode reset to 0000");
 }
 
-// --- ✅ ROLE SWITCH FROM ANYWHERE (Cashier-Friendly) ---
-
-/**
- * Open role switch modal (accessible from header button)
- */
+// ============================================
+// ROLE SWITCH FROM ANYWHERE
+// ============================================
 function openRoleSwitchModal() {
-    // Set current role as default selection
     const select = document.getElementById('role-switch-select');
     select.value = state.currentUserRole;
-    
-    // Reset passcode field
     document.getElementById('role-switch-passcode').value = '';
     document.getElementById('role-switch-error').innerText = '';
-    
-    // Show/hide passcode field based on current selection
     onRoleSelectionChange();
-    
     openModal('modal-role-switch');
     document.getElementById('role-switch-passcode').focus();
 }
 
-/**
- * Show/hide passcode field based on role selection
- */
 function onRoleSelectionChange() {
     const selectedRole = document.getElementById('role-switch-select').value;
     const passcodeGroup = document.getElementById('role-switch-passcode-group');
     const passcodeInput = document.getElementById('role-switch-passcode');
     
-    // Passcode required for elevation (Owner, Admin, Manager)
-    // No passcode for downgrade to Cashier
     if (selectedRole === ROLES.CASHIER) {
         passcodeGroup.style.display = 'none';
         passcodeInput.value = '';
@@ -1415,65 +726,78 @@ function onRoleSelectionChange() {
     }
 }
 
-/**
- * Confirm role switch with passcode verification
- */
 function confirmRoleSwitch() {
     const newRole = document.getElementById('role-switch-select').value;
-    const passcodeGroup = document.getElementById('role-switch-passcode-group');
     const passcodeInput = document.getElementById('role-switch-passcode');
     const errorEl = document.getElementById('role-switch-error');
     
-    // Defensive check: Validate role exists
     if (!Object.values(ROLES).includes(newRole)) {
         errorEl.innerText = "Invalid role";
-        console.error("Role switch attempt with invalid role:", newRole);
         return;
     }
     
-    // Passcode required for elevation (not for Cashier downgrade)
     if (newRole !== ROLES.CASHIER) {
         const passcode = passcodeInput.value;
-        
         if (!passcode) {
             errorEl.innerText = "Passcode required";
             passcodeInput.focus();
             return;
         }
-        
         if (!verifyPasscode(passcode)) {
             errorEl.innerText = "❌ Incorrect passcode";
             passcodeInput.value = '';
             passcodeInput.focus();
-            console.warn("Failed role switch attempt:", { from: state.currentUserRole, to: newRole });
             return;
         }
     }
     
-    // ✅ Role switch successful
     state.currentUserRole = newRole;
     localStorage.setItem('sme_user_role', newRole);
-    
-    // Reapply all permission guards immediately
     applyRoleRestrictions();
     renderRoleManagement();
-    
-    // Close modal
     closeModal('modal-role-switch');
-    
-    // Feedback
     showToast(`✅ Role changed to ${getRoleDisplayName()}`);
-    console.log("Role switched:", { from: state.currentUserRole, to: newRole });
-    
-    // Log anomaly if switching from Cashier to Owner directly
-    if (state.currentUserRole === ROLES.CASHIER && newRole === ROLES.OWNER) {
-        console.warn("Security: Direct Cashier → Owner switch detected");
-    }
 }
 
-// --- UI RESTRICTIONS ---
+function openPasscodeModal() {
+    if (!hasPermission('canManagePasscode')) {
+        showToast("⛔ Owner/Admin access required");
+        return;
+    }
+    document.getElementById('new-passcode').value = '';
+    document.getElementById('confirm-passcode').value = '';
+    document.getElementById('passcode-error').innerText = '';
+    openModal('modal-passcode');
+}
+
+function openRecoveryModal() {
+    if (state.currentUserRole !== ROLES.OWNER) {
+        showToast("⛔ Owner access required for recovery");
+        return;
+    }
+    document.getElementById('recovery-confirm').value = '';
+    document.getElementById('recovery-error').innerText = '';
+    openModal('modal-recovery');
+}
+
+function confirmRecovery() {
+    const confirmText = document.getElementById('recovery-confirm').value;
+    const errorEl = document.getElementById('recovery-error');
+    
+    if (confirmText !== 'RECOVER') {
+        errorEl.innerText = "Type RECOVER to confirm";
+        return;
+    }
+    
+    resetPasscodeToDefault();
+    closeModal('modal-recovery');
+    showToast("✅ Passcode recovered");
+}
+
+// ============================================
+// UI RESTRICTIONS
+// ============================================
 function applyRoleRestrictions() {
-    // Update role indicator
     const roleIndicator = document.getElementById('role-indicator');
     if (roleIndicator) {
         roleIndicator.innerText = getRoleDisplayName();
@@ -1481,38 +805,24 @@ function applyRoleRestrictions() {
         roleIndicator.classList.add(state.currentUserRole);
     }
     
-    // Navigation tabs
     const inventoryTab = document.querySelector('button[onclick*="inventory"]');
     const reportsTab = document.querySelector('button[onclick*="reports"]');
     const settingsTab = document.querySelector('button[onclick*="settings"]');
     
-    if (inventoryTab) {
-        inventoryTab.style.display = hasPermission('canViewInventory') ? 'flex' : 'none';
-    }
-    if (reportsTab) {
-        reportsTab.style.display = hasPermission('canViewReports') ? 'flex' : 'none';
-    }
-    if (settingsTab) {
-        settingsTab.style.display = hasPermission('canAccessSettings') ? 'flex' : 'none';
-    }
+    if (inventoryTab) inventoryTab.style.display = hasPermission('canViewInventory') ? 'flex' : 'none';
+    if (reportsTab) reportsTab.style.display = hasPermission('canViewReports') ? 'flex' : 'none';
+    if (settingsTab) settingsTab.style.display = hasPermission('canAccessSettings') ? 'flex' : 'none';
     
-    // Inventory buttons
     const addProductBtn = document.getElementById('btn-add-product');
     if (addProductBtn) {
         addProductBtn.style.display = hasPermission('canEditInventory') && !state.isReadOnly ? 'block' : 'none';
     }
     
-    // Report buttons
     const exportBtn = document.querySelector('button[onclick*="exportCSV"]');
     const reconcileBtn = document.querySelector('button[onclick*="openReconcileModal"]');
-    if (exportBtn) {
-        exportBtn.style.display = hasPermission('canExportData') ? 'inline-flex' : 'none';
-    }
-    if (reconcileBtn) {
-        reconcileBtn.style.display = hasPermission('canReconcile') ? 'inline-flex' : 'none';
-    }
+    if (exportBtn) exportBtn.style.display = hasPermission('canExportData') ? 'inline-flex' : 'none';
+    if (reconcileBtn) reconcileBtn.style.display = hasPermission('canReconcile') ? 'inline-flex' : 'none';
     
-    // Settings sections
     const roleSection = document.getElementById('role-management-section');
     const roleChangeGroup = document.getElementById('role-change-group');
     const passcodeGroup = document.getElementById('passcode-group');
@@ -1520,36 +830,24 @@ function applyRoleRestrictions() {
     const restoreSection = document.querySelector('label[for="restoreFile"]')?.parentElement;
     const resetBtn = document.querySelector('button[onclick*="clearAllData"]');
     
-    if (roleSection) {
-        roleSection.style.display = hasPermission('canAccessSettings') ? 'block' : 'none';
-    }
-    if (roleChangeGroup) {
-        roleChangeGroup.style.display = hasPermission('canChangeRole') ? 'block' : 'none';
-    }
-    if (passcodeGroup) {
-        passcodeGroup.style.display = hasPermission('canManagePasscode') ? 'block' : 'none';
-    }
-    if (dangerZone) {
-        dangerZone.style.display = hasPermission('canAccessSettings') && !state.isReadOnly ? 'block' : 'none';
-    }
-    if (restoreSection) {
-        restoreSection.style.display = hasPermission('canRestoreBackup') && !state.isReadOnly ? 'block' : 'none';
-    }
-    if (resetBtn) {
-        resetBtn.style.display = hasPermission('canResetData') && !state.isReadOnly ? 'inline-block' : 'none';
-    }
+    if (roleSection) roleSection.style.display = hasPermission('canAccessSettings') ? 'block' : 'none';
+    if (roleChangeGroup) roleChangeGroup.style.display = hasPermission('canChangeRole') ? 'block' : 'none';
+    if (passcodeGroup) passcodeGroup.style.display = hasPermission('canManagePasscode') ? 'block' : 'none';
+    if (dangerZone) dangerZone.style.display = hasPermission('canAccessSettings') && !state.isReadOnly ? 'block' : 'none';
+    if (restoreSection) restoreSection.style.display = hasPermission('canRestoreBackup') && !state.isReadOnly ? 'block' : 'none';
+    if (resetBtn) resetBtn.style.display = hasPermission('canResetData') && !state.isReadOnly ? 'inline-block' : 'none';
     
     console.log("🔐 Role restrictions applied:", getRoleDisplayName());
 }
 
 function renderRoleManagement() {
     const currentRoleDisplay = document.getElementById('current-role-display');
-    if (currentRoleDisplay) {
-        currentRoleDisplay.value = getRoleDisplayName();
-    }
+    if (currentRoleDisplay) currentRoleDisplay.value = getRoleDisplayName();
 }
 
-// --- LICENSE UTILS ---
+// ============================================
+// LICENSE UTILS
+// ============================================
 function simpleHash(str) {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -1657,7 +955,9 @@ function renderLicenseSettings() {
     }
 }
 
-// --- CRYPTO (With Fallback) ---
+// ============================================
+// CRYPTO (With Fallback)
+// ============================================
 function digestSHA256(message) {
     try {
         if (typeof CryptoJS === 'undefined') {
@@ -1707,7 +1007,9 @@ function decryptData(encryptedString) {
     }
 }
 
-// --- INTEGRITY ---
+// ============================================
+// INTEGRITY & FINANCIALS
+// ============================================
 function calculateFinancialsFromItems(items) {
     let total = 0, cost = 0;
     items.forEach(item => {
@@ -1743,36 +1045,59 @@ function validateSystemIntegrity() {
     console.groupEnd();
 }
 
-// --- APP INIT ---
+function recalcTotalsFromHistory() {
+    let gross = 0, profit = 0, count = 0;
+    state.sales.forEach(s => {
+        if (s.voided || s.refunded) return;
+        const calculated = calculateFinancialsFromItems(s.items);
+        gross += calculated.total;
+        profit += calculated.profit;
+        count++;
+    });
+    if (state.totals.gross !== gross || state.totals.profit !== profit || state.totals.transactions !== count) {
+        state.totals = { gross, profit, transactions: count };
+        saveState();
+    }
+}
+
+// ============================================
+// APP INIT
+// ============================================
 window.onload = async function() {
     try {
         console.log("🚀 App initializing...");
-        
         initLicense();
-        validateRoleState(); // ✅ Validate role on startup
+        validateRoleState();
         validateSystemIntegrity();
+        initPrintSetting();
         
-        // Check CryptoJS status
+        // Initialize cart UI state
+        updateCartUI();
+
         if (typeof CryptoJS === 'undefined') {
-            console.warn("⚠️ CryptoJS failed to load. Backup encryption will be limited.");
-            setTimeout(() => {
-                showToast("⚠️ Security library offline");
-            }, 2000);
+            console.warn("⚠️ CryptoJS failed to load");
+            setTimeout(() => showToast("⚠️ Security library offline"), 2000);
         }
         
-        document.getElementById('setting-business-name').value = state.settings.name;
-        document.getElementById('setting-currency').value = state.settings.currency;
-        document.getElementById('business-name-display').innerText = state.settings.name;
+        const businessNameEl = document.getElementById('setting-business-name');
+        const currencyEl = document.getElementById('setting-currency');
+        const businessDisplayEl = document.getElementById('business-name-display');
+        
+        if (businessNameEl) businessNameEl.value = state.settings.name;
+        if (currencyEl) currencyEl.value = state.settings.currency;
+        if (businessDisplayEl) businessDisplayEl.innerText = state.settings.name;
         
         renderModeUI();
-        applyRoleRestrictions(); // ✅ Apply role restrictions
+        applyRoleRestrictions();
         renderRoleManagement();
         renderCategoryTabs();
         renderPOS();
         renderInventory();
         renderLicenseSettings();
         renderBackupStatus();
+        updatePrintToggleUI();
         updateClock();
+        updateCartUI();
         setInterval(updateClock, 60000);
         
         console.log("✅ App initialized | Role:", getRoleDisplayName());
@@ -1782,7 +1107,9 @@ window.onload = async function() {
     }
 };
 
-// --- READ ONLY MODE ---
+// ============================================
+// READ ONLY MODE
+// ============================================
 function toggleMode() {
     state.isReadOnly = !state.isReadOnly;
     localStorage.setItem('sme_readonly_mode', state.isReadOnly);
@@ -1807,7 +1134,9 @@ function renderModeUI() {
     }
 }
 
-// --- UTILS ---
+// ============================================
+// UTILS
+// ============================================
 function saveState() {
     localStorage.setItem('sme_products', JSON.stringify(state.products));
     localStorage.setItem('sme_sales', JSON.stringify(state.sales));
@@ -1840,19 +1169,9 @@ function updateClock() {
 }
 
 function switchTab(tabId, btn) {
-    // Permission check for restricted tabs
-    if (tabId === 'inventory' && !hasPermission('canViewInventory')) {
-        showToast("⛔ Access denied");
-        return;
-    }
-    if (tabId === 'reports' && !hasPermission('canViewReports')) {
-        showToast("⛔ Access denied");
-        return;
-    }
-    if (tabId === 'settings' && !hasPermission('canAccessSettings')) {
-        showToast("⛔ Access denied");
-        return;
-    }
+    if (tabId === 'inventory' && !hasPermission('canViewInventory')) { showToast("⛔ Access denied"); return; }
+    if (tabId === 'reports' && !hasPermission('canViewReports')) { showToast("⛔ Access denied"); return; }
+    if (tabId === 'settings' && !hasPermission('canAccessSettings')) { showToast("⛔ Access denied"); return; }
     
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1861,13 +1180,12 @@ function switchTab(tabId, btn) {
     
     if(tabId === 'reports') renderReports();
     if(tabId === 'inventory') renderInventory();
-    if(tabId === 'settings') {
-        renderSettingsView();
-        renderRoleManagement();
-    }
+    if(tabId === 'settings') { renderSettingsView(); renderRoleManagement(); }
 }
 
-// --- CATEGORY LOGIC ---
+// ============================================
+// CATEGORY LOGIC
+// ============================================
 function renderCategoryTabs() {
     const container = document.getElementById('category-tabs');
     const categories = ["All", ...new Set(state.products.map(p => p.category || "Uncategorized"))];
@@ -1890,7 +1208,9 @@ function renderCategoryTabs() {
 
 function filterCategory(cat) { state.activeCategory = cat; renderPOS(); }
 
-// --- POS LOGIC ---
+// ============================================
+// POS LOGIC
+// ============================================
 function renderPOS() {
     const grid = document.getElementById('pos-grid');
     const filter = document.getElementById('pos-search').value.toLowerCase();
@@ -1920,38 +1240,96 @@ function filterPos() { renderPOS(); }
 
 function addToCart(productId) {
     const product = state.products.find(p => p.id == productId);
-    if(product.stock <= 0) { showToast("Out of stock!"); return; }
-    const existing = state.cart.find(i => i.id == productId);
-    if(existing) {
-        if(existing.qty < product.stock) { existing.qty++; } else { showToast("Max stock reached"); }
-    } else {
-        state.cart.push({ id: product.id, name: product.name, price: product.price, cost: product.cost, qty: 1 });
+    
+    if(product.stock <= 0) { 
+        showToast("⚠️ Out of stock!"); 
+        return; 
     }
+    
+        const card = document.querySelector(`.product-card[onclick*="${productId}"]`);
+    if(card) {
+        card.classList.add('added');
+        setTimeout(() => card.classList.remove('added'), 400);
+    }
+
+    const existing = state.cart.find(i => i.id == productId);
+    
+    if(existing) {
+        if(existing.qty < product.stock) { 
+            existing.qty++; 
+        } else { 
+            showToast("⚠️ Max stock reached"); 
+            return;
+        }
+    } else {
+        state.cart.push({ 
+            id: product.id, 
+            name: product.name, 
+            price: product.price, 
+            cost: product.cost, 
+            qty: 1 
+        });
+    }
+    
     updateCartUI();
+    
+    // Haptic feedback for mobile (if supported)
+    if (navigator.vibrate) {
+        navigator.vibrate(10);
+    }
 }
 
 function updateCartUI() {
     const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     const count = state.cart.reduce((sum, item) => sum + item.qty, 0);
-    document.getElementById('cart-total').innerText = formatMoney(total);
-    document.getElementById('cart-count').innerText = count + " items";
+    
+    const totalEl = document.getElementById('cart-total');
+    const countEl = document.getElementById('cart-count');
     const bar = document.getElementById('cart-bar');
-    if(count > 0) bar.classList.add('visible');
-    else bar.classList.remove('visible');
+    
+    // Update values
+    totalEl.innerText = formatMoney(total);
+    countEl.innerText = count + " item" + (count !== 1 ? 's' : '');
+    
+    // Add animation class for count update
+    countEl.classList.add('cart-count-update');
+    setTimeout(() => countEl.classList.remove('cart-count-update'), 300);
+    
+    // Show/hide cart bar with smooth transition
+    if(count > 0) {
+        bar.classList.add('visible');
+    } else {
+        bar.classList.remove('visible');
+    }
+    
+    // Update checkout button state
+    const checkoutBtn = document.querySelector('.btn-checkout');
+    if(checkoutBtn) {
+        checkoutBtn.disabled = (count === 0);
+    }
 }
 
-// --- CHECKOUT LOGIC ---
+// ============================================
+// CHECKOUT LOGIC
+// ============================================
 function openCheckout() {
-    if(state.cart.length === 0) return;
+    if(state.cart.length === 0) {
+        showToast("⚠️ Add items before checkout");
+        return;
+    }
+    
     const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    
     document.getElementById('checkout-total-display').innerText = formatMoney(total);
     document.getElementById('pay-received').value = '';
     document.getElementById('pay-received').classList.remove('error');
     document.getElementById('pay-received-error').innerText = '';
     document.getElementById('change-display').innerText = '';
     state.selectedPaymentMethod = null;
+    
     document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
     document.getElementById('btn-finalize').disabled = true;
+    
     renderCheckoutCartItems();
     openModal('modal-checkout');
 }
@@ -1980,22 +1358,42 @@ function renderCheckoutCartItems() {
 
 function adjustCart(index, delta) {
     const item = state.cart[index];
+    const product = state.products.find(p => p.id == item.id);
     const newQty = item.qty + delta;
-    if (newQty <= 0) { state.cart.splice(index, 1); } else { item.qty = newQty; }
+    
+    if (newQty <= 0) { 
+        state.cart.splice(index, 1); 
+    } else {
+        if(product && newQty > product.stock) {
+            showToast("⚠️ Max stock reached");
+            return;
+        }
+        item.qty = newQty; 
+    }
+    
     updateCartUI();
     renderCheckoutCartItems();
+    
     const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     document.getElementById('checkout-total-display').innerText = formatMoney(total);
-    if(state.cart.length === 0) closeModal('modal-checkout');
+    
+    if(state.cart.length === 0) {
+        closeModal('modal-checkout');
+    }
 }
+
 
 function voidCartItem(index) {
     state.cart.splice(index, 1);
     updateCartUI();
     renderCheckoutCartItems();
+    
     const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     document.getElementById('checkout-total-display').innerText = formatMoney(total);
-    if(state.cart.length === 0) closeModal('modal-checkout');
+    
+    if(state.cart.length === 0) {
+        closeModal('modal-checkout');
+    }
 }
 
 function selectPayment(method) {
@@ -2079,6 +1477,7 @@ function finalizeSale() {
     document.getElementById('btn-finalize').disabled = true;
     const financials = calculateFinancialsFromItems(state.cart);
     const uiTotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const shouldPrint = state.printReceipts;
     if (Math.abs(financials.total - uiTotal) > 0.01) {
         alert("Calculation Error. Please cancel and try again.");
         document.getElementById('btn-finalize').disabled = false;
@@ -2126,15 +1525,104 @@ function finalizeSale() {
     renderPOS();
     renderInventory();
     showSuccessModal();
-    
-    // ✅ REAL-TIME TOP SELLERS UPDATE
+        if (shouldPrint) {
+        printReceipt(saleRecord);
+    } else {
+        console.log("📄 Receipt printing skipped for this transaction");
+    }
     if (document.querySelector('#view-reports.active')) {
         const topSellers = calculateTopSellers('today');
         renderTopSellersTable(topSellers);
     }
 }
 
-// --- INVENTORY LOGIC ---
+// ============================================
+// Print Receipt
+// ============================================
+
+
+/**
+ * Initialize print setting from localStorage
+ */
+function initPrintSetting() {
+    const printEnabled = localStorage.getItem('sme_print_receipts') !== 'false';
+    state.printReceipts = printEnabled;
+    updatePrintToggleUI();
+}
+
+/**
+ * Toggle print setting
+ */
+function togglePrintSetting() {
+    state.printReceipts = !state.printReceipts;
+    localStorage.setItem('sme_print_receipts', state.printReceipts);
+    updatePrintToggleUI();
+    showToast(state.printReceipts ? "🖨️ Receipt printing enabled" : "⏸️ Receipt printing paused");
+}
+
+/**
+ * Update toggle UI based on current state
+ */
+function updatePrintToggleUI() {
+    const toggle = document.getElementById('print-toggle');
+    const statusDisplay = document.getElementById('print-status-display');
+    
+    if (!toggle || !statusDisplay) return;
+    
+    if (state.printReceipts) {
+        toggle.classList.add('active');
+        toggle.classList.remove('disabled');
+        statusDisplay.className = 'print-status-badge enabled';
+        statusDisplay.innerText = '✓ Printing Enabled';
+    } else {
+        toggle.classList.remove('active');
+        toggle.classList.add('disabled');
+        statusDisplay.className = 'print-status-badge disabled';
+        statusDisplay.innerText = '⏸️ Printing Paused';
+    }
+}
+
+
+function printReceipt(saleRecord) {
+    // Check if printing is enabled
+    if (!state.printReceipts) {
+        console.log("📄 Receipt printing paused - sale recorded but not printed");
+        return;
+    }
+    
+    // Original print logic
+    const dateStr = new Date(saleRecord.timestamp).toLocaleString();
+    const timeStr = new Date(saleRecord.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    document.getElementById('receipt-business-name').innerText = state.settings.name;
+    document.getElementById('receipt-date').innerText = `${dateStr} ${timeStr}`;
+    const list = document.getElementById('receipt-items');
+    list.innerHTML = '';
+    saleRecord.items.forEach(item => {
+        const line = document.createElement('div');
+        line.style.display = 'flex';
+        line.style.justifyContent = 'space-between';
+        line.innerHTML = `<span>${item.name} x${item.qty}</span> <span>${formatMoney(item.price * item.qty)}</span>`;
+        list.appendChild(line);
+    });
+    document.getElementById('receipt-total').innerText = formatMoney(saleRecord.total);
+    document.getElementById('receipt-method').innerText = saleRecord.method;
+    const received = parseFloat(document.getElementById('pay-received').value) || saleRecord.total;
+    const change = received - saleRecord.total;
+    document.getElementById('receipt-change').innerText = `Change: ${formatMoney(change)}`;
+    window.print();
+}
+
+function toggleCheckoutPrint() {
+    const checkbox = document.getElementById('checkout-print-toggle');
+    state.printReceipts = checkbox.checked;
+}
+
+// Update finalizeSale to respect checkout toggle
+
+
+// ============================================
+// INVENTORY LOGIC
+// ============================================
 function renderInventory() {
     const list = document.getElementById('inv-list');
     const filter = document.getElementById('inv-search').value.toLowerCase();
@@ -2294,7 +1782,9 @@ function deleteProduct(id) {
     }
 }
 
-// --- BACKUP & RESTORE ---
+// ============================================
+// BACKUP & RESTORE
+// ============================================
 async function triggerBackup() {
     try {
         const backupPayload = {
@@ -2436,7 +1926,9 @@ async function restoreBackup() {
     reader.readAsText(file);
 }
 
-// --- RECONCILIATION ---
+// ============================================
+// RECONCILIATION
+// ============================================
 function getExpectedCash() {
     const today = new Date().toDateString();
     const todayCashSales = state.sales.filter(s => {
@@ -2447,10 +1939,7 @@ function getExpectedCash() {
 }
 
 function openReconcileModal() {
-    if(!hasPermission('canReconcile')) {
-        showToast("⛔ Permission denied");
-        return;
-    }
+    if(!hasPermission('canReconcile')) { showToast("⛔ Permission denied"); return; }
     const expected = getExpectedCash();
     document.getElementById('rec-expected').value = formatMoney(expected);
     document.getElementById('rec-counted').value = '';
@@ -2502,67 +1991,106 @@ function renderReconciliationHistory() {
     });
 }
 
-// --- VOID/REFUND ---
+// ============================================
+// VOID/REFUND (Full State Updates)
+// ============================================
 function voidFullSale(saleId) {
-    if(!hasPermission('canEditInventory') || state.isReadOnly) {
-        showToast("⛔ Permission denied");
-        return;
-    }
+    if(!hasPermission('canEditInventory') || state.isReadOnly) { showToast("⛔ Permission denied"); return; }
     if(!confirm("Void this sale? Stock will be restored.")) return;
+    
     let sales = getSafeItem('sme_sales', []);
     const saleIndex = sales.findIndex(s => s.id === saleId);
     if(saleIndex === -1) return;
+    
     const sale = sales[saleIndex];
+    if (sale.voided) { showToast("Sale already voided"); return; }
+    
     sale.voided = true;
-    let inventory = getSafeItem('sme_products', defaultProducts);
+    
     sale.items.forEach(item => {
-        const product = inventory.find(p => p.id === item.id);
+        const product = state.products.find(p => p.id === item.id);
         if(product) product.stock += item.qty;
     });
+    
+    recalcTotalsFromHistory();
     localStorage.setItem('sme_sales', JSON.stringify(sales));
-    localStorage.setItem('sme_products', JSON.stringify(inventory));
-    state.sales = sales; state.products = inventory;
-    saveState(); recalcTotalsFromHistory();
+    localStorage.setItem('sme_products', JSON.stringify(state.products));
+    state.sales = sales;
+    saveState();
+    
     renderReports();
     renderPOS();
-    showToast("Sale Voided");
+    showToast("✅ Sale voided - Inventory & totals updated");
 }
 
 function refundSale(saleId) {
-    if(!hasPermission('canEditInventory') || state.isReadOnly) {
-        showToast("⛔ Permission denied");
-        return;
-    }
+    if(!hasPermission('canEditInventory') || state.isReadOnly) { showToast("⛔ Permission denied"); return; }
     if(!confirm("REFUND: Return stock and mark as Returned?")) return;
+    
     let sales = getSafeItem('sme_sales', []);
     const saleIndex = sales.findIndex(s => s.id === saleId);
     if(saleIndex === -1) return;
+    
     const sale = sales[saleIndex];
-    let inventory = getSafeItem('sme_products', defaultProducts);
+    if (sale.refunded) { showToast("Sale already refunded"); return; }
+    
     sale.items.forEach(item => {
-        const product = inventory.find(p => p.id === item.id);
+        const product = state.products.find(p => p.id === item.id);
         if(product) product.stock += item.qty;
     });
+    
     const refundRecord = {
         id: generateId(), timestamp: new Date().toISOString(),
         items: sale.items.map(i => ({ ...i, voided: false, refunded: false })),
         total: -sale.total, cost: -sale.cost, profit: -sale.profit,
         method: sale.method, voided: false, refunded: true, originalTxId: sale.id
     };
+    
     sales.push(refundRecord);
-    state.totals.gross += refundRecord.total;
-    state.totals.profit += refundRecord.profit;
-    state.totals.transactions += 1;
+    sale.refunded = true;
+    
+    recalcTotalsFromHistory();
     localStorage.setItem('sme_sales', JSON.stringify(sales));
-    localStorage.setItem('sme_products', JSON.stringify(inventory));
-    state.sales = sales; state.products = inventory;
-    saveState(); recalcTotalsFromHistory();
+    localStorage.setItem('sme_products', JSON.stringify(state.products));
+    state.sales = sales;
+    saveState();
+    
     renderReports();
     renderPOS();
-    showToast("Sale Refunded");
+    showToast("✅ Sale refunded - Stock restored");
 }
 
-// --- SEARCH ---
+function voidTransactionItem(saleId, itemIndex) {
+    if(!hasPermission('canEditInventory') || state.isReadOnly) { showToast("⛔ Permission denied"); return; }
+    if(!confirm("Void this item? Stock will be restored.")) return;
+    
+    let sales = getSafeItem('sme_sales', []);
+    const sale = sales.find(s => s.id === saleId);
+    if(!sale) return;
+    
+    const item = sale.items[itemIndex];
+    if(item.voided) return;
+    
+    item.voided = true;
+    
+    const product = state.products.find(p => p.id === item.id);
+    if(product) product.stock += item.qty;
+    
+    recalcTotalsFromHistory();
+    localStorage.setItem('sme_sales', JSON.stringify(sales));
+    localStorage.setItem('sme_products', JSON.stringify(state.products));
+    state.sales = sales;
+    saveState();
+    
+    openTransactionDetails(saleId);
+    renderReports();
+    renderPOS();
+    showToast("✅ Item voided - Stock restored");
+}
+
+// ============================================
+// SEARCH
+// ============================================
 function searchTransactions(transactions, query) {
     if (!query) return transactions;
     const lowerQ = query.toLowerCase();
@@ -2576,7 +2104,9 @@ function searchTransactions(transactions, query) {
     });
 }
 
-// --- REPORTS ---
+// ============================================
+// REPORTS & TOP SELLERS
+// ============================================
 function calculateTopSellers(timeRange = 'today') {
     const now = new Date();
     const today = now.toDateString();
@@ -2615,10 +2145,7 @@ function renderTopSellersTable(data = null) {
     const emptyMsg = document.getElementById('top-sellers-empty');
     if (!tbody) return;
     
-    if (!data) {
-        data = calculateTopSellers('today');
-    }
-    
+    if (!data) data = calculateTopSellers('today');
     const top10 = data.slice(0, 10);
     
     if (top10.length === 0) {
@@ -2633,13 +2160,10 @@ function renderTopSellersTable(data = null) {
         const rank = index + 1;
         const rankClass = rank <= 3 ? 'top-sellers-rank top-3' : 'top-sellers-rank';
         const rowBg = index % 2 === 0 ? '' : 'background: #f9fafb;';
-        
         return `
             <tr style="${rowBg}">
                 <td class="${rankClass}">#${rank}</td>
-                <td>
-                    <span class="truncate" style="display: block; max-width: 200px;">${item.name}</span>
-                </td>
+                <td><span class="truncate" style="display: block; max-width: 200px;">${item.name}</span></td>
                 <td style="text-align: right; font-weight: 600;">${item.totalSold}</td>
             </tr>
         `;
@@ -2778,31 +2302,246 @@ function openTransactionDetails(saleId) {
     openModal('modal-transaction-details');
 }
 
-function voidTransactionItem(saleId, itemIndex) {
-    if(!hasPermission('canEditInventory') || state.isReadOnly) {
-        showToast("⛔ Permission denied");
-        return;
-    }
-    if(!confirm("Void this item? Stock will be restored.")) return;
-    let sales = getSafeItem('sme_sales', []);
-    const sale = sales.find(s => s.id === saleId);
-    if(!sale) return;
-    const item = sale.items[itemIndex];
-    if(item.voided) return;
-    item.voided = true;
-    let inventory = getSafeItem('sme_products', defaultProducts);
-    const product = inventory.find(p => p.id === item.id);
-    if(product) product.stock += item.qty;
-    localStorage.setItem('sme_sales', JSON.stringify(sales));
-    localStorage.setItem('sme_products', JSON.stringify(inventory));
-    state.sales = sales; state.products = inventory;
-    saveState(); recalcTotalsFromHistory();
-    openTransactionDetails(saleId);
-    renderReports(); renderPOS();
-    showToast("Item Voided");
+// ===================  PWA PWA PWA  ==============
+// SETUP
+// ==================
+let deferredPrompt = null;
+let isStandalone = false;
+
+// Check if app is running as installed PWA
+function checkStandaloneMode() {
+  isStandalone = (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true ||
+    document.referrer.includes('android-app://')
+  );
+  
+  if (isStandalone) {
+    console.log('[PWA] Running as installed app');
+    document.body.classList.add('standalone-mode');
+  }
+  
+  return isStandalone;
 }
 
-// --- SETTINGS ---
+// Register Service Worker (with compatibility checks)
+function registerServiceWorker() {
+  if ('serviceWorker' in navigator) {
+    // Add cache busting to force update
+    const swUrl = './sw.js?v=' + Date.now();
+    
+    navigator.serviceWorker.register(swUrl)
+      .then(function(registration) {
+        console.log('[PWA] Service Worker registered:', registration.scope);
+        
+        // Check for updates periodically
+        setInterval(function() {
+          registration.update();
+        }, 60 * 60 * 1000); // Check every hour
+      })
+      .catch(function(err) {
+        console.warn('[PWA] Service Worker registration failed:', err);
+        // App still works without SW - this is okay
+      });
+  } else {
+    console.warn('[PWA] Service Worker not supported - app will work offline via cache');
+  }
+}
+
+// Handle install prompt (Chrome/Edge)
+window.addEventListener('beforeinstallprompt', function(e) {
+  console.log('[PWA] Install prompt available');
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  // Show install prompt after 3 seconds (not immediately)
+  setTimeout(function() {
+    showInstallPrompt();
+  }, 3000);
+});
+
+// Handle successful installation
+window.addEventListener('appinstalled', function() {
+  console.log('[PWA] App installed successfully');
+  deferredPrompt = null;
+  hideInstallPrompt();
+  localStorage.setItem('pwa_installed', 'true');
+});
+
+// Show install prompt UI
+function showInstallPrompt() {
+  // Don't show if already installed or dismissed
+  if (isStandalone || localStorage.getItem('pwa_install_dismissed')) {
+    return;
+  }
+  
+  const promptEl = document.getElementById('pwa-install-prompt');
+  if (promptEl && deferredPrompt) {
+    promptEl.style.display = 'block';
+  } else if (promptEl) {
+    // No install prompt available - show manual guide
+    showInstallGuide();
+  }
+}
+
+// Hide install prompt
+function hideInstallPrompt() {
+  const promptEl = document.getElementById('pwa-install-prompt');
+  if (promptEl) {
+    promptEl.style.display = 'none';
+  }
+}
+
+// Dismiss install prompt
+function dismissInstallPrompt() {
+  hideInstallPrompt();
+  localStorage.setItem('pwa_install_dismissed', 'true');
+}
+
+// Install PWA
+function installPWA() {
+  if (!deferredPrompt) {
+    showInstallGuide();
+    return;
+  }
+  
+  deferredPrompt.prompt();
+  
+  deferredPrompt.userChoice.then(function(choiceResult) {
+    if (choiceResult.outcome === 'accepted') {
+      console.log('[PWA] User accepted install');
+    } else {
+      console.log('[PWA] User declined install');
+    }
+    deferredPrompt = null;
+    hideInstallPrompt();
+  });
+}
+
+// Show manual install guide (for Samsung Internet, etc.)
+function showInstallGuide() {
+  const guideEl = document.getElementById('pwa-install-guide');
+  if (guideEl && !isStandalone) {
+    guideEl.style.display = 'block';
+  }
+}
+
+// Dismiss install guide
+function dismissInstallGuide() {
+  const guideEl = document.getElementById('pwa-install-guide');
+  if (guideEl) {
+    guideEl.style.display = 'none';
+  }
+  localStorage.setItem('pwa_install_dismissed', 'true');
+}
+
+// ============================================
+// STORAGE RELIABILITY GUARDS
+// ============================================
+
+function safeLocalStorageSet(key, value) {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch (e) {
+    // Storage full or disabled
+    console.error('[Storage] Failed to save:', key, e);
+    
+    // Try to free up space by removing old data
+    try {
+      const oldKeys = ['pwa_install_dismissed', 'lastBackupDate'];
+      oldKeys.forEach(function(k) {
+        if (k !== key) {
+          localStorage.removeItem(k);
+        }
+      });
+      // Retry
+      localStorage.setItem(key, value);
+      return true;
+    } catch (e2) {
+      console.error('[Storage] Still failed after cleanup:', e2);
+      alert('Storage full! Please clear some data or export backups.');
+      return false;
+    }
+  }
+}
+
+function safeLocalStorageGet(key, fallback) {
+  try {
+    const item = localStorage.getItem(key);
+    return item !== null ? item : fallback;
+  } catch (e) {
+    console.error('[Storage] Failed to read:', key, e);
+    return fallback;
+  }
+}
+
+// ============================================
+// DEVICE DETECTION & OPTIMIZATION
+// ============================================
+
+function detectDeviceCapabilities() {
+  const capabilities = {
+    isAndroid: /android/i.test(navigator.userAgent),
+    isSamsung: /samsung/i.test(navigator.userAgent),
+    isChrome: /chrome/i.test(navigator.userAgent) && /android/i.test(navigator.userAgent),
+    isSamsungInternet: /samsungbrowser/i.test(navigator.userAgent),
+    isLowEnd: navigator.deviceMemory && navigator.deviceMemory < 4,
+    storageQuota: null
+  };
+  
+  // Check storage quota (if available)
+  if (navigator.storage && navigator.storage.estimate) {
+    navigator.storage.estimate().then(function(estimate) {
+      capabilities.storageQuota = estimate;
+      console.log('[Device] Storage:', estimate.usage, '/', estimate.quota);
+    });
+  }
+  
+  console.log('[Device] Capabilities:', capabilities);
+  return capabilities;
+}
+
+// ============================================
+// INITIALIZATION
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Check standalone mode
+  checkStandaloneMode();
+  
+  // Register service worker
+  registerServiceWorker();
+  
+  // Detect device capabilities
+  detectDeviceCapabilities();
+  
+  // Show install prompt if appropriate
+  if (!isStandalone && !localStorage.getItem('pwa_installed')) {
+    // Wait for beforeinstallprompt or show guide
+    setTimeout(function() {
+      if (!deferredPrompt) {
+        showInstallGuide();
+      }
+    }, 5000);
+  }
+});
+
+// Handle online/offline status
+window.addEventListener('online', function() {
+  console.log('[PWA] Back online');
+  document.body.classList.remove('offline-mode');
+});
+
+window.addEventListener('offline', function() {
+  console.log('[PWA] Now offline');
+  document.body.classList.add('offline-mode');
+  // App continues to work - just notify user
+  showToast('📡 Working offline - all features available');
+});
+// ============================================
+// SETTINGS
+// ============================================
 function updateSettings() {
     state.settings.name = document.getElementById('setting-business-name').value;
     state.settings.currency = document.getElementById('setting-currency').value;
@@ -2818,63 +2557,96 @@ function renderSettingsView() {
 }
 
 function exportCSV() {
-    if (!hasPermission('canExportData')) {
-        showToast("⛔ Permission denied");
-        return;
-    }
+    if (!hasPermission('canExportData')) { showToast("⛔ Permission denied"); return; }
     if (!isAppUnlocked()) { showToast("License required"); return; }
     if(state.sales.length === 0) { showToast("No data"); return; }
-    let csvContent = "text/csv;charset=utf-8,";
-    csvContent += "Date,Time,Total,Cost,Profit,Method,Voided,Items Sold\n";
+    
+    const BOM = '\uFEFF';
+    let csvContent = BOM + "Transaction ID,Date,Time,Total,Cost,Profit,Payment Method,Status,Items\n";
+    
     state.sales.forEach(s => {
         const d = new Date(s.timestamp);
-        let profit = s.profit || 0;
-        let netTotal = s.total;
-        let netCost = 0;
-        let activeItems = [];
+        let netTotal = 0, netCost = 0, activeItems = [];
         s.items.forEach(i => {
             if (typeof i.voided === 'undefined') i.voided = false;
             if(!i.voided) { netTotal += (i.price * i.qty); netCost += (i.cost * i.qty); activeItems.push(i); }
         });
-        const itemSummary = activeItems.map(i => `${i.name} x${i.qty}`).slice(0, 3).join('; ');
-        if(activeItems.length > 3) itemSummary += ` +${activeItems.length - 3} more`;
-        csvContent += `${d.toLocaleDateString()},${d.toLocaleTimeString()},${netTotal},${netCost},${profit},${s.method},${s.voided ? 'Yes' : (s.refunded ? 'Refunded' : 'No')},"${itemSummary}"\n`;
+        const profit = netTotal - netCost;
+        let status = 'Completed';
+        if (s.voided) status = 'Voided';
+        else if (s.refunded) status = 'Refunded';
+        const itemSummary = activeItems.map(i => `${i.name.replace(/"/g, '""')} x${i.qty} @${i.price}`).slice(0, 5).join('; ');
+        const row = [
+            `"${s.id}"`, `"${d.toLocaleDateString()}"`, `"${d.toLocaleTimeString()}"`,
+            netTotal.toFixed(2), netCost.toFixed(2), profit.toFixed(2),
+            `"${s.method}"`, `"${status}"`, `"${itemSummary}"`
+        ];
+        csvContent += row.join(',') + '\n';
     });
+    
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "sales_export.csv");
+    link.setAttribute("download", `sales_export_${new Date().toISOString().slice(0,10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    showToast(`Exported ${state.sales.length} transactions`);
 }
 
 function clearAllData() {
-    if(!hasPermission('canResetData')) {
-        showToast("⛔ Owner access required");
-        return;
-    }
-    if(confirm("DANGER: Wipe all data?")) {
-        localStorage.removeItem('sme_products');
-        localStorage.removeItem('sme_sales');
-        localStorage.removeItem('sme_totals');
-        location.reload();
-    }
-}
-
-function recalcTotalsFromHistory() {
-    let gross = 0, profit = 0, count = 0;
-    state.sales.forEach(s => {
-        if (s.voided || s.refunded) return;
-        const calculated = calculateFinancialsFromItems(s.items);
-        gross += calculated.total;
-        profit += calculated.profit;
-        count++;
-    });
-    if (state.totals.gross !== gross || state.totals.profit !== profit || state.totals.transactions !== count) {
-        state.totals = { gross, profit, transactions: count };
-        saveState();
-    }
+    if(!hasPermission('canResetData')) { showToast("⛔ Owner access required"); return; }
+    const confirmMessage = "⚠️ FACTORY RESET WARNING ⚠️\n\n" +
+        "This will PERMANENTLY delete:\n" +
+        "• All sales transactions\n" +
+        "• All inventory products\n" +
+        "• All reports and totals\n" +
+        "• Reconciliation history\n\n" +
+        "This will be PRESERVED:\n" +
+        "• License key\n" +
+        "• Device ID\n" +
+        "• Business settings\n\n" +
+        "⚠️ Create a backup before proceeding!\n\n" +
+        "Type 'RESET' to confirm:";
+    const userInput = prompt(confirmMessage);
+    if (userInput !== 'RESET') { showToast("Reset cancelled"); return; }
+    
+    const preservedData = {
+        license: localStorage.getItem('license_data'),
+        deviceId: localStorage.getItem('device_id'),
+        firstLaunch: localStorage.getItem('first_launch_date'),
+        businessName: localStorage.getItem('sme_settings'),
+        readOnlyMode: localStorage.getItem('sme_readonly_mode'),
+        lastBackup: localStorage.getItem('lastBackupTimestamp'),
+        lastBackupDate: localStorage.getItem('lastBackupDate')
+    };
+    
+    const keysToClear = ['sme_products', 'sme_sales', 'sme_totals', 'sme_reconciliations', 'sme_cart', 'sme_readonly_mode'];
+    keysToClear.forEach(key => { try { localStorage.removeItem(key); } catch (e) { console.warn(`Failed to clear ${key}:`, e); } });
+    
+    try {
+        if (preservedData.license) localStorage.setItem('license_data', preservedData.license);
+        if (preservedData.deviceId) localStorage.setItem('device_id', preservedData.deviceId);
+        if (preservedData.firstLaunch) localStorage.setItem('first_launch_date', preservedData.firstLaunch);
+        if (preservedData.businessName) localStorage.setItem('sme_settings', preservedData.businessName);
+        if (preservedData.readOnlyMode) localStorage.setItem('sme_readonly_mode', preservedData.readOnlyMode);
+        if (preservedData.lastBackup) localStorage.setItem('lastBackupTimestamp', preservedData.lastBackup);
+        if (preservedData.lastBackupDate) localStorage.setItem('lastBackupDate', preservedData.lastBackupDate);
+    } catch (e) { console.error("Failed to restore preserved ", e); }
+    
+    state.products = JSON.parse(JSON.stringify(defaultProducts));
+    state.sales = [];
+    state.totals = { gross: 0, profit: 0, transactions: 0 };
+    state.reconciliations = [];
+    state.cart = [];
+    try {
+        if (preservedData.businessName) state.settings = JSON.parse(preservedData.businessName);
+        if (preservedData.readOnlyMode) state.isReadOnly = preservedData.readOnlyMode === 'true';
+    } catch (e) { state.settings = { name: "My Shop", currency: "$" }; }
+    
+    saveState();
+    showToast("Factory reset complete");
+    setTimeout(() => { location.reload(); }, 1500);
 }
 
 function getTransactionSummary(items) {
@@ -2887,6 +2659,9 @@ function getTransactionSummary(items) {
     return result;
 }
 
+// ============================================
+// MODAL UTILS
+// ============================================
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) {
     document.getElementById(id).classList.remove('open');
@@ -2899,5 +2674,32 @@ window.onclick = function(event) {
     }
 }
 </script>
+
+<!-- PWA Install Prompt -->
+<div id="pwa-install-prompt" class="pwa-install-prompt" style="display: none;">
+  <div class="pwa-install-content">
+    <div class="pwa-install-icon">📱</div>
+    <h3>Install ShopMate</h3>
+    <p>Get faster access and offline support</p>
+    <div class="pwa-install-buttons">
+      <button class="btn btn-primary" onclick="installPWA()">Install</button>
+      <button class="btn btn-outline" onclick="dismissInstallPrompt()">Later</button>
+    </div>
+  </div>
+</div>
+
+<!-- PWA Install Instructions (for devices without prompt) -->
+<div id="pwa-install-guide" class="pwa-install-guide" style="display: none;">
+  <div class="pwa-guide-content">
+    <h4>Add to Home Screen</h4>
+    <ol>
+      <li>Tap the menu (⋮) in your browser</li>
+      <li>Select "Add to Home Screen"</li>
+      <li>Tap "Add" to confirm</li>
+    </ol>
+    <button class="btn btn-secondary btn-sm" onclick="dismissInstallGuide()">Got it</button>
+  </div>
+</div>
+
 </body>
 </html>
