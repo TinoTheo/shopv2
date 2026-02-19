@@ -8,9 +8,9 @@ const CACHE_VERSION = '20240101';
 
 // Assets to cache immediately on install
 const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json'
+  '/',
+  '/index.html',
+  '/manifest.json'
 ];
 
 // ============================================
@@ -113,7 +113,7 @@ self.addEventListener('fetch', function(event) {
             
             // For navigation requests, serve a fallback
             if (event.request.mode === 'navigate') {
-              return caches.match('./index.html');
+              return caches.match('/index.html');
             }
             
             // Return error response

@@ -13,7 +13,7 @@
 <meta name="msapplication-TileColor" content="#005e38">
 <meta name="msapplication-config" content="none">   
 
-<link rel="manifest" href="./manifest.json">
+<link rel="manifest" href="/manifest.json">
 
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
@@ -621,7 +621,7 @@ let state = {
     currentUserRole: localStorage.getItem('sme_user_role') || ROLES.OWNER,
     passcode: localStorage.getItem('sme_passcode') || DEFAULT_PASSCODE,
     currentUserRole: localStorage.getItem('sme_user_role') || ROLES.OWNER,
-    passwordHash: localStorage.getItem('sme_password_hash') || DEFAULT_PASSWORD_HASH,
+
     // ✅ Print Setting
     printReceipts: localStorage.getItem('sme_print_receipts') !== 'false'
 };
@@ -2328,7 +2328,7 @@ function checkStandaloneMode() {
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
     // Add cache busting to force update
-    const swUrl = './sw.js?v=' + Date.now();
+    const swUrl = 'service-worker.js?v=' + Date.now();
     
     navigator.serviceWorker.register(swUrl)
       .then(function(registration) {
