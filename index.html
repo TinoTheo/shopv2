@@ -219,7 +219,7 @@
                 </div>
             </div>
             <p class="text-small text-gray">
-                ⚠️ Cashier role restricts access to sales only. Default passcode: <strong>0000</strong>
+                ⚠️ Cashier role restricts access to sales only.
             </p>
         </div>
 
@@ -501,11 +501,11 @@
         </div>
         <div class="form-group">
             <label>New Passcode (4-8 digits)</label>
-            <input type="password" id="new-passcode" class="form-control" placeholder="0000" maxlength="8" inputmode="numeric">
+            <input type="password" id="new-passcode" class="form-control" placeholder="1234" maxlength="8" inputmode="numeric">
         </div>
         <div class="form-group">
             <label>Confirm Passcode</label>
-            <input type="password" id="confirm-passcode" class="form-control" placeholder="0000" maxlength="8" inputmode="numeric">
+            <input type="password" id="confirm-passcode" class="form-control" placeholder="1234" maxlength="8" inputmode="numeric">
             <div id="passcode-error" class="input-error-msg"></div>
         </div>
         <div class="modal-footer-actions">
@@ -2536,8 +2536,7 @@ window.addEventListener('online', function() {
 window.addEventListener('offline', function() {
   console.log('[PWA] Now offline');
   document.body.classList.add('offline-mode');
-  // App continues to work - just notify user
-  showToast('📡 Working offline - all features available');
+  // App continues to work - just notify user showToast('📡 Working offline - all features available');
 });
 // ============================================
 // SETTINGS
