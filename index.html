@@ -40,13 +40,13 @@
     --border: #e5e7eb;
     --border-strong: #d1d5db;
     
-    /* Shadows - Subtle and Professional */
+    /* Shadows */
     --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
     --shadow: 0 1px 3px rgba(0,0,0,0.1);
     --shadow-md: 0 4px 6px rgba(0,0,0,0.05);
     --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
     
-    /* Border Radius - Conservative */
+    /* Border Radius */
     --radius: 4px;
     --radius-lg: 6px;
     
@@ -59,7 +59,7 @@
     --font-size-xl: 18px;
     --font-size-2xl: 20px;
     
-    /* Spacing Scale (4px increments) */
+    /* Spacing Scale */
     --space-1: 4px;
     --space-2: 8px;
     --space-3: 12px;
@@ -154,19 +154,40 @@ header {
     z-index: 10;
 }
 
+/* PHASE 3: Logo and Brand Section */
 .brand {
-    font-size: var(--font-size-lg);
-    font-weight: 700;
-    color: var(--primary);
     display: flex;
     align-items: center;
     gap: var(--space-2);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--primary);
     letter-spacing: -0.02em;
 }
 
-.brand svg {
+.brand-logo {
+    height: 32px;
+    width: 32px;
+    border-radius: var(--radius);
+    object-fit: contain;
+    background: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.brand-logo img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    border-radius: var(--radius);
+}
+
+.brand-logo svg {
     width: 20px;
     height: 20px;
+    fill: var(--primary);
 }
 
 .header-actions {
@@ -317,7 +338,7 @@ main {
     left: 0;
     width: 100%;
     height: 100%;
-    overflow-y:auto;
+    overflow: hidden;
     padding: var(--space-4);
     display: none;
     opacity: 0;
@@ -330,10 +351,10 @@ main {
     opacity: 1;
 }
 
-/* PHASE 2: Scrollable Content Container */
 .view-content {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     padding-bottom: var(--space-6);
 }
@@ -464,7 +485,7 @@ main {
 
 select.form-control {
     appearance: none;
-    background-image: url("image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
     background-size: 16px;
@@ -473,7 +494,6 @@ select.form-control {
 
 .form-group {
     margin-bottom: var(--space-4);
-    
 }
 
 .form-group label {
@@ -748,11 +768,6 @@ select.form-control {
     opacity: 0.8;
 }
 
-.inv-item.variance-warning {
-    border-left-color: var(--warning);
-    background: #fffbeb;
-}
-
 .inv-details {
     display: flex;
     justify-content: space-between;
@@ -834,6 +849,72 @@ select.form-control {
     font-size: var(--font-size-lg);
 }
 
+/* PHASE 2: Stock Alert Styles */
+.stock-alert-section {
+    margin-bottom: var(--space-4);
+}
+
+.stock-alert-section h4 {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.stock-alert-section h4.danger { color: var(--danger); }
+.stock-alert-section h4.warning { color: var(--accent); }
+
+.stock-alert-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.stock-alert-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+    background: var(--bg-surface);
+    border-radius: var(--radius);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    border: 1px solid var(--border);
+}
+
+.stock-alert-item:hover {
+    background: var(--bg-elevated);
+}
+
+.stock-alert-item.out {
+    border-left: 3px solid var(--danger);
+}
+
+.stock-alert-item.low {
+    border-left: 3px solid var(--accent);
+}
+
+.stock-alert-item .name {
+    font-weight: 500;
+}
+
+.stock-alert-item .qty {
+    font-weight: 700;
+}
+
+.stock-alert-item .qty.out { color: var(--danger); }
+.stock-alert-item .qty.low { color: var(--accent); }
+
+.stock-healthy {
+    text-align: center;
+    padding: var(--space-4);
+    color: var(--success);
+    font-weight: 500;
+}
+
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -841,7 +922,6 @@ select.form-control {
     margin: var(--space-6) 0 var(--space-3) 0;
     border-bottom: 1px solid var(--border);
     padding-bottom: var(--space-2);
-    /* PHASE 2: Sticky headers */
     position: sticky;
     top: 0;
     background: var(--bg-body);
@@ -1028,7 +1108,6 @@ select.form-control {
     color: var(--danger);
 }
 
-/* PHASE 1: Clean License Key Display */
 .license-key-display {
     font-family: 'Courier New', Courier, monospace;
     font-size: var(--font-size-sm);
@@ -1124,6 +1203,58 @@ select.form-control {
 .print-status-badge.disabled {
     background: #fef2f2;
     color: var(--danger);
+}
+
+/* PHASE 3: Logo Upload Section */
+.logo-upload-section {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: var(--space-4);
+}
+
+.logo-preview {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius);
+    background: var(--bg-elevated);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+}
+
+.logo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.logo-preview svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--text-muted);
+}
+
+.logo-upload-info {
+    flex: 1;
+}
+
+.logo-upload-info h4 {
+    margin: 0 0 4px 0;
+    font-size: var(--font-size-sm);
+}
+
+.logo-upload-info p {
+    margin: 0;
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
 }
 
 /* ============================================
@@ -1531,10 +1662,13 @@ body {
 </head>
 <body>
 <header>
+    <!-- PHASE 3: Logo Section -->
     <div class="brand">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
-        </svg>
+        <div class="brand-logo" id="brand-logo">
+            <svg viewBox="0 0 24 24">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h2v5h5v2h-5v5H7v-2h5V5z"/>
+            </svg>
+        </div>
         <span id="business-name-display">My Business</span>
     </div>
     <div class="header-actions">
@@ -1612,7 +1746,7 @@ body {
         <div id="inv-list" class="inv-list view-content"></div>
     </section>
 
-    <!-- REPORTS VIEW - PHASE 2: Scrollable -->
+    <!-- REPORTS VIEW -->
     <section id="view-reports" class="view">
         <h2 style="flex-shrink: 0;">Daily Operations</h2>
         <div class="view-content" id="reports-content">
@@ -1633,10 +1767,7 @@ body {
                     <div class="dash-label">Last Sale</div>
                     <div class="dash-value time" id="dash-last-sale">--:--</div>
                 </div>
-                <div class="dash-card warning" id="dash-low-stock-card" style="grid-column: span 2;">
-                    <div class="dash-label">Low Stock Alerts</div>
-                    <div class="dash-value alert" id="dash-low-stock-count">0 items</div>
-                </div>
+
                 <div class="dash-card success" id="dash-inventory-value-card" style="grid-column: span 2;">
                     <div class="dash-label">Inventory Value</div>
                     <div class="dash-value money" id="dash-inventory-value">$0.00</div>
@@ -1645,6 +1776,14 @@ body {
                     <div class="dash-label">Last Backup</div>
                     <div class="dash-value time" id="dash-last-backup">Never</div>
                     <div class="text-small text-muted" id="backup-status-text" style="margin-top:4px;">Backup recommended</div>
+                </div>
+            </div>
+
+            <!-- PHASE 2: Stock Alerts Card - Now shows detailed list -->
+            <div class="dash-card danger" id="dash-low-stock-card" style="width: 50%;">
+                <div class="dash-label">Stock Alerts</div>
+                <div id="stock-alerts-container">
+                    <div class="stock-healthy">All inventory healthy</div>
                 </div>
             </div>
 
@@ -1685,7 +1824,8 @@ body {
 
             <div class="section-header" style="flex-direction: column; align-items: stretch; gap: 10px;">
                 <h3>Recent Transactions</h3>
-                <input type="text" id="tx-search" class="search-bar" placeholder="Search by item, amount, or date..." style="margin-bottom: 10px;">
+                <!-- PHASE 1: Fixed Transaction Search -->
+                <input type="text" id="tx-search" class="search-bar" placeholder="Search by ID, item name, amount, or date..." style="margin-bottom: 10px;">
                 <div style="display:flex; gap:8px; justify-content: flex-end;">
                     <button class="btn btn-secondary btn-sm" onclick="exportCSV()">Export CSV</button>
                     <button class="btn btn-primary btn-sm" onclick="openReconcileModal()">Reconciliation</button>
@@ -1700,14 +1840,13 @@ body {
         </div>
     </section>
 
-    <!-- SETTINGS VIEW - PHASE 2: Scrollable -->
+    <!-- SETTINGS VIEW -->
     <section id="view-settings" class="view">
         <h2 style="flex-shrink: 0;">Settings & Data</h2>
         <div class="view-content" id="settings-content">
             <div class="license-section">
                 <h3>License</h3>
                 <div id="license-banner" class="license-status-banner">Checking...</div>
-                <!-- PHASE 1: Clean License Key Display -->
                 <div id="license-key-container" style="display: none; margin-bottom: 16px;">
                     <label style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Active License Key</label>
                     <div id="license-key-display" class="license-key-display">-</div>
@@ -1725,6 +1864,29 @@ body {
                 </div>
             </div>
 
+            <!-- PHASE 3: Logo Upload Section -->
+            <div class="license-section" style="border-left-color: var(--primary);">
+                <h3>Brand Logo</h3>
+                <div class="logo-upload-section">
+                    <div class="logo-preview" id="logo-preview">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                        </svg>
+                    </div>
+                    <div class="logo-upload-info">
+                        <h4>Business Logo</h4>
+                        <p>Upload a logo to display in the header (32x32 recommended)</p>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="btn btn-secondary btn-sm" style="cursor: pointer;">
+                            Upload
+                            <input type="file" id="logo-upload" accept="image/*" style="display: none;" onchange="handleLogoUpload(event)">
+                        </label>
+                        <button class="btn btn-outline btn-sm" onclick="clearLogo()">Remove</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="license-section" id="role-management-section" style="border-left-color: var(--primary);">
                 <h3>Role & Access</h3>
                 <div class="license-info-grid">
@@ -1732,10 +1894,9 @@ body {
                         <label>Current Role</label>
                         <input type="text" id="current-role-display" class="form-control" readonly>
                     </div>
-                    <!-- PHASE 4: Removed broken role switch button from settings -->
                     <div class="form-group" id="password-change-group">
                         <label>Security</label>
-                        <button class="btn btn-secondary btn-block" onclick="openChangePasswordModal()">Change Passcode</button> <br>
+                        <button class="btn btn-secondary btn-block" onclick="openChangePasswordModal()">Change Passcode</button>
                         <button class="btn btn-outline btn-block mt-2" onclick="resetPasswordToDefault()">Reset Passcode</button>
                     </div>
                 </div>
@@ -2164,7 +2325,7 @@ const CONFIG = {
     SECRET: "S3cur3Sh0pM4t3K3y-2024",
     DEFAULT_LOW_STOCK: 5,
     DEFAULT_PASSCODE: "0000",
-    VERSION: "3.2.1-CLEAN"
+    VERSION: "3.3.0-STOCK-ALERTS"
 };
 
 const defaultProducts = [
@@ -2252,7 +2413,8 @@ let state = {
     currentUserRole: localStorage.getItem('sme_user_role') || ROLES.OWNER,
     passcode: localStorage.getItem('sme_passcode') || CONFIG.DEFAULT_PASSCODE,
     printReceipts: localStorage.getItem('sme_print_receipts') !== 'false',
-    activeCategory: 'All'
+    activeCategory: 'All',
+    logo: localStorage.getItem('sme_logo') || null
 };
 
 // Lazy Loading State
@@ -2280,7 +2442,6 @@ function validateRoleState() {
         localStorage.setItem('sme_passcode', CONFIG.DEFAULT_PASSCODE);
     }
     
-    // Migrate legacy products
     state.products.forEach(p => {
         if (p.physicalStock === undefined) p.physicalStock = p.stock;
         if (p.lastStocktake === undefined) p.lastStocktake = null;
@@ -2306,7 +2467,6 @@ function getRoleDisplayName() {
     return names[state.currentUserRole] || 'Unknown';
 }
 
-// PHASE 5: Centralized role application
 function applyRole(role) {
     if (!Object.values(ROLES).includes(role)) {
         console.error("Invalid role:", role);
@@ -2318,6 +2478,75 @@ function applyRole(role) {
     renderRoleManagement();
     console.log("Role applied:", role);
     return true;
+}
+
+// ============================================
+// PHASE 2: STOCK ALERTS
+// ============================================
+function getStockAlerts() {
+    const outOfStock = [];
+    const lowStock = [];
+    
+    state.products.forEach(p => {
+        const threshold = p.lowStock || CONFIG.DEFAULT_LOW_STOCK;
+        if (p.stock === 0) {
+            outOfStock.push(p);
+        } else if (p.stock <= threshold) {
+            lowStock.push(p);
+        }
+    });
+    
+    return { outOfStock, lowStock };
+}
+
+function renderStockAlerts() {
+    const container = document.getElementById('stock-alerts-container');
+    if (!container) return;
+    
+    const { outOfStock, lowStock } = getStockAlerts();
+    
+    if (outOfStock.length === 0 && lowStock.length === 0) {
+        container.innerHTML = '<div class="stock-healthy">All inventory healthy</div>';
+        return;
+    }
+    
+    let html = '';
+    
+    if (outOfStock.length > 0) {
+        html += '<div class="stock-alert-section"><h4 class="danger">Out of Stock (' + outOfStock.length + ')</h4><div class="stock-alert-list">';
+        outOfStock.forEach(p => {
+            html += `<div class="stock-alert-item out" onclick="navigateToProduct(${p.id})">
+                <span class="name">${p.name}</span>
+                <span class="qty out">0 units</span>
+            </div>`;
+        });
+        html += '</div></div>';
+    }
+    
+    if (lowStock.length > 0) {
+        html += '<div class="stock-alert-section"><h4 class="warning">Running Low (' + lowStock.length + ')</h4><div class="stock-alert-list">';
+        lowStock.forEach(p => {
+            const threshold = p.lowStock || CONFIG.DEFAULT_LOW_STOCK;
+            html += `<div class="stock-alert-item low" onclick="navigateToProduct(${p.id})">
+                <span class="name">${p.name}</span>
+                <span class="qty low">${p.stock} / ${threshold} min</span>
+            </div>`;
+        });
+        html += '</div></div>';
+    }
+    
+    container.innerHTML = html;
+}
+
+function navigateToProduct(productId) {
+    switchTab('inventory', document.querySelector('button[onclick*="inventory"]'));
+    setTimeout(() => {
+        const product = state.products.find(p => p.id === productId);
+        if (product) {
+            document.getElementById('inv-search').value = product.name;
+            renderInventory();
+        }
+    }, 100);
 }
 
 // ============================================
@@ -2417,7 +2646,6 @@ function confirmRoleSwitch() {
         if (!verifyPasscode(passcode)) { errorEl.innerText = "Incorrect passcode"; passcodeInput.value = ''; passcodeInput.focus(); return; }
     }
     
-    // PHASE 5: Use centralized applyRole function
     applyRole(newRole);
     closeModal('modal-role-switch');
     showToast(`Role changed to ${getRoleDisplayName()}`);
@@ -2483,6 +2711,75 @@ function updatePrintToggleUI() {
 }
 
 // ============================================
+// PHASE 3: LOGO FUNCTIONS
+// ============================================
+function initLogo() {
+    if (state.logo) {
+        updateLogoDisplay(state.logo);
+    }
+}
+
+function handleLogoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+        showToast("Please select an image file");
+        return;
+    }
+    
+    if (file.size > 500000) {
+        showToast("Image too large. Max 500KB");
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const base64 = e.target.result;
+        state.logo = base64;
+        localStorage.setItem('sme_logo', base64);
+        updateLogoDisplay(base64);
+        showToast("Logo uploaded successfully");
+    };
+    reader.readAsDataURL(file);
+}
+
+function updateLogoDisplay(base64) {
+    const brandLogo = document.getElementById('brand-logo');
+    const logoPreview = document.getElementById('logo-preview');
+    
+    if (brandLogo) {
+        brandLogo.innerHTML = `<img src="${base64}" alt="Logo">`;
+    }
+    
+    if (logoPreview) {
+        logoPreview.innerHTML = `<img src="${base64}" alt="Logo preview">`;
+    }
+}
+
+function clearLogo() {
+    state.logo = null;
+    localStorage.removeItem('sme_logo');
+    
+    const brandLogo = document.getElementById('brand-logo');
+    const logoPreview = document.getElementById('logo-preview');
+    
+    if (brandLogo) {
+        brandLogo.innerHTML = `<svg viewBox="0 0 24 24">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h2v5h5v2h-5v5H7v-2h5V5z"/>
+        </svg>`;
+    }
+    
+    if (logoPreview) {
+        logoPreview.innerHTML = `<svg viewBox="0 0 24 24">
+            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+        </svg>`;
+    }
+    
+    showToast("Logo removed");
+}
+
+// ============================================
 // UI RESTRICTIONS
 // ============================================
 function applyRoleRestrictions() {
@@ -2528,7 +2825,7 @@ function renderRoleManagement() {
 }
 
 // ============================================
-// PHASE 1: CLEAN LICENSE DISPLAY
+// LICENSE
 // ============================================
 function simpleHash(str) {
     let hash = 0;
@@ -2581,7 +2878,6 @@ function activateLicense() {
         if (lic.d !== getDeviceID()) { showToast(`License Device ID mismatch`); return; }
         if (lic.e < Date.now()) { showToast("License is expired"); return; }
         
-        // PHASE 1: Generate clean key if not provided
         if (!lic.key) {
             lic.key = 'SM-' + simpleHash(lic.d + lic.e).toUpperCase().substring(0, 8);
         }
@@ -2605,53 +2901,56 @@ function renderLicenseSettings() {
         deviceIdEl.value = deviceId;
         
         const now = Date.now();
-        const firstLaunch = parseInt(localStorage.getItem('first_launch_date')) || now;
-        const trialExpiry = firstLaunch + (CONFIG.TRIAL_DAYS * 24 * 60 * 60 * 1000);
         let statusText = "";
         let statusClass = "";
+
+        // FIX: Check for License FIRST
+        const licStr = localStorage.getItem('license_data');
+        if (licStr) {
+            try {
+                const lic = JSON.parse(licStr);
+                // Check if license matches device and is not expired
+                if (lic.d === getDeviceID() && lic.e > now) {
+                    const daysDiff = Math.ceil((lic.e - now) / (1000 * 60 * 60 * 24));
+                    statusText = `Licensed: ${daysDiff} days remaining`;
+                    statusClass = "";
+                    
+                    // Show the clean key
+                    if (keyContainer && keyDisplay && lic.key) {
+                        keyContainer.style.display = 'block';
+                        keyDisplay.textContent = lic.key;
+                    }
+                    
+                    banner.innerText = statusText;
+                    banner.className = 'license-status-banner ' + statusClass;
+                    return; // Stop here - License is active
+                }
+            } catch(e) { 
+                console.error("License parse error", e);
+            }
+        }
+        
+        // FALLBACK: Check Trial only if no valid license found
+        const firstLaunch = parseInt(localStorage.getItem('first_launch_date')) || now;
+        const trialExpiry = firstLaunch + (CONFIG.TRIAL_DAYS * 24 * 60 * 60 * 1000);
         
         if (now < trialExpiry) {
             const daysLeft = Math.ceil((trialExpiry - now) / (1000 * 60 * 60 * 24));
             statusText = `Trial: ${daysLeft} days left`;
             if (keyContainer) keyContainer.style.display = 'none';
         } else {
-            const licStr = localStorage.getItem('license_data');
-            if (licStr) {
-                try {
-                    const lic = JSON.parse(licStr);
-                    if (lic.e > now) {
-                        const daysDiff = Math.ceil((lic.e - now) / (1000 * 60 * 60 * 24));
-                        statusText = `Licensed: ${daysDiff} days remaining`;
-                        statusClass = "";
-                        
-                        // PHASE 1: Show clean license key
-                        if (keyContainer && keyDisplay && lic.key) {
-                            keyContainer.style.display = 'block';
-                            keyDisplay.textContent = lic.key;
-                        }
-                    } else {
-                        statusText = "License Expired";
-                        statusClass = "expired";
-                        if (keyContainer) keyContainer.style.display = 'none';
-                    }
-                } catch(e) { 
-                    statusText = "Corrupt License"; 
-                    statusClass = "expired"; 
-                }
-            } else {
-                statusText = "Trial Expired. License required.";
-                statusClass = "expired";
-            }
+            statusText = "Trial Expired. License required.";
+            statusClass = "expired";
+            if (keyContainer) keyContainer.style.display = 'none';
         }
+        
         banner.innerText = statusText;
         banner.className = 'license-status-banner ' + statusClass;
+        
     } catch (err) {
         console.error("License render failed:", err);
-        const banner = document.getElementById('license-banner');
-        if (banner) banner.innerText = "Error loading license";
     }
 }
-
 // ============================================
 // CRYPTO
 // ============================================
@@ -2761,6 +3060,7 @@ window.onload = async function() {
         validateRoleState();
         validateSystemIntegrity();
         initPrintSetting();
+        initLogo();
         
         if (typeof CryptoJS === 'undefined') {
             console.warn("CryptoJS failed to load");
@@ -2788,8 +3088,7 @@ window.onload = async function() {
         setupEventDelegation();
         setupSearchDebounce();
         setupLazyLoading();
-        
-        // PHASE 3: Stock search setup
+        setupTransactionSearch();
         setupStockSearch();
         
         setInterval(updateClock, 60000);
@@ -2838,6 +3137,91 @@ function setupEventDelegation() {
 }
 
 // ============================================
+// PHASE 1: TRANSACTION SEARCH
+// ============================================
+function setupTransactionSearch() {
+    const searchInput = document.getElementById('tx-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => { 
+                handleTransactionSearch(); 
+            }, 200);
+        });
+    }
+}
+
+function handleTransactionSearch() {
+    const searchInput = document.getElementById('tx-search');
+    const query = searchInput.value.trim().toLowerCase();
+    
+    const today = new Date().toDateString();
+    let todaysSales = state.sales.filter(s => new Date(s.timestamp).toDateString() === today);
+    todaysSales.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    if (!query) {
+        renderTransactionsList(todaysSales);
+        return;
+    }
+    
+    const results = todaysSales.filter(tx => {
+        if (tx.id && tx.id.toLowerCase().includes(query)) return true;
+        
+        const amount = parseFloat(query);
+        if (!isNaN(amount) && Math.abs(tx.total - amount) < 0.01) return true;
+        
+        const dateStr = new Date(tx.timestamp).toLocaleDateString();
+        const timeStr = new Date(tx.timestamp).toLocaleTimeString();
+        if (dateStr.includes(query) || timeStr.toLowerCase().includes(query)) return true;
+        
+        if (tx.items && tx.items.some(item => item.name.toLowerCase().includes(query))) return true;
+        
+        if (tx.method && tx.method.toLowerCase().includes(query)) return true;
+        
+        return false;
+    });
+    
+    renderTransactionsList(results);
+}
+
+function renderTransactionsList(transactions) {
+    const list = document.getElementById('transaction-list');
+    list.innerHTML = '';
+    
+    if(transactions.length === 0) {
+        list.innerHTML = '<div style="text-align:center; color:gray; padding: 20px;">No transactions found.</div>';
+        return;
+    }
+    
+    transactions.forEach(s => {
+        const time = new Date(s.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        const listFinancials = calculateFinancialsFromItems(s.items);
+        const isFullyVoided = s.voided;
+        const rowClass = isFullyVoided ? 'inv-item voided transaction-row' : 'inv-item transaction-row';
+        const itemSummary = getTransactionSummary(s.items);
+        let actionBtn = '';
+        if(state.isReadOnly) {
+            actionBtn = s.refunded ? `<span class="text-warning" style="margin-left: auto;">Refunded</span>` : (isFullyVoided ? `<span class="text-muted text-small" style="margin-left: auto;">Voided</span>` : ``);
+        } else {
+            actionBtn = s.refunded ? `<span class="text-warning" style="margin-left: auto;">Refunded</span>` : (isFullyVoided ? `<span class="text-muted text-small" style="margin-left: auto;">Voided</span>` : `<button class="btn btn-danger btn-sm" style="margin-left: auto;" onclick="voidFullSale('${s.id}')">Void</button>`);
+            if (!isFullyVoided && !s.refunded) actionBtn += `<button class="btn btn-secondary btn-sm" style="margin-left: 5px;" onclick="refundSale('${s.id}')">Refund</button>`;
+        }
+        const div = document.createElement('div');
+        div.className = rowClass;
+        div.onclick = () => { if(!isFullyVoided && !s.refunded) openTransactionDetails(s.id); };
+        div.innerHTML = `
+            <div class="inv-details">
+                <div style="font-weight:600;">${time}</div>
+                <div class="text-small truncate" title="${itemSummary}">${itemSummary} - ${s.method}</div>
+            </div>
+            <div style="font-weight:600; color:${isFullyVoided ? 'var(--text-muted)' : 'var(--primary)'}">${formatMoney(listFinancials.total)}</div>
+            ${actionBtn}
+        `;
+        list.appendChild(div);
+    });
+}
+
+// ============================================
 // SEARCH DEBOUNCE
 // ============================================
 function setupSearchDebounce() {
@@ -2848,7 +3232,6 @@ function setupSearchDebounce() {
     });
 }
 
-// PHASE 3: Stock Search
 function setupStockSearch() {
     const stockSearchInput = document.getElementById('inv-search');
     if (stockSearchInput) {
@@ -3260,6 +3643,7 @@ function finalizeSale() {
     closeModal('modal-checkout');
     renderPOS();
     renderInventory();
+    renderStockAlerts();
     showSuccessModal();
     if (document.querySelector('#view-reports.active')) {
         const topSellers = calculateTopSellers('today');
@@ -3277,7 +3661,6 @@ function renderInventory() {
     const addBtn = document.getElementById('btn-add-product');
     if(state.isReadOnly) addBtn.classList.add('hidden'); else addBtn.classList.remove('hidden');
     
-    // PHASE 3: Filter products by search (does not mutate stored data)
     const filteredProducts = state.products.filter(p => p.name.toLowerCase().includes(filter));
     
     filteredProducts.forEach(p => {
@@ -3367,6 +3750,7 @@ function confirmStockAdjustment() {
     closeModal('modal-stock-adjust');
     renderInventory();
     renderPOS();
+    renderStockAlerts();
     showToast("Stock adjustment posted");
 }
 
@@ -3394,8 +3778,8 @@ function openStockLedgerModal(productId) {
                 <td>${date}</td>
                 <td>${entry.reason}</td>
                 <td class="${changeClass}" style="font-weight: 600;">${changeText}</td>
-                <td class="text-small text-muted">${entry.note || '-'}</td>
-            `;
+                <td class="text-small text-muted">${entry.note || '-'            }</td>
+        `;
             tbody.appendChild(row);
         });
     }
@@ -3492,6 +3876,7 @@ function postReconciliationAdjustments() {
     closeModal('modal-reconciliation-workspace');
     renderInventory();
     renderPOS();
+    renderStockAlerts();
     showToast(`${adjustmentsMade} adjustments posted`);
 }
 
@@ -3544,6 +3929,7 @@ function saveInlineEdit(id) {
     renderInventory();
     renderPOS();
     renderCategoryTabs();
+    renderStockAlerts();
     showToast("Product updated");
 }
 
@@ -3554,6 +3940,8 @@ function deleteProduct(id) {
         saveState();
         renderInventory();
         renderPOS();
+        renderCategoryTabs();
+        renderStockAlerts();
     }
 }
 
@@ -3570,7 +3958,8 @@ function saveProduct() {
     
     if(id) {
         const p = state.products.find(prod => prod.id == id);
-        if (p) {             p.name = name; p.price = price; p.cost = cost; p.stock = stock; p.lowStock = lowStock; p.category = category;
+        if (p) {
+            p.name = name; p.price = price; p.cost = cost; p.stock = stock; p.lowStock = lowStock; p.category = category;
             if (p.physicalStock === undefined) p.physicalStock = stock;
         }
     } else {
@@ -3581,6 +3970,7 @@ function saveProduct() {
     renderInventory();
     renderPOS();
     renderCategoryTabs();
+    renderStockAlerts();
     showToast("Product saved");
 }
 
@@ -3796,8 +4186,10 @@ function voidFullSale(saleId) {
     sale.voided = true;
     
     sale.items.forEach(item => {
-        const product = state.products.find(p => p.id === item.id);
-        if(product) product.stock += item.qty;
+        if(!item.voided) {
+            const product = state.products.find(p => p.id === item.id);
+            if(product) product.stock += item.qty;
+        }
     });
     
     recalcTotalsFromHistory();
@@ -3805,6 +4197,7 @@ function voidFullSale(saleId) {
     
     renderReports();
     renderPOS();
+    renderStockAlerts();
     showToast("Sale voided - Inventory updated");
 }
 
@@ -3819,8 +4212,10 @@ function refundSale(saleId) {
     if (sale.refunded) { showToast("Sale already refunded"); return; }
     
     sale.items.forEach(item => {
-        const product = state.products.find(p => p.id === item.id);
-        if(product) product.stock += item.qty;
+        if(!item.voided) {
+            const product = state.products.find(p => p.id === item.id);
+            if(product) product.stock += item.qty;
+        }
     });
     
     const refundRecord = {
@@ -3838,6 +4233,7 @@ function refundSale(saleId) {
     
     renderReports();
     renderPOS();
+    renderStockAlerts();
     showToast("Sale refunded - Stock restored");
 }
 
@@ -3862,23 +4258,8 @@ function voidTransactionItem(saleId, itemIndex) {
     openTransactionDetails(saleId);
     renderReports();
     renderPOS();
+    renderStockAlerts();
     showToast("Item voided - Stock restored");
-}
-
-// ============================================
-// SEARCH
-// ============================================
-function searchTransactions(transactions, query) {
-    if (!query) return transactions;
-    const lowerQ = query.toLowerCase();
-    const numQ = parseFloat(query);
-    return transactions.filter(t => {
-        const dateStr = new Date(t.timestamp).toLocaleDateString();
-        if (dateStr.toLowerCase().includes(lowerQ)) return true;
-        if (!isNaN(numQ) && Math.abs(t.total - numQ) < 0.01) return true;
-        if (t.items.some(i => i.name.toLowerCase().includes(lowerQ))) return true;
-        return false;
-    });
 }
 
 // ============================================
@@ -3946,8 +4327,6 @@ function renderReports() {
     const unlocked = isAppUnlocked();
     let txCount = 0, grossSales = 0, profit = 0, cashTotal = 0, ecoTotal = 0;
     let lastSaleTimeStr = "No sales";
-    const lowStockItems = state.products.filter(p => p.stock <= (p.lowStock || CONFIG.DEFAULT_LOW_STOCK));
-    const lowStockCount = lowStockItems.length;
     const inventoryValue = calculateInventoryValue();
     
     todaysSales.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -3970,16 +4349,7 @@ function renderReports() {
         document.getElementById('dash-gross').innerText = formatMoney(grossSales);
         document.getElementById('dash-profit').innerText = formatMoney(profit);
         document.getElementById('dash-last-sale').innerText = lastSaleTimeStr;
-        const lowStockCard = document.getElementById('dash-low-stock-card');
-        const lowStockVal = document.getElementById('dash-low-stock-count');
-        if (lowStockCount > 0) {
-            lowStockCard.style.display = 'flex';
-            lowStockVal.innerText = `${lowStockCount} items need restock`;
-            lowStockCard.classList.add('warning');
-        } else {
-            lowStockVal.innerText = "All stock healthy";
-            lowStockCard.classList.remove('warning');
-        }
+        
         document.getElementById('report-cash').innerText = formatMoney(cashTotal);
         document.getElementById('report-ecocash').innerText = formatMoney(ecoTotal);
         document.getElementById('dash-inventory-value').innerText = formatMoney(inventoryValue);
@@ -3988,52 +4358,29 @@ function renderReports() {
         document.getElementById('dash-gross').innerText = "---";
         document.getElementById('dash-profit').innerText = "---";
         document.getElementById('dash-last-sale').innerText = "---";
-        document.getElementById('dash-low-stock-count').innerText = "---";
         document.getElementById('report-cash').innerText = "---";
         document.getElementById('report-ecocash').innerText = "---";
         document.getElementById('dash-inventory-value').innerText = "---";
     }
     
+    // PHASE 2: Render Stock Alerts
+    renderStockAlerts();
+    
     const topSellers = calculateTopSellers('today');
     renderTopSellersTable(topSellers);
     
-    const list = document.getElementById('transaction-list');
-    list.innerHTML = '';
-    const searchTerm = document.getElementById('tx-search') ? document.getElementById('tx-search').value : '';
-    let displayList = [...todaysSales].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-    if (searchTerm) displayList = searchTransactions(displayList, searchTerm);
+    // PHASE 1: Use dedicated render function for transactions
+    const searchInput = document.getElementById('tx-search');
+    const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
     
-    if(displayList.length === 0) {
-        list.innerHTML = '<div style="text-align:center; color:gray; padding: 20px;">No transactions found.</div>';
+    if (query) {
+        handleTransactionSearch();
     } else {
-        displayList.forEach(s => {
-            const time = new Date(s.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-            const listFinancials = calculateFinancialsFromItems(s.items);
-            const isFullyVoided = s.voided;
-            const rowClass = isFullyVoided ? 'inv-item voided transaction-row' : 'inv-item transaction-row';
-            const itemSummary = getTransactionSummary(s.items);
-            let actionBtn = '';
-            if(state.isReadOnly) {
-                actionBtn = s.refunded ? `<span class="text-warning" style="margin-left: auto;">Refunded</span>` : (isFullyVoided ? `<span class="text-muted text-small" style="margin-left: auto;">Voided</span>` : ``);
-            } else {
-                actionBtn = s.refunded ? `<span class="text-warning" style="margin-left: auto;">Refunded</span>` : (isFullyVoided ? `<span class="text-muted text-small" style="margin-left: auto;">Voided</span>` : `<button class="btn btn-danger btn-sm" style="margin-left: auto;" onclick="voidFullSale('${s.id}')">Void</button>`);
-                if (!isFullyVoided && !s.refunded) actionBtn += `<button class="btn btn-secondary btn-sm" style="margin-left: 5px;" onclick="refundSale('${s.id}')">Refund</button>`;
-            }
-            const div = document.createElement('div');
-            div.className = rowClass;
-            div.onclick = () => { if(!isFullyVoided && !s.refunded) openTransactionDetails(s.id); };
-            div.innerHTML = `
-                <div class="inv-details">
-                    <div style="font-weight:600;">${time}</div>
-                    <div class="text-small truncate" title="${itemSummary}">${itemSummary} - ${s.method}</div>
-                </div>
-                <div style="font-weight:600; color:${isFullyVoided ? 'var(--text-muted)' : 'var(--primary)'}">${formatMoney(listFinancials.total)}</div>
-                ${actionBtn}
-            `;
-            list.appendChild(div);
-        });
+        renderTransactionsList(todaysSales);
     }
+    
     renderReconciliationHistory();
+    renderBackupStatus();
 }
 
 function openTransactionDetails(saleId) {
@@ -4131,7 +4478,8 @@ function clearAllData() {
         businessName: localStorage.getItem('sme_settings'),
         readOnlyMode: localStorage.getItem('sme_readonly_mode'),
         lastBackup: localStorage.getItem('lastBackupTimestamp'),
-        lastBackupDate: localStorage.getItem('lastBackupDate')
+        lastBackupDate: localStorage.getItem('lastBackupDate'),
+        logo: localStorage.getItem('sme_logo')
     };
     
     const keysToClear = ['sme_products', 'sme_sales', 'sme_totals', 'sme_reconciliations', 'sme_cart', 'sme_readonly_mode', 'sme_stock_ledger', 'sme_period_locks'];
@@ -4143,6 +4491,7 @@ function clearAllData() {
         if (preservedData.firstLaunch) localStorage.setItem('first_launch_date', preservedData.firstLaunch);
         if (preservedData.businessName) localStorage.setItem('sme_settings', preservedData.businessName);
         if (preservedData.lastBackup) localStorage.setItem('lastBackupTimestamp', preservedData.lastBackup);
+        if (preservedData.logo) localStorage.setItem('sme_logo', preservedData.logo);
     } catch (e) {}
     
     state.products = JSON.parse(JSON.stringify(defaultProducts));
@@ -4164,10 +4513,11 @@ function clearAllData() {
 function getTransactionSummary(items) {
     if (!items || items.length === 0) return "No items";
     const displayLimit = 3;
-    const limitedItems = items.slice(0, displayLimit);
+    const limitedItems = items.filter(i => !i.voided).slice(0, displayLimit);
     const itemStrings = limitedItems.map(i => `${i.name} x${i.qty}`);
     let result = itemStrings.join(", ");
-    if (items.length > displayLimit) result += ` +${items.length - displayLimit} more`;
+    const activeCount = items.filter(i => !i.voided).length;
+    if (activeCount > displayLimit) result += ` +${activeCount - displayLimit} more`;
     return result;
 }
 
@@ -4186,8 +4536,8 @@ window.onclick = function(event) {
     }
 }
 
-// Stock Modal Quick Adjust (legacy support)
 function openStockModal(id) { openStockAdjustModal(id); }
+
 function processStockAdjustment() {
     const id = document.getElementById('stock-prod-id').value;
     const qty = parseInt(document.getElementById('stock-adj-qty').value);
@@ -4210,6 +4560,7 @@ function processStockAdjustment() {
     closeModal('modal-stock');
     renderInventory();
     renderPOS();
+    renderStockAlerts();
     showToast("Stock updated");
 }
 </script>
