@@ -11,7 +11,8 @@
 <meta name="application-name" content="ShopMate">
 <meta name="theme-color" content="#005e38">
 <meta name="msapplication-TileColor" content="#005e38">
-<!-- NO CDN DEPENDENCIES - All code is self-contained -->
+<link rel="manifest" href="manifest.json">
+<!-- NO CDN - All code is self-contained for offline -->
 <title>ShopMate POS</title>
 <style>
 /* ============================================
@@ -64,14 +65,12 @@ PROFESSIONAL DESIGN SYSTEM
 --transition-fast: 0.15s ease;
 --transition-normal: 0.25s ease;
 }
-
 * {
 box-sizing: border-box;
 -webkit-tap-highlight-color: transparent;
 margin: 0;
 padding: 0;
 }
-
 body {
 font-family: var(--font);
 font-size: var(--font-size-base);
@@ -85,10 +84,6 @@ overflow: hidden;
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-
-/* ============================================
-TYPOGRAPHY
-============================================ */
 h1, h2, h3, h4 {
 margin: 0 0 var(--space-3) 0;
 font-weight: 600;
@@ -115,10 +110,6 @@ h3 { font-size: var(--font-size-base); }
 .text-right { text-align: right; }
 .text-center { text-align: center; }
 .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-/* ============================================
-HEADER
-============================================ */
 header {
 background-color: var(--bg-surface);
 border-bottom: 1px solid var(--border);
@@ -130,7 +121,6 @@ align-items: center;
 flex-shrink: 0;
 z-index: 10;
 }
-
 .brand {
 display: flex;
 align-items: center;
@@ -140,7 +130,6 @@ font-weight: 700;
 color: var(--primary);
 letter-spacing: -0.02em;
 }
-
 .brand-logo {
 height: 32px;
 width: 32px;
@@ -152,33 +141,28 @@ align-items: center;
 justify-content: center;
 flex-shrink: 0;
 }
-
 .brand-logo img {
 height: 100%;
 width: 100%;
 object-fit: contain;
 border-radius: var(--radius);
 }
-
 .brand-logo svg {
 width: 20px;
 height: 20px;
 fill: var(--primary);
 }
-
 .header-actions {
 display: flex;
 align-items: center;
 gap: var(--space-3);
 }
-
 #clock {
 font-size: var(--font-size-sm);
 color: var(--text-muted);
 font-variant-numeric: tabular-nums;
 font-weight: 500;
 }
-
 #role-indicator {
 font-size: var(--font-size-xs);
 padding: var(--space-1) var(--space-2);
@@ -189,12 +173,10 @@ font-weight: 600;
 text-transform: uppercase;
 letter-spacing: 0.5px;
 }
-
 #role-indicator.cashier { background: var(--accent); }
 #role-indicator.manager { background: var(--dark); }
 #role-indicator.admin { background: #667eea; }
 #role-indicator.owner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-
 #role-switch-btn {
 font-size: var(--font-size-xs);
 padding: var(--space-1) var(--space-2);
@@ -206,12 +188,10 @@ color: var(--text-muted);
 cursor: pointer;
 transition: all var(--transition-fast);
 }
-
 #role-switch-btn:hover {
 background: var(--border);
 color: var(--text-main);
 }
-
 #mode-toggle {
 background: var(--bg-elevated);
 border: 1px solid var(--border);
@@ -225,27 +205,20 @@ cursor: pointer;
 color: var(--text-muted);
 transition: all var(--transition-fast);
 }
-
 #mode-toggle:hover {
 background: var(--border);
 color: var(--text-main);
 }
-
 #mode-toggle.locked {
 color: var(--danger);
 border-color: var(--danger);
 background: #fef2f2;
 }
-
 #mode-toggle svg {
 width: 18px;
 height: 18px;
 fill: currentColor;
 }
-
-/* ============================================
-NAVIGATION
-============================================ */
 nav {
 background-color: var(--bg-surface);
 display: flex;
@@ -256,7 +229,6 @@ height: var(--nav-height);
 padding: var(--space-2) 0;
 z-index: 10;
 }
-
 .nav-btn {
 background: none;
 border: none;
@@ -277,37 +249,28 @@ max-width: 100px;
 user-select: none;
 touch-action: manipulation;
 }
-
 .nav-btn svg {
 width: 22px;
 height: 22px;
 fill: currentColor;
 }
-
 .nav-btn.active {
 color: var(--primary);
 background-color: var(--primary-light);
 }
-
 .nav-btn.active svg {
 fill: var(--primary);
 }
-
 .nav-btn:hover:not(.active) {
 background-color: var(--bg-elevated);
 color: var(--text-main);
 }
-
-/* ============================================
-MAIN VIEWS
-============================================ */
 main {
 flex: 1;
 position: relative;
 overflow: hidden;
 background: var(--bg-body);
 }
-
 .view {
 position: absolute;
 top: 0;
@@ -320,13 +283,11 @@ display: none;
 opacity: 0;
 transition: opacity var(--transition-normal);
 }
-
 .view.active {
 display: flex;
 flex-direction: column;
 opacity: 1;
 }
-
 .view-content {
 flex: 1;
 overflow-y: auto;
@@ -334,10 +295,6 @@ overflow-x: hidden;
 -webkit-overflow-scrolling: touch;
 padding-bottom: var(--space-6);
 }
-
-/* ============================================
-BUTTONS
-============================================ */
 .btn {
 display: inline-flex;
 align-items: center;
@@ -356,85 +313,66 @@ text-decoration: none;
 user-select: none;
 touch-action: manipulation;
 }
-
 .btn:disabled {
 opacity: 0.5;
 cursor: not-allowed;
 }
-
 .btn-primary {
 background: var(--primary);
 color: white;
 }
-
 .btn-primary:hover:not(:disabled) {
 background: var(--primary-hover);
 }
-
 .btn-secondary {
 background: var(--bg-surface);
 border-color: var(--border);
 color: var(--text-main);
 }
-
 .btn-secondary:hover:not(:disabled) {
 background: var(--bg-elevated);
 border-color: var(--border-strong);
 }
-
 .btn-danger {
 background: var(--danger);
 color: white;
 }
-
 .btn-danger:hover:not(:disabled) {
 background: var(--danger-hover);
 }
-
 .btn-warning {
 background: var(--warning);
 color: white;
 }
-
 .btn-outline {
 background: transparent;
 border: 1px solid var(--border);
 color: var(--text-main);
 }
-
 .btn-outline:hover:not(:disabled) {
 background: var(--bg-elevated);
 }
-
 .btn-ghost {
 background: transparent;
 color: var(--text-muted);
 padding: var(--space-1);
 }
-
 .btn-ghost:hover {
 color: var(--danger);
 background: #fef2f2;
 }
-
 .btn-sm {
 height: var(--btn-height-sm);
 padding: 0 var(--space-2);
 font-size: var(--font-size-xs);
 }
-
 .btn-block {
 width: 100%;
 }
-
 .btn-icon {
 padding: var(--space-2);
 width: var(--btn-height);
 }
-
-/* ============================================
-INPUTS & FORMS
-============================================ */
 .form-control, .search-bar {
 width: 100%;
 height: var(--input-height);
@@ -446,19 +384,16 @@ background: var(--bg-surface);
 color: var(--text-main);
 transition: all var(--transition-fast);
 }
-
 .form-control:focus, .search-bar:focus {
 outline: none;
 border-color: var(--primary);
 box-shadow: 0 0 0 3px var(--primary-light);
 }
-
 .form-control[readonly] {
 background: var(--bg-elevated);
 color: var(--text-muted);
 cursor: not-allowed;
 }
-
 select.form-control {
 appearance: none;
 background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
@@ -467,11 +402,9 @@ background-position: right 8px center;
 background-size: 16px;
 padding-right: 32px;
 }
-
 .form-group {
 margin-bottom: var(--space-4);
 }
-
 .form-group label {
 display: block;
 margin-bottom: var(--space-2);
@@ -479,24 +412,18 @@ font-weight: 500;
 font-size: var(--font-size-sm);
 color: var(--text-main);
 }
-
 .input-error-msg {
 color: var(--danger);
 font-size: var(--font-size-xs);
 margin-top: var(--space-1);
 min-height: 14px;
 }
-
-/* ============================================
-POS VIEW
-============================================ */
 .pos-layout {
 display: flex;
 flex-direction: column;
 height: 100%;
 gap: var(--space-3);
 }
-
 .category-tabs {
 display: flex;
 gap: var(--space-2);
@@ -505,7 +432,6 @@ padding-bottom: var(--space-1);
 scrollbar-width: none;
 flex-shrink: 0;
 }
-
 .cat-btn {
 white-space: nowrap;
 height: 36px;
@@ -522,35 +448,29 @@ user-select: none;
 touch-action: manipulation;
 font-weight: 500;
 }
-
 .cat-btn.active {
 background: var(--primary);
 color: white;
 border-color: var(--primary);
 }
-
 .cat-btn:hover:not(.active) {
 background: var(--bg-elevated);
 border-color: var(--border-strong);
 }
-
 .pos-search-container {
 flex-shrink: 0;
 }
-
 .product-grid-container {
 flex: 1;
 overflow-y: auto;
 -webkit-overflow-scrolling: touch;
 padding-bottom: var(--space-6);
 }
-
 .product-grid {
 display: grid;
 grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
 gap: var(--space-3);
 }
-
 .product-card {
 background: var(--bg-surface);
 border: 1px solid var(--border);
@@ -567,29 +487,24 @@ position: relative;
 user-select: none;
 touch-action: manipulation;
 }
-
 .product-card:hover {
 border-color: var(--primary);
 box-shadow: var(--shadow-md);
 transform: translateY(-1px);
 }
-
 .product-card:active {
 transform: scale(0.98);
 }
-
 .product-card.low-stock {
 border-color: var(--accent);
 background: #fffbeb;
 }
-
 .product-card.out-of-stock {
 border-color: var(--border);
 opacity: 0.6;
 background: var(--bg-elevated);
 pointer-events: none;
 }
-
 .prod-name {
 font-weight: 600;
 font-size: var(--font-size-sm);
@@ -601,27 +516,20 @@ display: -webkit-box;
 -webkit-line-clamp: 2;
 -webkit-box-orient: vertical;
 }
-
 .prod-price {
 color: var(--primary);
 font-weight: 700;
 font-size: var(--font-size-base);
 }
-
 .prod-stock {
 font-size: var(--font-size-xs);
 color: var(--text-muted);
 margin-top: auto;
 }
-
 .prod-stock.alert {
 color: var(--accent);
 font-weight: 600;
 }
-
-/* ============================================
-FLOATING CART BAR
-============================================ */
 .cart-bar {
 position: fixed;
 bottom: calc(var(--nav-height) + 12px);
@@ -644,32 +552,27 @@ box-shadow: var(--shadow-lg);
 opacity: 0;
 pointer-events: none;
 }
-
 .cart-bar.visible {
 transform: translateX(-50%) translateY(0);
 opacity: 1;
 pointer-events: all;
 }
-
 .cart-info {
 display: flex;
 flex-direction: column;
 gap: 2px;
 }
-
 .cart-info h3 {
 margin: 0;
 font-size: var(--font-size-lg);
 color: var(--text-main);
 font-weight: 700;
 }
-
 .cart-count {
 font-size: var(--font-size-xs);
 color: var(--text-muted);
 font-weight: 500;
 }
-
 .btn-checkout {
 background-color: var(--primary);
 color: white;
@@ -686,25 +589,18 @@ min-width: 100px;
 user-select: none;
 touch-action: manipulation;
 }
-
 .btn-checkout:hover:not(:disabled) {
 background-color: var(--primary-hover);
 transform: translateY(-1px);
 box-shadow: var(--shadow-md);
 }
-
 .btn-checkout:active:not(:disabled) {
 transform: translateY(0);
 }
-
 .btn-checkout:disabled {
 opacity: 0.5;
 cursor: not-allowed;
 }
-
-/* ============================================
-INVENTORY VIEW
-============================================ */
 .inventory-header {
 display: flex;
 justify-content: space-between;
@@ -713,7 +609,6 @@ margin-bottom: var(--space-4);
 gap: var(--space-3);
 flex-shrink: 0;
 }
-
 .inv-list {
 display: flex;
 flex-direction: column;
@@ -721,7 +616,6 @@ gap: var(--space-2);
 overflow-y: auto;
 -webkit-overflow-scrolling: touch;
 }
-
 .inv-item {
 background: var(--bg-surface);
 padding: var(--space-3);
@@ -733,40 +627,31 @@ gap: var(--space-2);
 transition: border var(--transition-fast);
 border-left: 4px solid transparent;
 }
-
 .inv-item.low-stock {
 border-left-color: var(--accent);
 background: #fffbeb;
 }
-
 .inv-item.out-of-stock {
 border-left-color: var(--danger);
 opacity: 0.8;
 }
-
 .inv-details {
 display: flex;
 justify-content: space-between;
 align-items: baseline;
 width: 100%;
 }
-
 .inv-actions {
 display: flex;
 gap: var(--space-2);
 margin-top: var(--space-1);
 }
-
-/* ============================================
-REPORTS & DASHBOARD
-============================================ */
 .dashboard-grid {
 display: grid;
 grid-template-columns: repeat(2, 1fr);
 gap: var(--space-3);
 margin-bottom: var(--space-5);
 }
-
 .dash-card {
 background: var(--bg-surface);
 padding: var(--space-4);
@@ -778,25 +663,21 @@ justify-content: center;
 align-items: flex-start;
 box-shadow: var(--shadow-sm);
 }
-
 .dash-card.warning {
 border-left: 4px solid var(--accent);
 background: #fffbeb;
 grid-column: span 2;
 }
-
 .dash-card.danger {
 border-left: 4px solid var(--danger);
 background: #fef2f2;
 grid-column: span 2;
 }
-
 .dash-card.success {
 border-left: 4px solid var(--success);
 background: #f0fdf4;
 grid-column: span 2;
 }
-
 .dash-label {
 font-size: var(--font-size-xs);
 color: var(--text-muted);
@@ -805,31 +686,24 @@ letter-spacing: 0.5px;
 margin-bottom: var(--space-1);
 font-weight: 600;
 }
-
 .dash-value {
 font-size: var(--font-size-xl);
 font-weight: 700;
 color: var(--text-main);
 }
-
 .dash-value.money {
 color: var(--primary);
 }
-
 .dash-value.alert {
 color: var(--accent);
 }
-
 .dash-value.time {
 color: var(--text-main);
 font-size: var(--font-size-lg);
 }
-
-/* Stock Alert Styles */
 .stock-alert-section {
 margin-bottom: var(--space-4);
 }
-
 .stock-alert-section h4 {
 font-size: var(--font-size-sm);
 font-weight: 600;
@@ -838,16 +712,13 @@ display: flex;
 align-items: center;
 gap: var(--space-2);
 }
-
 .stock-alert-section h4.danger { color: var(--danger); }
 .stock-alert-section h4.warning { color: var(--accent); }
-
 .stock-alert-list {
 display: flex;
 flex-direction: column;
 gap: var(--space-1);
 }
-
 .stock-alert-item {
 display: flex;
 justify-content: space-between;
@@ -860,37 +731,29 @@ cursor: pointer;
 transition: background var(--transition-fast);
 border: 1px solid var(--border);
 }
-
 .stock-alert-item:hover {
 background: var(--bg-elevated);
 }
-
 .stock-alert-item.out {
 border-left: 3px solid var(--danger);
 }
-
 .stock-alert-item.low {
 border-left: 3px solid var(--accent);
 }
-
 .stock-alert-item .name {
 font-weight: 500;
 }
-
 .stock-alert-item .qty {
 font-weight: 700;
 }
-
 .stock-alert-item .qty.out { color: var(--danger); }
 .stock-alert-item .qty.low { color: var(--accent); }
-
 .stock-healthy {
 text-align: center;
 padding: var(--space-4);
 color: var(--success);
 font-weight: 500;
 }
-
 .section-header {
 display: flex;
 justify-content: space-between;
@@ -907,14 +770,12 @@ margin-right: calc(-1 * var(--space-4));
 padding-left: var(--space-4);
 padding-right: var(--space-4);
 }
-
 .stats-grid {
 display: grid;
 grid-template-columns: 1fr 1fr;
 gap: var(--space-3);
 margin-bottom: var(--space-5);
 }
-
 .stat-box {
 background: var(--bg-surface);
 padding: var(--space-4);
@@ -923,7 +784,6 @@ border-radius: var(--radius);
 text-align: center;
 box-shadow: var(--shadow-sm);
 }
-
 .stat-box .report-label {
 font-size: var(--font-size-xs);
 color: var(--text-muted);
@@ -931,14 +791,11 @@ text-transform: uppercase;
 margin-bottom: var(--space-1);
 font-weight: 600;
 }
-
 .stat-box .prod-price {
 font-size: var(--font-size-lg);
 font-weight: 700;
 color: var(--text-main);
 }
-
-/* Top Sellers Table */
 .top-sellers-table-container {
 background: var(--bg-surface);
 border-radius: var(--radius);
@@ -947,18 +804,15 @@ box-shadow: var(--shadow);
 margin-bottom: var(--space-5);
 border: 1px solid var(--border);
 }
-
 .top-sellers-table {
 width: 100%;
 border-collapse: collapse;
 font-size: var(--font-size-sm);
 }
-
 .top-sellers-table thead {
 background: var(--bg-elevated);
 border-bottom: 2px solid var(--border);
 }
-
 .top-sellers-table th {
 padding: var(--space-3);
 text-align: left;
@@ -968,55 +822,43 @@ text-transform: uppercase;
 font-size: var(--font-size-xs);
 letter-spacing: 0.5px;
 }
-
 .top-sellers-table td {
 padding: var(--space-3);
 border-bottom: 1px solid var(--border);
 }
-
 .top-sellers-table tbody tr:hover {
 background: var(--bg-elevated);
 }
-
 .top-sellers-table tbody tr:last-child td {
 border-bottom: none;
 }
-
 .top-sellers-rank {
 font-weight: 700;
 color: var(--primary);
 width: 50px;
 }
-
 .top-sellers-rank.top-3 {
 color: var(--accent);
 }
-
 .top-sellers-empty {
 padding: var(--space-8);
 text-align: center;
 color: var(--text-muted);
 font-size: var(--font-size-base);
 }
-
-/* Transaction List */
 .transaction-row {
 cursor: pointer;
 }
-
 .transaction-row:hover {
 background: var(--bg-elevated);
 }
-
 .transaction-row.voided, .transaction-row.refunded {
 background-color: var(--bg-elevated);
 color: var(--text-muted);
 }
-
 .transaction-row.refunded {
 border-left: 4px solid var(--accent);
 }
-
 .item-voided {
 text-decoration: line-through;
 color: var(--text-muted);
@@ -1025,14 +867,11 @@ padding: 2px 6px;
 border-radius: 2px;
 font-size: var(--font-size-xs);
 }
-
-/* Reconciliation */
 .rec-history-list {
 display: flex;
 flex-direction: column;
 gap: var(--space-2);
 }
-
 .rec-item {
 background: var(--bg-surface);
 padding: var(--space-3);
@@ -1044,20 +883,14 @@ align-items: center;
 font-size: var(--font-size-sm);
 box-shadow: var(--shadow-sm);
 }
-
 .rec-variance.positive {
 color: var(--success);
 font-weight: 600;
 }
-
 .rec-variance.negative {
 color: var(--danger);
 font-weight: 600;
 }
-
-/* ============================================
-SETTINGS & LICENSE
-============================================ */
 .license-section {
 background: var(--bg-surface);
 padding: var(--space-4);
@@ -1067,7 +900,6 @@ margin-bottom: var(--space-5);
 border-left: 4px solid var(--accent);
 box-shadow: var(--shadow-sm);
 }
-
 .license-status-banner {
 padding: var(--space-2);
 border-radius: var(--radius);
@@ -1078,12 +910,10 @@ background-color: var(--primary-light);
 color: var(--primary);
 font-size: var(--font-size-sm);
 }
-
 .license-status-banner.expired {
 background-color: #fef2f2;
 color: var(--danger);
 }
-
 .license-key-display {
 font-family: 'Courier New', Courier, monospace;
 font-size: var(--font-size-sm);
@@ -1096,14 +926,11 @@ color: var(--text-main);
 font-weight: 600;
 letter-spacing: 0.5px;
 }
-
 .license-info-grid {
 display: grid;
 gap: var(--space-3);
 margin-bottom: var(--space-4);
 }
-
-/* Print Toggle */
 .print-toggle-container {
 display: flex;
 align-items: center;
@@ -1114,19 +941,16 @@ border: 1px solid var(--border);
 border-radius: var(--radius);
 margin-bottom: var(--space-3);
 }
-
 .print-toggle-label {
 font-size: var(--font-size-sm);
 font-weight: 500;
 color: var(--text-main);
 }
-
 .print-toggle-sub {
 font-size: var(--font-size-xs);
 color: var(--text-muted);
 margin-top: 2px;
 }
-
 .toggle-switch {
 position: relative;
 width: 48px;
@@ -1136,15 +960,12 @@ border-radius: 13px;
 cursor: pointer;
 transition: background var(--transition-fast);
 }
-
 .toggle-switch.active {
 background: var(--success);
 }
-
 .toggle-switch.disabled {
 background: var(--danger);
 }
-
 .toggle-knob {
 position: absolute;
 top: 3px;
@@ -1156,12 +977,10 @@ border-radius: 50%;
 transition: transform var(--transition-fast);
 box-shadow: var(--shadow);
 }
-
 .toggle-switch.active .toggle-knob,
 .toggle-switch.disabled .toggle-knob {
 transform: translateX(22px);
 }
-
 .print-status-badge {
 display: inline-block;
 padding: var(--space-1) var(--space-2);
@@ -1170,18 +989,14 @@ font-size: var(--font-size-xs);
 font-weight: 600;
 margin-top: var(--space-2);
 }
-
 .print-status-badge.enabled {
 background: var(--primary-light);
 color: var(--primary);
 }
-
 .print-status-badge.disabled {
 background: #fef2f2;
 color: var(--danger);
 }
-
-/* Logo Upload Section */
 .logo-upload-section {
 display: flex;
 align-items: center;
@@ -1192,7 +1007,6 @@ border: 1px solid var(--border);
 border-radius: var(--radius);
 margin-bottom: var(--space-4);
 }
-
 .logo-preview {
 width: 48px;
 height: 48px;
@@ -1205,37 +1019,28 @@ overflow: hidden;
 flex-shrink: 0;
 border: 1px solid var(--border);
 }
-
 .logo-preview img {
 width: 100%;
 height: 100%;
 object-fit: contain;
 }
-
 .logo-preview svg {
 width: 24px;
 height: 24px;
 fill: var(--text-muted);
 }
-
 .logo-upload-info {
 flex: 1;
 }
-
 .logo-upload-info h4 {
 margin: 0 0 4px 0;
 font-size: var(--font-size-sm);
 }
-
 .logo-upload-info p {
 margin: 0;
 font-size: var(--font-size-xs);
 color: var(--text-muted);
 }
-
-/* ============================================
-MODALS
-============================================ */
 .modal-overlay {
 position: fixed;
 top: 0;
@@ -1250,11 +1055,9 @@ align-items: center;
 padding: var(--space-4);
 backdrop-filter: blur(2px);
 }
-
 .modal-overlay.open {
 display: flex;
 }
-
 .modal {
 background: var(--bg-surface);
 width: 100%;
@@ -1267,7 +1070,6 @@ max-height: 90vh;
 overflow-y: auto;
 border: 1px solid var(--border);
 }
-
 @keyframes slideUp {
 from {
 transform: translateY(10px);
@@ -1278,7 +1080,6 @@ transform: translateY(0);
 opacity: 1;
 }
 }
-
 .modal-header {
 font-size: var(--font-size-lg);
 font-weight: 700;
@@ -1287,21 +1088,17 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 }
-
 .modal-footer-actions {
 display: flex;
 gap: var(--space-3);
 margin-top: var(--space-5);
 }
-
-/* Checkout Modal */
 .cart-items-list {
 list-style: none;
 padding: 0;
 margin: 0 0 var(--space-4) 0;
 border-top: 1px solid var(--border);
 }
-
 .cart-item-row {
 display: flex;
 justify-content: space-between;
@@ -1310,13 +1107,11 @@ padding: var(--space-3) 0;
 border-bottom: 1px solid var(--border);
 font-size: var(--font-size-sm);
 }
-
 .cart-controls {
 display: flex;
 align-items: center;
 gap: var(--space-2);
 }
-
 .qty-btn {
 width: 28px;
 height: 28px;
@@ -1334,19 +1129,16 @@ user-select: none;
 touch-action: manipulation;
 transition: all var(--transition-fast);
 }
-
 .qty-btn:hover {
 background: var(--bg-elevated);
 border-color: var(--border-strong);
 }
-
 .payment-options {
 display: grid;
 grid-template-columns: 1fr 1fr;
 gap: var(--space-3);
 margin-top: var(--space-4);
 }
-
 .pay-btn {
 padding: var(--space-3);
 border: 1px solid var(--border);
@@ -1362,19 +1154,15 @@ transition: all var(--transition-fast);
 user-select: none;
 touch-action: manipulation;
 }
-
 .pay-btn:hover {
 background: var(--bg-elevated);
 border-color: var(--border-strong);
 }
-
 .pay-btn.selected {
 border-color: var(--primary);
 background-color: var(--primary-light);
 color: var(--primary);
 }
-
-/* Success Modal */
 .modal-success {
 text-align: center;
 padding: var(--space-6);
@@ -1391,7 +1179,6 @@ opacity: 0;
 animation: fadeIn var(--transition-normal) forwards;
 border: 1px solid var(--border);
 }
-
 @keyframes fadeIn {
 from {
 opacity: 0;
@@ -1402,17 +1189,12 @@ opacity: 1;
 transform: translate(-50%, -50%);
 }
 }
-
 .success-icon {
 font-size: 40px;
 color: var(--success);
 margin-bottom: var(--space-3);
 line-height: 1;
 }
-
-/* ============================================
-PRINT RECEIPT
-============================================ */
 #receipt-container {
 display: none;
 font-family: 'Courier New', Courier, monospace;
@@ -1423,7 +1205,6 @@ color: black;
 background: white;
 margin: 0 auto;
 }
-
 @media print {
 body > * {
 display: none !important;
@@ -1436,10 +1217,6 @@ left: 0;
 width: 100%;
 }
 }
-
-/* ============================================
-TOAST
-============================================ */
 #toast-container {
 position: fixed;
 top: 20px;
@@ -1449,7 +1226,6 @@ z-index: 300;
 width: 90%;
 max-width: 320px;
 }
-
 .toast {
 background: var(--dark);
 color: white;
@@ -1463,37 +1239,24 @@ transition: opacity var(--transition-normal);
 font-size: var(--font-size-sm);
 font-weight: 500;
 }
-
 .toast.show {
 opacity: 1;
 }
-
-/* ============================================
-UTILITIES
-============================================ */
 .hidden {
 display: none !important;
 }
-
 .flex-full {
 flex: 1;
 }
-
 .w-100 {
 width: 100%;
 }
-
 .mt-4 {
 margin-top: var(--space-4);
 }
-
 .mb-4 {
 margin-bottom: var(--space-4);
 }
-
-/* ============================================
-RESPONSIVE
-============================================ */
 @media (min-width: 768px) {
 .dashboard-grid {
 grid-template-columns: repeat(4, 1fr);
@@ -1517,7 +1280,6 @@ gap: var(--space-2);
 margin-bottom: 0;
 }
 }
-
 @media (max-width: 360px) {
 :root {
 --radius: 6px;
@@ -1570,8 +1332,6 @@ padding: 0 var(--space-4);
 font-size: var(--font-size-sm);
 }
 }
-
-/* Mobile Touch Optimization */
 @media (max-width: 768px) {
 button, .btn, .product-card, .nav-btn, .cat-btn, .pay-btn, .qty-btn {
 -webkit-user-select: none;
@@ -1588,17 +1348,13 @@ input, select, textarea {
 font-size: 16px;
 }
 }
-
 body {
 overscroll-behavior-y: contain;
 }
-
-/* Load More Button */
 .load-more-container {
 text-align: center;
 padding: var(--space-4);
 }
-
 .load-more-btn {
 background: var(--bg-surface);
 border: 1px solid var(--border);
@@ -1610,15 +1366,70 @@ cursor: pointer;
 transition: all var(--transition-fast);
 font-weight: 500;
 }
-
 .load-more-btn:hover {
 background: var(--bg-elevated);
 border-color: var(--border-strong);
 color: var(--text-main);
 }
+/* PWA Installation Prompt */
+#pwa-install-prompt {
+position: fixed;
+bottom: calc(var(--nav-height) + 20px);
+left: 50%;
+transform: translateX(-50%);
+background: var(--bg-surface);
+padding: var(--space-4);
+border-radius: var(--radius-lg);
+box-shadow: var(--shadow-lg);
+border: 1px solid var(--border);
+z-index: 150;
+display: none;
+max-width: 90%;
+}
+#pwa-install-prompt.visible {
+display: block;
+animation: slideUp var(--transition-normal) ease;
+}
+.pwa-install-content {
+text-align: center;
+}
+.pwa-install-content h4 {
+margin-bottom: var(--space-2);
+font-size: var(--font-size-sm);
+}
+.pwa-install-content p {
+margin-bottom: var(--space-3);
+font-size: var(--font-size-xs);
+color: var(--text-muted);
+}
+.pwa-install-buttons {
+display: flex;
+gap: var(--space-2);
+justify-content: center;
+}
+/* Offline Indicator */
+#offline-indicator {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+background: var(--accent);
+color: white;
+text-align: center;
+padding: var(--space-2);
+font-size: var(--font-size-xs);
+font-weight: 600;
+z-index: 9999;
+display: none;
+}
+#offline-indicator.visible {
+display: block;
+}
 </style>
 </head>
 <body>
+<!-- OFFLINE INDICATOR -->
+<div id="offline-indicator">📡 Working Offline - All features available</div>
 <header>
 <div class="brand">
 <div class="brand-logo" id="brand-logo">
@@ -1642,7 +1453,6 @@ color: var(--text-main);
 </button>
 </div>
 </header>
-
 <nav>
 <button class="nav-btn active" onclick="switchTab('pos', this)">
 <svg viewBox="0 0 24 24">
@@ -1669,7 +1479,6 @@ Report
 Data
 </button>
 </nav>
-
 <main>
 <!-- POS VIEW -->
 <section id="view-pos" class="view active">
@@ -1688,7 +1497,6 @@ Data
 </div>
 </div>
 </section>
-
 <!-- INVENTORY VIEW -->
 <section id="view-inventory" class="view">
 <div class="inventory-header">
@@ -1702,7 +1510,6 @@ Data
 <input type="text" id="inv-search" class="search-bar" placeholder="Search products..." style="margin-bottom: 16px;">
 <div id="inv-list" class="inv-list view-content"></div>
 </section>
-
 <!-- REPORTS VIEW -->
 <section id="view-reports" class="view">
 <h2 style="flex-shrink: 0;">Daily Operations</h2>
@@ -1734,14 +1541,12 @@ Data
 <div class="text-small text-muted" id="backup-status-text" style="margin-top:4px;">Backup recommended</div>
 </div>
 </div>
-
 <div class="dash-card danger" id="dash-low-stock-card" style="width: 50%;">
 <div class="dash-label">Stock Alerts</div>
 <div id="stock-alerts-container">
 <div class="stock-healthy">All inventory healthy</div>
 </div>
 </div>
-
 <div class="section-header">
 <h3>Payment Breakdown</h3>
 </div>
@@ -1755,7 +1560,6 @@ Data
 <div class="prod-price" id="report-ecocash">$0.00</div>
 </div>
 </div>
-
 <div class="section-header">
 <h3>Top Selling Products</h3>
 <span class="text-small text-muted" id="top-sellers-period">Today</span>
@@ -1776,7 +1580,6 @@ Data
 No sales data available
 </div>
 </div>
-
 <div class="section-header" style="flex-direction: column; align-items: stretch; gap: 10px;">
 <h3>Recent Transactions</h3>
 <input type="text" id="tx-search" class="search-bar" placeholder="Search by ID, item name, amount, or date..." style="margin-bottom: 10px;">
@@ -1786,14 +1589,12 @@ No sales data available
 </div>
 </div>
 <div id="transaction-list" class="inv-list"></div>
-
 <div class="section-header">
 <h3>Reconciliation History</h3>
 </div>
 <div id="reconciliation-history" class="rec-history-list"></div>
 </div>
 </section>
-
 <!-- SETTINGS VIEW -->
 <section id="view-settings" class="view">
 <h2 style="flex-shrink: 0;">Settings & Data</h2>
@@ -1817,7 +1618,6 @@ No sales data available
 </div>
 </div>
 </div>
-
 <div class="license-section" style="border-left-color: var(--primary);">
 <h3>Brand Logo</h3>
 <div class="logo-upload-section">
@@ -1839,7 +1639,6 @@ Upload
 </div>
 </div>
 </div>
-
 <div class="license-section" id="role-management-section" style="border-left-color: var(--primary);">
 <h3>Role & Access</h3>
 <div class="license-info-grid">
@@ -1857,7 +1656,6 @@ Upload
 Use the Switch button in the header to change roles. Default passcode: <strong>0000</strong>
 </p>
 </div>
-
 <div class="license-section" style="border-left-color: var(--primary);">
 <h3>Receipt Printing</h3>
 <div class="print-toggle-container">
@@ -1874,7 +1672,6 @@ Use the Switch button in the header to change roles. Default passcode: <strong>0
 When disabled, sales will complete without printing. Receipts are still saved in transaction history.
 </p>
 </div>
-
 <div class="form-group">
 <label>Business Name</label>
 <input type="text" id="setting-business-name" class="form-control" onchange="updateSettings()">
@@ -1887,7 +1684,6 @@ When disabled, sales will complete without printing. Receipts are still saved in
 <option value="P">P (Pula)</option>
 </select>
 </div>
-
 <div id="settings-danger-zone">
 <div class="section-header">
 <h3>Data Management</h3>
@@ -1905,7 +1701,6 @@ When disabled, sales will complete without printing. Receipts are still saved in
 </div>
 </section>
 </main>
-
 <!-- FLOATING CART BAR -->
 <div id="cart-bar" class="cart-bar">
 <div class="cart-info">
@@ -1914,7 +1709,17 @@ When disabled, sales will complete without printing. Receipts are still saved in
 </div>
 <button class="btn-checkout" onclick="openCheckout()" disabled>PAY</button>
 </div>
-
+<!-- PWA INSTALL PROMPT -->
+<div id="pwa-install-prompt">
+<div class="pwa-install-content">
+<h4>📱 Install ShopMate POS</h4>
+<p>Get faster access and offline support</p>
+<div class="pwa-install-buttons">
+<button class="btn btn-primary btn-sm" onclick="installPWA()">Install</button>
+<button class="btn btn-outline btn-sm" onclick="dismissPWAInstall()">Later</button>
+</div>
+</div>
+</div>
 <!-- PRODUCT MODAL -->
 <div id="modal-product" class="modal-overlay">
 <div class="modal">
@@ -1959,7 +1764,6 @@ When disabled, sales will complete without printing. Receipts are still saved in
 <button class="btn btn-primary btn-block mt-4" onclick="saveProduct()">Save Product</button>
 </div>
 </div>
-
 <!-- CHECKOUT MODAL -->
 <div id="modal-checkout" class="modal-overlay">
 <div class="modal">
@@ -1991,7 +1795,6 @@ When disabled, sales will complete without printing. Receipts are still saved in
 </div>
 </div>
 </div>
-
 <!-- STOCK ADJUSTMENT MODAL -->
 <div id="modal-stock-adjust" class="modal-overlay">
 <div class="modal">
@@ -2040,7 +1843,6 @@ When disabled, sales will complete without printing. Receipts are still saved in
 </div>
 </div>
 </div>
-
 <!-- STOCK LEDGER MODAL -->
 <div id="modal-stock-ledger" class="modal-overlay">
 <div class="modal" style="max-width: 600px;">
@@ -2069,7 +1871,6 @@ When disabled, sales will complete without printing. Receipts are still saved in
 </div>
 </div>
 </div>
-
 <!-- RECONCILIATION WORKSPACE MODAL -->
 <div id="modal-reconciliation-workspace" class="modal-overlay">
 <div class="modal" style="max-width: 700px;">
@@ -2111,7 +1912,6 @@ Enter physical counts for each item. System will calculate variances and create 
 </div>
 </div>
 </div>
-
 <!-- RECONCILIATION MODAL -->
 <div id="modal-reconcile" class="modal-overlay">
 <div class="modal">
@@ -2137,7 +1937,6 @@ Enter physical counts for each item. System will calculate variances and create 
 </div>
 </div>
 </div>
-
 <!-- TRANSACTION DETAILS MODAL -->
 <div id="modal-transaction-details" class="modal-overlay">
 <div class="modal">
@@ -2161,7 +1960,6 @@ Enter physical counts for each item. System will calculate variances and create 
 </div>
 </div>
 </div>
-
 <!-- STOCK MODAL -->
 <div id="modal-stock" class="modal-overlay">
 <div class="modal">
@@ -2181,17 +1979,14 @@ Enter physical counts for each item. System will calculate variances and create 
 </div>
 </div>
 </div>
-
 <!-- SUCCESS MODAL -->
 <div id="modal-success" class="modal-success">
 <div class="success-icon">✓</div>
 <h2 style="margin: 0 0 8px 0; font-size:18px;">Sale Completed</h2>
 <p style="color: var(--text-muted); margin: 0; font-size:13px;">Transaction recorded</p>
 </div>
-
 <!-- TOAST -->
 <div id="toast-container"></div>
-
 <!-- RECEIPT -->
 <div id="receipt-container">
 <div style="text-align: center; font-weight: bold; text-transform: uppercase; font-size: 14px; margin-bottom: 10px;">
@@ -2210,7 +2005,6 @@ Enter physical counts for each item. System will calculate variances and create 
 </div>
 <div style="text-align: center; margin-top: 20px; font-size: 10px;">Thank you!</div>
 </div>
-
 <!-- ROLE SWITCH MODAL -->
 <div id="modal-role-switch" class="modal-overlay">
 <div class="modal">
@@ -2241,7 +2035,6 @@ Passcode required for Owner/Admin/Manager. Cashier requires no passcode.
 </div>
 </div>
 </div>
-
 <!-- PASSCODE MODAL -->
 <div id="modal-passcode" class="modal-overlay">
 <div class="modal">
@@ -2268,7 +2061,6 @@ Passcode required for Owner/Admin/Manager. Cashier requires no passcode.
 </div>
 </div>
 </div>
-
 <script>
 // ============================================
 // CONFIGURATION
@@ -2278,9 +2070,8 @@ TRIAL_DAYS: 7,
 SECRET: "S3cur3Sh0pM4t3K3y-2024",
 DEFAULT_LOW_STOCK: 5,
 DEFAULT_PASSCODE: "0000",
-VERSION: "4.0.0-OFFLINE"
+VERSION: "4.0.0-PWA-OFFLINE"
 };
-
 const defaultProducts = [
 { id: 1, name: "Bread", price: 1.50, cost: 1.20, stock: 20, lowStock: 5, category: "Food" },
 { id: 2, name: "Cooking Oil 2L", price: 5.00, cost: 4.50, stock: 10, lowStock: 3, category: "Food" },
@@ -2288,7 +2079,6 @@ const defaultProducts = [
 { id: 4, name: "Sugar 2kg", price: 4.50, cost: 4.00, stock: 15, lowStock: 4, category: "Food" },
 { id: 5, name: "Bottle Water", price: 0.50, cost: 0.30, stock: 100, lowStock: 20, category: "Drinks" }
 ];
-
 // ============================================
 // ROLE DEFINITIONS
 // ============================================
@@ -2298,7 +2088,6 @@ ADMIN: 'admin',
 MANAGER: 'manager',
 CASHIER: 'cashier'
 };
-
 const PERMISSIONS = {
 [ROLES.OWNER]: {
 canSell: true, canViewInventory: true, canEditInventory: true,
@@ -2333,7 +2122,6 @@ canVoidSale: false, canRefundSale: false, canAdjustStock: false,
 canViewLedger: false, canLockPeriod: false
 }
 };
-
 // ============================================
 // STORAGE UTILS
 // ============================================
@@ -2348,7 +2136,6 @@ return fallback;
 }
 } catch (e) { return fallback; }
 }
-
 // ============================================
 // DATA STATE
 // ============================================
@@ -2369,16 +2156,69 @@ printReceipts: localStorage.getItem('sme_print_receipts') !== 'false',
 activeCategory: 'All',
 logo: localStorage.getItem('sme_logo') || null
 };
-
 let productRenderState = {
 currentPage: 1,
 itemsPerPage: 100,
 filteredProducts: [],
 isLoading: false
 };
-
 let searchTimeout = null;
-
+let deferredPrompt = null;
+// ============================================
+// PWA & SERVICE WORKER
+// ============================================
+function registerServiceWorker() {
+if ('serviceWorker' in navigator) {
+window.addEventListener('load', function() {
+navigator.serviceWorker.register('sw.js')
+.then(function(registration) {
+console.log('[PWA] SW registered:', registration.scope);
+})
+.catch(function(error) {
+console.log('[PWA] SW registration failed:', error);
+});
+});
+}
+}
+function updateOfflineIndicator() {
+const indicator = document.getElementById('offline-indicator');
+if (!navigator.onLine) {
+indicator.classList.add('visible');
+} else {
+indicator.classList.remove('visible');
+}
+}
+window.addEventListener('online', updateOfflineIndicator);
+window.addEventListener('offline', updateOfflineIndicator);
+function showPWAInstallPrompt() {
+const prompt = document.getElementById('pwa-install-prompt');
+if (deferredPrompt && !localStorage.getItem('pwa_install_dismissed')) {
+prompt.classList.add('visible');
+}
+}
+function installPWA() {
+if (deferredPrompt) {
+deferredPrompt.prompt();
+deferredPrompt.userChoice.then(function(choiceResult) {
+if (choiceResult.outcome === 'accepted') {
+console.log('[PWA] User accepted install');
+localStorage.setItem('pwa_installed', 'true');
+}
+dismissPWAInstall();
+});
+deferredPrompt = null;
+}
+}
+function dismissPWAInstall() {
+const prompt = document.getElementById('pwa-install-prompt');
+prompt.classList.remove('visible');
+localStorage.setItem('pwa_install_dismissed', 'true');
+}
+window.addEventListener('beforeinstallprompt', function(e) {
+e.preventDefault();
+deferredPrompt = e;
+showPWAInstallPrompt();
+});
 // ============================================
 // VALIDATE ROLE STATE
 // ============================================
@@ -2396,8 +2236,8 @@ state.products.forEach(p => {
 if (p.physicalStock === undefined) p.physicalStock = p.stock;
 if (p.lastStocktake === undefined) p.lastStocktake = null;
 });
+console.log("Role state validated:", state.currentUserRole);
 }
-
 // ============================================
 // PERMISSION CHECKS
 // ============================================
@@ -2409,21 +2249,22 @@ const rolePerms = PERMISSIONS[state.currentUserRole];
 if (!rolePerms) return false;
 return rolePerms[permission] === true;
 }
-
 function getRoleDisplayName() {
 const names = { [ROLES.OWNER]: 'Owner', [ROLES.ADMIN]: 'Admin', [ROLES.MANAGER]: 'Manager', [ROLES.CASHIER]: 'Cashier' };
 return names[state.currentUserRole] || 'Unknown';
 }
-
 function applyRole(role) {
-if (!Object.values(ROLES).includes(role)) return false;
+if (!Object.values(ROLES).includes(role)) {
+console.error("Invalid role:", role);
+return false;
+}
 state.currentUserRole = role;
 localStorage.setItem('sme_user_role', role);
 applyRoleRestrictions();
 renderRoleManagement();
+console.log("Role applied:", role);
 return true;
 }
-
 // ============================================
 // STOCK ALERTS
 // ============================================
@@ -2440,7 +2281,6 @@ lowStock.push(p);
 });
 return { outOfStock, lowStock };
 }
-
 function renderStockAlerts() {
 const container = document.getElementById('stock-alerts-container');
 if (!container) return;
@@ -2453,7 +2293,10 @@ let html = '';
 if (outOfStock.length > 0) {
 html += '<div class="stock-alert-section"><h4 class="danger">Out of Stock (' + outOfStock.length + ')</h4><div class="stock-alert-list">';
 outOfStock.forEach(p => {
-html += `<div class="stock-alert-item out" onclick="navigateToProduct(${p.id})"><span class="name">${p.name}</span><span class="qty out">0 units</span></div>`;
+html += `<div class="stock-alert-item out" onclick="navigateToProduct(${p.id})">
+<span class="name">${p.name}</span>
+<span class="qty out">0 units</span>
+</div>`;
 });
 html += '</div></div>';
 }
@@ -2461,13 +2304,15 @@ if (lowStock.length > 0) {
 html += '<div class="stock-alert-section"><h4 class="warning">Running Low (' + lowStock.length + ')</h4><div class="stock-alert-list">';
 lowStock.forEach(p => {
 const threshold = p.lowStock || CONFIG.DEFAULT_LOW_STOCK;
-html += `<div class="stock-alert-item low" onclick="navigateToProduct(${p.id})"><span class="name">${p.name}</span><span class="qty low">${p.stock} / ${threshold} min</span></div>`;
+html += `<div class="stock-alert-item low" onclick="navigateToProduct(${p.id})">
+<span class="name">${p.name}</span>
+<span class="qty low">${p.stock} / ${threshold} min</span>
+</div>`;
 });
 html += '</div></div>';
 }
 container.innerHTML = html;
 }
-
 function navigateToProduct(productId) {
 switchTab('inventory', document.querySelector('button[onclick*="inventory"]'));
 setTimeout(() => {
@@ -2478,7 +2323,6 @@ renderInventory();
 }
 }, 100);
 }
-
 // ============================================
 // STOCK LEDGER
 // ============================================
@@ -2499,11 +2343,9 @@ state.stockLedger.push(entry);
 localStorage.setItem('sme_stock_ledger', JSON.stringify(state.stockLedger));
 return entry;
 }
-
 function getStockLedger(productId) {
 return state.stockLedger.filter(entry => entry.productId === productId).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 }
-
 // ============================================
 // INVENTORY VALUATION
 // ============================================
@@ -2512,11 +2354,9 @@ let totalValue = 0;
 state.products.forEach(p => { totalValue += (p.stock * p.cost); });
 return Math.round(totalValue * 100) / 100;
 }
-
 function calculateProductValue(product) {
 return Math.round(product.stock * product.cost * 100) / 100;
 }
-
 // ============================================
 // PASSCODE FUNCTIONS
 // ============================================
@@ -2524,7 +2364,6 @@ function verifyPasscode(input) {
 if (!input) return false;
 return input === state.passcode;
 }
-
 function resetPasswordToDefault() {
 if (!hasPermission('canResetData')) { showToast("Owner access required"); return; }
 if (confirm("Reset passcode to default '0000'? This is a security risk.")) {
@@ -2533,7 +2372,6 @@ localStorage.setItem('sme_passcode', CONFIG.DEFAULT_PASSCODE);
 showToast("Passcode reset to default. Change it immediately!");
 }
 }
-
 // ============================================
 // ROLE SWITCH
 // ============================================
@@ -2546,7 +2384,6 @@ onRoleSelectionChange();
 openModal('modal-role-switch');
 document.getElementById('role-switch-passcode').focus();
 }
-
 function onRoleSelectionChange() {
 const selectedRole = document.getElementById('role-switch-select').value;
 const passcodeGroup = document.getElementById('role-switch-passcode-group');
@@ -2559,7 +2396,6 @@ passcodeGroup.style.display = 'block';
 passcodeInput.focus();
 }
 }
-
 function confirmRoleSwitch() {
 const newRole = document.getElementById('role-switch-select').value;
 const passcodeInput = document.getElementById('role-switch-passcode');
@@ -2574,7 +2410,6 @@ applyRole(newRole);
 closeModal('modal-role-switch');
 showToast(`Role changed to ${getRoleDisplayName()}`);
 }
-
 function openChangePasswordModal() {
 if (!hasPermission('canManagePasscode')) { showToast("Owner/Admin access required"); return; }
 document.getElementById('change-pwd-old').value = '';
@@ -2583,7 +2418,6 @@ document.getElementById('change-pwd-confirm').value = '';
 document.getElementById('change-pwd-error').innerText = '';
 openModal('modal-passcode');
 }
-
 function submitChangePassword() {
 const oldPwd = document.getElementById('change-pwd-old').value;
 const newPwd = document.getElementById('change-pwd-new').value;
@@ -2598,7 +2432,6 @@ localStorage.setItem('sme_passcode', newPwd);
 closeModal('modal-passcode');
 showToast("Passcode updated successfully");
 }
-
 // ============================================
 // PRINT TOGGLE
 // ============================================
@@ -2606,14 +2439,12 @@ function initPrintSetting() {
 state.printReceipts = localStorage.getItem('sme_print_receipts') !== 'false';
 updatePrintToggleUI();
 }
-
 function togglePrintSetting() {
 state.printReceipts = !state.printReceipts;
 localStorage.setItem('sme_print_receipts', state.printReceipts);
 updatePrintToggleUI();
 showToast(state.printReceipts ? "Receipt printing enabled" : "Receipt printing paused");
 }
-
 function updatePrintToggleUI() {
 const toggle = document.getElementById('print-toggle');
 const statusDisplay = document.getElementById('print-status-display');
@@ -2630,19 +2461,25 @@ statusDisplay.className = 'print-status-badge disabled';
 statusDisplay.innerText = 'Printing Paused';
 }
 }
-
 // ============================================
 // LOGO FUNCTIONS
 // ============================================
 function initLogo() {
-if (state.logo) updateLogoDisplay(state.logo);
+if (state.logo) {
+updateLogoDisplay(state.logo);
 }
-
+}
 function handleLogoUpload(event) {
 const file = event.target.files[0];
 if (!file) return;
-if (!file.type.startsWith('image/')) { showToast("Please select an image file"); return; }
-if (file.size > 500000) { showToast("Image too large. Max 500KB"); return; }
+if (!file.type.startsWith('image/')) {
+showToast("Please select an image file");
+return;
+}
+if (file.size > 500000) {
+showToast("Image too large. Max 500KB");
+return;
+}
 const reader = new FileReader();
 reader.onload = function(e) {
 const base64 = e.target.result;
@@ -2653,25 +2490,33 @@ showToast("Logo uploaded successfully");
 };
 reader.readAsDataURL(file);
 }
-
 function updateLogoDisplay(base64) {
 const brandLogo = document.getElementById('brand-logo');
 const logoPreview = document.getElementById('logo-preview');
-if (brandLogo) brandLogo.innerHTML = `<img src="${base64}" alt="Logo">`;
-if (logoPreview) logoPreview.innerHTML = `<img src="${base64}" alt="Logo preview">`;
+if (brandLogo) {
+brandLogo.innerHTML = `<img src="${base64}" alt="Logo">`;
 }
-
+if (logoPreview) {
+logoPreview.innerHTML = `<img src="${base64}" alt="Logo preview">`;
+}
+}
 function clearLogo() {
 state.logo = null;
 localStorage.removeItem('sme_logo');
 const brandLogo = document.getElementById('brand-logo');
 const logoPreview = document.getElementById('logo-preview');
-const svgIcon = `<svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h2v5h5v2h-5v5H7v-2h5V5z"/></svg>`;
-if (brandLogo) brandLogo.innerHTML = svgIcon;
-if (logoPreview) logoPreview.innerHTML = svgIcon;
+if (brandLogo) {
+brandLogo.innerHTML = `<svg viewBox="0 0 24 24">
+<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h2v5h5v2h-5v5H7v-2h5V5z"/>
+</svg>`;
+}
+if (logoPreview) {
+logoPreview.innerHTML = `<svg viewBox="0 0 24 24">
+<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+</svg>`;
+}
 showToast("Logo removed");
 }
-
 // ============================================
 // UI RESTRICTIONS
 // ============================================
@@ -2702,13 +2547,12 @@ if (roleSection) roleSection.style.display = hasPermission('canAccessSettings') 
 if (passwordChangeGroup) passwordChangeGroup.style.display = hasPermission('canManagePasscode') ? 'block' : 'none';
 if (dangerZone) dangerZone.style.display = hasPermission('canAccessSettings') && !state.isReadOnly ? 'block' : 'none';
 if (resetBtn) resetBtn.style.display = hasPermission('canResetData') && !state.isReadOnly ? 'inline-block' : 'none';
+console.log("Role restrictions applied:", getRoleDisplayName());
 }
-
 function renderRoleManagement() {
 const currentRoleDisplay = document.getElementById('current-role-display');
 if (currentRoleDisplay) currentRoleDisplay.value = getRoleDisplayName();
 }
-
 // ============================================
 // LICENSE
 // ============================================
@@ -2721,7 +2565,6 @@ hash = hash & hash;
 }
 return Math.abs(hash).toString(36);
 }
-
 function getDeviceID() {
 let did = localStorage.getItem('device_id');
 if (!did) {
@@ -2732,12 +2575,10 @@ localStorage.setItem('device_id', did);
 }
 return did;
 }
-
 function initLicense() {
 if (!localStorage.getItem('first_launch_date')) localStorage.setItem('first_launch_date', Date.now());
 getDeviceID();
 }
-
 function isAppUnlocked() {
 const now = Date.now();
 const firstLaunch = parseInt(localStorage.getItem('first_launch_date'));
@@ -2752,7 +2593,6 @@ if (lic.d !== getDeviceID()) return false;
 return now < lic.e;
 } catch (e) { return false; }
 }
-
 function activateLicense() {
 if (!hasPermission('canManageLicense')) { showToast("Owner access required"); return; }
 const input = document.getElementById('setting-license-key').value.trim();
@@ -2762,13 +2602,14 @@ const lic = JSON.parse(input);
 if (!lic.d || !lic.e || !lic.s) { showToast("Invalid Format. Needs: d, e, s"); return; }
 if (lic.d !== getDeviceID()) { showToast(`License Device ID mismatch`); return; }
 if (lic.e < Date.now()) { showToast("License is expired"); return; }
-if (!lic.key) lic.key = 'SM-' + simpleHash(lic.d + lic.e).toUpperCase().substring(0, 8);
+if (!lic.key) {
+lic.key = 'SM-' + simpleHash(lic.d + lic.e).toUpperCase().substring(0, 8);
+}
 localStorage.setItem('license_data', JSON.stringify(lic));
 renderLicenseSettings();
 showToast("License Activated");
 } catch (e) { showToast("Invalid License JSON Format"); }
 }
-
 function renderLicenseSettings() {
 try {
 const deviceIdEl = document.getElementById('setting-device-id');
@@ -2788,6 +2629,7 @@ const lic = JSON.parse(licStr);
 if (lic.d === getDeviceID() && lic.e > now) {
 const daysDiff = Math.ceil((lic.e - now) / (1000 * 60 * 60 * 24));
 statusText = `Licensed: ${daysDiff} days remaining`;
+statusClass = "";
 if (keyContainer && keyDisplay && lic.key) {
 keyContainer.style.display = 'block';
 keyDisplay.textContent = lic.key;
@@ -2796,7 +2638,9 @@ banner.innerText = statusText;
 banner.className = 'license-status-banner ' + statusClass;
 return;
 }
-} catch(e) { console.error("License parse error", e); }
+} catch(e) {
+console.error("License parse error", e);
+}
 }
 const firstLaunch = parseInt(localStorage.getItem('first_launch_date')) || now;
 const trialExpiry = firstLaunch + (CONFIG.TRIAL_DAYS * 24 * 60 * 60 * 1000);
@@ -2811,15 +2655,15 @@ if (keyContainer) keyContainer.style.display = 'none';
 }
 banner.innerText = statusText;
 banner.className = 'license-status-banner ' + statusClass;
-} catch (err) { console.error("License render failed:", err); }
+} catch (err) {
+console.error("License render failed:", err);
 }
-
+}
 // ============================================
-// CRYPTO - COMPLETELY OFFLINE (NO CDN)
+// CRYPTO (OFFLINE SAFE)
 // ============================================
 function digestSHA256(message) {
-// Simple hash for offline backup signatures
-// Not cryptographically secure but works fully offline
+try {
 let hash = 0;
 for (let i = 0; i < message.length; i++) {
 const char = message.charCodeAt(i);
@@ -2827,30 +2671,30 @@ hash = ((hash << 5) - hash) + char;
 hash = hash & hash;
 }
 return Math.abs(hash).toString(36);
+} catch (err) {
+console.error("Crypto error:", err);
+throw new Error("Crypto operation failed");
 }
-
+}
 function encryptData(dataString) {
-// Base64 encoding for offline backup
 try {
 return "ENCRYPTED:" + btoa(unescape(encodeURIComponent(dataString)));
 } catch (err) {
 console.error("Encryption failed:", err);
-return dataString;
+throw new Error("Encryption failed");
 }
 }
-
 function decryptData(encryptedString) {
 try {
 if (encryptedString.startsWith("ENCRYPTED:")) {
-return decodeURIComponent(escape(atob(encryptedString.substring(10))));
+return decodeURIComponent(escape(atob(encryptedString.substring(12))));
 }
 return encryptedString;
 } catch (err) {
 console.error("Decryption failed:", err);
-return encryptedString;
+throw new Error("Decryption failed");
 }
 }
-
 // ============================================
 // INTEGRITY & FINANCIALS
 // ============================================
@@ -2869,7 +2713,6 @@ cost: Math.round(cost * 100) / 100,
 profit: Math.round((total - cost) * 100) / 100
 };
 }
-
 function validateSystemIntegrity() {
 let issuesFound = 0;
 state.products.forEach(p => { if (p.stock < 0) issuesFound++; });
@@ -2882,7 +2725,6 @@ if (Math.abs(realMath.total - storedTotal) > 0.05) issuesFound++;
 recalcTotalsFromHistory();
 if (issuesFound === 0) console.log("Integrity Check Passed.");
 }
-
 function recalcTotalsFromHistory() {
 let gross = 0, profit = 0, count = 0;
 state.sales.forEach(s => {
@@ -2897,26 +2739,25 @@ state.totals = { gross, profit, transactions: count };
 saveState();
 }
 }
-
 // ============================================
 // APP INIT
 // ============================================
 window.onload = async function() {
 try {
-console.log("App initializing (100% Offline)...");
+console.log("🚀 App initializing (PWA Offline-First)...");
+registerServiceWorker();
+updateOfflineIndicator();
 initLicense();
 validateRoleState();
 validateSystemIntegrity();
 initPrintSetting();
 initLogo();
-
 const businessNameEl = document.getElementById('setting-business-name');
 const currencyEl = document.getElementById('setting-currency');
 const businessDisplayEl = document.getElementById('business-name-display');
 if (businessNameEl) businessNameEl.value = state.settings.name;
 if (currencyEl) currencyEl.value = state.settings.currency;
 if (businessDisplayEl) businessDisplayEl.innerText = state.settings.name;
-
 renderModeUI();
 applyRoleRestrictions();
 renderRoleManagement();
@@ -2931,15 +2772,13 @@ setupSearchDebounce();
 setupLazyLoading();
 setupTransactionSearch();
 setupStockSearch();
-
 setInterval(updateClock, 60000);
-console.log("App initialized | Role:", getRoleDisplayName());
+console.log("✅ App initialized | Role:", getRoleDisplayName());
 } catch (err) {
-console.error("App initialization failed:", err);
+console.error("❌ App initialization failed:", err);
 showToast("Some features may be limited");
 }
 };
-
 // ============================================
 // EVENT DELEGATION
 // ============================================
@@ -2956,10 +2795,10 @@ const editBtn = e.target.closest('.edit-btn');
 const stockBtn = e.target.closest('.stock-btn');
 const ledgerBtn = e.target.closest('.ledger-btn');
 const deleteBtn = e.target.closest('.delete-btn');
-if (editBtn) enableInlineEdit(editBtn.dataset.productId);
-else if (stockBtn) openStockAdjustModal(stockBtn.dataset.productId);
-else if (ledgerBtn) openStockLedgerModal(ledgerBtn.dataset.productId);
-else if (deleteBtn) deleteProduct(deleteBtn.dataset.productId);
+if (editBtn) { enableInlineEdit(editBtn.dataset.productId); }
+else if (stockBtn) { openStockAdjustModal(stockBtn.dataset.productId); }
+else if (ledgerBtn) { openStockLedgerModal(ledgerBtn.dataset.productId); }
+else if (deleteBtn) { deleteProduct(deleteBtn.dataset.productId); }
 });
 document.getElementById('load-more-btn').addEventListener('click', function() { loadMoreProducts(); });
 document.getElementById('product-grid-container').addEventListener('scroll', function() {
@@ -2971,7 +2810,6 @@ loadMoreProducts();
 }
 });
 }
-
 // ============================================
 // TRANSACTION SEARCH
 // ============================================
@@ -2980,18 +2818,22 @@ const searchInput = document.getElementById('tx-search');
 if (searchInput) {
 searchInput.addEventListener('input', function() {
 clearTimeout(searchTimeout);
-searchTimeout = setTimeout(() => handleTransactionSearch(), 200);
+searchTimeout = setTimeout(() => {
+handleTransactionSearch();
+}, 200);
 });
 }
 }
-
 function handleTransactionSearch() {
 const searchInput = document.getElementById('tx-search');
 const query = searchInput.value.trim().toLowerCase();
 const today = new Date().toDateString();
 let todaysSales = state.sales.filter(s => new Date(s.timestamp).toDateString() === today);
 todaysSales.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-if (!query) { renderTransactionsList(todaysSales); return; }
+if (!query) {
+renderTransactionsList(todaysSales);
+return;
+}
 const results = todaysSales.filter(tx => {
 if (tx.id && tx.id.toLowerCase().includes(query)) return true;
 const amount = parseFloat(query);
@@ -3005,7 +2847,6 @@ return false;
 });
 renderTransactionsList(results);
 }
-
 function renderTransactionsList(transactions) {
 const list = document.getElementById('transaction-list');
 list.innerHTML = '';
@@ -3029,11 +2870,17 @@ if (!isFullyVoided && !s.refunded) actionBtn += `<button class="btn btn-secondar
 const div = document.createElement('div');
 div.className = rowClass;
 div.onclick = () => { if(!isFullyVoided && !s.refunded) openTransactionDetails(s.id); };
-div.innerHTML = `<div class="inv-details"><div style="font-weight:600;">${time}</div><div class="text-small truncate" title="${itemSummary}">${itemSummary} - ${s.method}</div></div><div style="font-weight:600; color:${isFullyVoided ? 'var(--text-muted)' : 'var(--primary)'}">${formatMoney(listFinancials.total)}</div>${actionBtn}`;
+div.innerHTML = `
+<div class="inv-details">
+<div style="font-weight:600;">${time}</div>
+<div class="text-small truncate" title="${itemSummary}">${itemSummary} - ${s.method}</div>
+</div>
+<div style="font-weight:600; color:${isFullyVoided ? 'var(--text-muted)' : 'var(--primary)'}">${formatMoney(listFinancials.total)}</div>
+${actionBtn}
+`;
 list.appendChild(div);
 });
 }
-
 // ============================================
 // SEARCH DEBOUNCE
 // ============================================
@@ -3041,20 +2888,20 @@ function setupSearchDebounce() {
 const searchInput = document.getElementById('pos-search');
 searchInput.addEventListener('input', function() {
 clearTimeout(searchTimeout);
-searchTimeout = setTimeout(() => filterPos(), 200);
+searchTimeout = setTimeout(() => { filterPos(); }, 200);
 });
 }
-
 function setupStockSearch() {
 const stockSearchInput = document.getElementById('inv-search');
 if (stockSearchInput) {
 stockSearchInput.addEventListener('input', function() {
 clearTimeout(searchTimeout);
-searchTimeout = setTimeout(() => renderInventory(), 150);
+searchTimeout = setTimeout(() => {
+renderInventory();
+}, 150);
 });
 }
 }
-
 // ============================================
 // LAZY LOADING
 // ============================================
@@ -3063,7 +2910,6 @@ productRenderState.currentPage = 1;
 productRenderState.filteredProducts = [...state.products];
 renderProductBatch(1);
 }
-
 function renderProductBatch(page) {
 const start = (page - 1) * productRenderState.itemsPerPage;
 const end = start + productRenderState.itemsPerPage;
@@ -3081,14 +2927,12 @@ loadMoreContainer.style.display = 'none';
 }
 productRenderState.isLoading = false;
 }
-
 function loadMoreProducts() {
 if (productRenderState.isLoading) return;
 productRenderState.isLoading = true;
 productRenderState.currentPage++;
 renderProductBatch(productRenderState.currentPage);
 }
-
 function createProductCard(p) {
 const threshold = p.lowStock || CONFIG.DEFAULT_LOW_STOCK;
 const isLow = p.stock <= threshold && p.stock > 0;
@@ -3096,10 +2940,13 @@ const isOut = p.stock <= 0;
 const card = document.createElement('div');
 card.className = `product-card ${isLow ? 'low-stock' : ''} ${isOut ? 'out-of-stock' : ''}`;
 card.dataset.productId = p.id;
-card.innerHTML = `<div class="prod-name">${p.name}</div><div class="prod-price">${formatMoney(p.price)}</div><div class="prod-stock ${isLow ? 'alert' : ''}">${isOut ? 'Out of Stock' : (isLow ? `Low: ${p.stock}` : `${p.stock} left`)}</div>`;
+card.innerHTML = `
+<div class="prod-name">${p.name}</div>
+<div class="prod-price">${formatMoney(p.price)}</div>
+<div class="prod-stock ${isLow ? 'alert' : ''}">${isOut ? 'Out of Stock' : (isLow ? `Low: ${p.stock}` : `${p.stock} left`)}</div>
+`;
 return card;
 }
-
 // ============================================
 // READ ONLY MODE
 // ============================================
@@ -3113,7 +2960,6 @@ if(activeView === 'view-reports') renderReports();
 if(activeView === 'view-settings') renderSettingsView();
 showToast(state.isReadOnly ? "Read-Only Mode Enabled" : "Edit Mode Enabled");
 }
-
 function renderModeUI() {
 const btn = document.getElementById('mode-toggle');
 const unlockIcon = document.getElementById('icon-unlock');
@@ -3126,7 +2972,6 @@ btn.classList.remove('locked'); btn.classList.add('unlocked');
 unlockIcon.classList.remove('hidden'); lockIcon.classList.add('hidden');
 }
 }
-
 // ============================================
 // UTILS
 // ============================================
@@ -3139,10 +2984,8 @@ localStorage.setItem('sme_reconciliations', JSON.stringify(state.reconciliations
 localStorage.setItem('sme_stock_ledger', JSON.stringify(state.stockLedger));
 localStorage.setItem('sme_period_locks', JSON.stringify(state.periodLocks));
 }
-
 function formatMoney(amount) { return state.settings.currency + parseFloat(amount).toFixed(2); }
 function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
-
 function showToast(msg) {
 const container = document.getElementById('toast-container');
 const toast = document.createElement('div');
@@ -3151,7 +2994,6 @@ toast.innerText = msg;
 container.appendChild(toast);
 setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
 }
-
 function updateClock() {
 try {
 const clockEl = document.getElementById('clock');
@@ -3160,7 +3002,6 @@ const now = new Date();
 clockEl.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 } catch (err) { console.error("Clock update failed:", err); }
 }
-
 function switchTab(tabId, btn) {
 if (tabId === 'inventory' && !hasPermission('canViewInventory')) { showToast("Access denied"); return; }
 if (tabId === 'reports' && !hasPermission('canViewReports')) { showToast("Access denied"); return; }
@@ -3173,7 +3014,6 @@ if(tabId === 'reports') renderReports();
 if(tabId === 'inventory') renderInventory();
 if(tabId === 'settings') { renderSettingsView(); renderRoleManagement(); }
 }
-
 // ============================================
 // CATEGORY LOGIC
 // ============================================
@@ -3197,14 +3037,17 @@ document.getElementById('pos-search').focus();
 container.appendChild(btn);
 });
 }
-
 // ============================================
 // POS LOGIC
 // ============================================
 function resetProductRenderState() {
-productRenderState = { currentPage: 1, itemsPerPage: 100, filteredProducts: [], isLoading: false };
+productRenderState = {
+currentPage: 1,
+itemsPerPage: 100,
+filteredProducts: [],
+isLoading: false
+};
 }
-
 function renderPOS() {
 const grid = document.getElementById('pos-grid');
 grid.innerHTML = '';
@@ -3216,12 +3059,10 @@ return matchesCategory && matchesSearch;
 });
 renderProductBatch(1);
 }
-
 function filterPos() {
 resetProductRenderState();
 renderPOS();
 }
-
 function addToCart(productId) {
 const product = state.products.find(p => p.id == productId);
 if(product.stock <= 0) { showToast("Out of stock!"); return; }
@@ -3233,7 +3074,6 @@ state.cart.push({ id: product.id, name: product.name, price: product.price, cost
 }
 updateCartUI();
 }
-
 function updateCartUI() {
 const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 const count = state.cart.reduce((sum, item) => sum + item.qty, 0);
@@ -3248,7 +3088,6 @@ bar.classList.remove('visible');
 document.querySelector('.btn-checkout').disabled = true;
 }
 }
-
 // ============================================
 // CHECKOUT LOGIC
 // ============================================
@@ -3266,18 +3105,27 @@ document.getElementById('btn-finalize').disabled = true;
 renderCheckoutCartItems();
 openModal('modal-checkout');
 }
-
 function renderCheckoutCartItems() {
 const list = document.getElementById('checkout-cart-list');
 list.innerHTML = '';
 state.cart.forEach((item, index) => {
 const li = document.createElement('li');
 li.className = 'cart-item-row';
-li.innerHTML = `<div><div style="font-weight:600;">${item.name}</div><div class="text-small text-muted">${formatMoney(item.price)} x ${item.qty}</div></div><div class="cart-controls"><button class="qty-btn" onclick="adjustCart(${index}, -1)">-</button><span style="min-width:20px; text-align:center; font-weight:600;">${item.qty}</span><button class="qty-btn" onclick="adjustCart(${index}, 1)">+</button><button class="btn-ghost" onclick="voidCartItem(${index})" title="Remove">X</button></div>`;
+li.innerHTML = `
+<div>
+<div style="font-weight:600;">${item.name}</div>
+<div class="text-small text-muted">${formatMoney(item.price)} x ${item.qty}</div>
+</div>
+<div class="cart-controls">
+<button class="qty-btn" onclick="adjustCart(${index}, -1)">-</button>
+<span style="min-width:20px; text-align:center; font-weight:600;">${item.qty}</span>
+<button class="qty-btn" onclick="adjustCart(${index}, 1)">+</button>
+<button class="btn-ghost" onclick="voidCartItem(${index})" title="Remove">X</button>
+</div>
+`;
 list.appendChild(li);
 });
 }
-
 function adjustCart(index, delta) {
 const item = state.cart[index];
 const newQty = item.qty + delta;
@@ -3288,7 +3136,6 @@ const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
 document.getElementById('checkout-total-display').innerText = formatMoney(total);
 if(state.cart.length === 0) closeModal('modal-checkout');
 }
-
 function voidCartItem(index) {
 state.cart.splice(index, 1);
 updateCartUI();
@@ -3297,14 +3144,12 @@ const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0)
 document.getElementById('checkout-total-display').innerText = formatMoney(total);
 if(state.cart.length === 0) closeModal('modal-checkout');
 }
-
 function selectPayment(method) {
 state.selectedPaymentMethod = method;
 document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
 document.getElementById(`pay-${method.toLowerCase()}`).classList.add('selected');
 document.getElementById('btn-finalize').disabled = false;
 }
-
 function calcChange() {
 const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 const received = parseFloat(document.getElementById('pay-received').value) || 0;
@@ -3316,7 +3161,6 @@ const change = received - total;
 document.getElementById('change-display').innerText = `Change: ${formatMoney(change)}`;
 } else { document.getElementById('change-display').innerText = ''; }
 }
-
 function validateCheckout() {
 const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 const input = document.getElementById('pay-received');
@@ -3329,7 +3173,6 @@ if (!receivedStr || isNaN(received)) { input.classList.add('error'); errorMsg.in
 if (received < total) { input.classList.add('error'); errorMsg.innerText = "Amount less than total"; return false; }
 return true;
 }
-
 function cancelSale() {
 state.cart = [];
 updateCartUI();
@@ -3338,7 +3181,6 @@ document.getElementById('pay-received-error').innerText = '';
 closeModal('modal-checkout');
 showToast("Sale Cancelled");
 }
-
 function showSuccessModal() {
 const modal = document.getElementById('modal-success');
 modal.style.display = 'block';
@@ -3350,7 +3192,6 @@ modal.style.animation = 'fadeOut 0.5s forwards';
 setTimeout(() => { modal.style.display = 'none'; }, 500);
 }, 2000);
 }
-
 function printReceipt(saleRecord) {
 if (!state.printReceipts) { console.log("Receipt printing paused"); return; }
 const dateStr = new Date(saleRecord.timestamp).toLocaleString();
@@ -3373,7 +3214,6 @@ const change = received - saleRecord.total;
 document.getElementById('receipt-change').innerText = `Change: ${formatMoney(change)}`;
 window.print();
 }
-
 function finalizeSale() {
 if (!isAppUnlocked()) { showToast("License required"); return; }
 if (!validateCheckout()) { return; }
@@ -3433,7 +3273,6 @@ const topSellers = calculateTopSellers('today');
 renderTopSellersTable(topSellers);
 }
 }
-
 // ============================================
 // INVENTORY LOGIC
 // ============================================
@@ -3457,13 +3296,25 @@ const stockDisplay = isOut ? `<span class="text-danger">Out of Stock</span>` : (
 const varianceDisplay = hasVariance ? `<span class="text-warning text-small">Variance: ${variance > 0 ? '+' : ''}${variance}</span>` : '';
 let actionsHtml = '';
 if(!state.isReadOnly && hasPermission('canAdjustStock')) {
-actionsHtml = `<div class="inv-actions"><button class="btn btn-secondary btn-sm stock-btn" data-product-id="${p.id}">Adjust</button><button class="btn btn-secondary btn-sm ledger-btn" data-product-id="${p.id}">History</button><button class="btn btn-secondary btn-sm edit-btn" data-product-id="${p.id}">Edit</button><button class="btn btn-danger btn-sm delete-btn" data-product-id="${p.id}">X</button></div>`;
+actionsHtml = `
+<div class="inv-actions">
+<button class="btn btn-secondary btn-sm stock-btn" data-product-id="${p.id}">Adjust</button>
+<button class="btn btn-secondary btn-sm ledger-btn" data-product-id="${p.id}">History</button>
+<button class="btn btn-secondary btn-sm edit-btn" data-product-id="${p.id}">Edit</button>
+<button class="btn btn-danger btn-sm delete-btn" data-product-id="${p.id}">X</button>
+</div>`;
 }
-div.innerHTML = `<div class="inv-details"><div style="font-weight:600">${p.name}</div><div class="text-small text-muted">Sell: ${formatMoney(p.price)} | Cost: ${formatMoney(p.cost)} | Value: ${formatMoney(calculateProductValue(p))} | <span style="font-size:11px; color:#888;">${p.category || 'Uncategorized'}</span></div><div>${stockDisplay} ${varianceDisplay} <span class="text-small text-muted">(Min: ${threshold})</span></div></div>${actionsHtml}`;
+div.innerHTML = `
+<div class="inv-details">
+<div style="font-weight:600">${p.name}</div>
+<div class="text-small text-muted">Sell: ${formatMoney(p.price)} | Cost: ${formatMoney(p.cost)} | Value: ${formatMoney(calculateProductValue(p))} | <span style="font-size:11px; color:#888;">${p.category || 'Uncategorized'}</span></div>
+<div>${stockDisplay} ${varianceDisplay} <span class="text-small text-muted">(Min: ${threshold})</span></div>
+</div>
+${actionsHtml}
+`;
 list.appendChild(div);
 });
 }
-
 function openStockAdjustModal(productId) {
 if(!hasPermission('canAdjustStock') || state.isReadOnly) { showToast("Permission denied"); return; }
 const p = state.products.find(prod => prod.id == productId);
@@ -3478,7 +3329,6 @@ document.getElementById('adjust-note').value = '';
 openModal('modal-stock-adjust');
 document.getElementById('adjust-physical-qty').focus();
 }
-
 document.addEventListener('input', function(e) {
 if (e.target.id === 'adjust-physical-qty') {
 const systemQty = parseInt(document.getElementById('adjust-system-qty').value) || 0;
@@ -3490,7 +3340,6 @@ varianceEl.style.color = variance > 0 ? 'var(--success)' : (variance < 0 ? 'var(
 varianceEl.style.fontWeight = '600';
 }
 });
-
 function confirmStockAdjustment() {
 if(!hasPermission('canAdjustStock') || state.isReadOnly) { showToast("Permission denied"); return; }
 const productId = document.getElementById('adjust-prod-id').value;
@@ -3513,7 +3362,6 @@ renderPOS();
 renderStockAlerts();
 showToast("Stock adjustment posted");
 }
-
 function openStockLedgerModal(productId) {
 if(!hasPermission('canViewLedger')) { showToast("Permission denied"); return; }
 const p = state.products.find(prod => prod.id == productId);
@@ -3531,13 +3379,17 @@ const row = document.createElement('tr');
 const date = new Date(entry.timestamp).toLocaleString();
 const changeClass = entry.adjustment > 0 ? 'text-success' : (entry.adjustment < 0 ? 'text-danger' : '');
 const changeText = entry.adjustment > 0 ? `+${entry.adjustment}` : entry.adjustment;
-row.innerHTML = `<td>${date}</td><td>${entry.reason}</td><td class="${changeClass}" style="font-weight: 600;">${changeText}</td><td class="text-small text-muted">${entry.note || '-'}</td>`;
+row.innerHTML = `
+<td>${date}</td>
+<td>${entry.reason}</td>
+<td class="${changeClass}" style="font-weight: 600;">${changeText}</td>
+<td class="text-small text-muted">${entry.note || '-'}</td>
+`;
 tbody.appendChild(row);
 });
 }
 openModal('modal-stock-ledger');
 }
-
 function openReconciliationWorkspace() {
 if(!hasPermission('canReconcile') || state.isReadOnly) { showToast("Permission denied"); return; }
 const tbody = document.getElementById('reconciliation-table-body');
@@ -3548,14 +3400,19 @@ const row = document.createElement('tr');
 const variance = (p.physicalStock || p.stock) - p.stock;
 const valueImpact = variance * p.cost;
 totalVarianceValue += valueImpact;
-row.innerHTML = `<td>${p.name}</td><td>${p.stock}</td><td><input type="number" class="form-control recon-physical" data-product-id="${p.id}" data-cost="${p.cost}" value="${p.physicalStock || p.stock}" style="width: 80px;" onchange="updateReconciliationRow(this)"></td><td class="recon-variance" style="font-weight: 600;">${variance > 0 ? '+' : ''}${variance}</td><td class="recon-value-impact" style="font-weight: 600;">${formatMoney(valueImpact)}</td>`;
+row.innerHTML = `
+<td>${p.name}</td>
+<td>${p.stock}</td>
+<td><input type="number" class="form-control recon-physical" data-product-id="${p.id}" data-cost="${p.cost}" value="${p.physicalStock || p.stock}" style="width: 80px;" onchange="updateReconciliationRow(this)"></td>
+<td class="recon-variance" style="font-weight: 600;">${variance > 0 ? '+' : ''}${variance}</td>
+<td class="recon-value-impact" style="font-weight: 600;">${formatMoney(valueImpact)}</td>
+`;
 tbody.appendChild(row);
 });
 document.getElementById('reconciliation-total-variance').innerText = formatMoney(totalVarianceValue);
 document.getElementById('reconciliation-total-variance').style.color = totalVarianceValue > 0 ? 'var(--success)' : (totalVarianceValue < 0 ? 'var(--danger)' : 'var(--text-main)');
 openModal('modal-reconciliation-workspace');
 }
-
 function updateReconciliationRow(input) {
 const productId = input.dataset.productId;
 const cost = parseFloat(input.dataset.cost);
@@ -3579,7 +3436,6 @@ totalVarianceValue += value;
 document.getElementById('reconciliation-total-variance').innerText = formatMoney(totalVarianceValue);
 document.getElementById('reconciliation-total-variance').style.color = totalVarianceValue > 0 ? 'var(--success)' : (totalVarianceValue < 0 ? 'var(--danger)' : 'var(--text-main)');
 }
-
 function postReconciliationAdjustments() {
 if(!hasPermission('canReconcile') || state.isReadOnly) { showToast("Permission denied"); return; }
 const note = document.getElementById('reconciliation-note').value || 'Stock reconciliation';
@@ -3605,15 +3461,36 @@ renderPOS();
 renderStockAlerts();
 showToast(`${adjustmentsMade} adjustments posted`);
 }
-
 function enableInlineEdit(id) {
 if(!hasPermission('canEditInventory') || state.isReadOnly) return;
 const p = state.products.find(prod => prod.id == id);
 const row = document.getElementById(`inv-item-${id}`);
 if (!row) return;
-row.innerHTML = `<div><div style="margin-bottom:8px;"><label style="font-size:11px; color:var(--text-muted);">Product Name</label><input type="text" id="edit-name-${id}" class="form-control" value="${p.name}" style="height:36px;" /></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;"><div><label style="font-size:11px; color:var(--text-muted);">Sell Price</label><input type="number" id="edit-price-${id}" class="form-control" value="${p.price}" style="height:36px;" /></div><div><label style="font-size:11px; color:var(--text-muted);">Cost Price</label><input type="number" id="edit-cost-${id}" class="form-control" value="${p.cost}" style="height:36px;" /></div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;"><div><label style="font-size:11px; color:var(--text-muted);">Stock</label><input type="number" id="edit-stock-${id}" class="form-control" value="${p.stock}" style="height:36px;" /></div><div><label style="font-size:11px; color:var(--text-muted);">Min Alert</label><input type="number" id="edit-low-${id}" class="form-control" value="${p.lowStock || CONFIG.DEFAULT_LOW_STOCK}" style="height:36px;" /></div></div><div><label style="font-size:11px; color:var(--text-muted);">Category</label><input type="text" id="edit-cat-${id}" class="form-control" value="${p.category || ''}" list="categories" style="height:36px;"></div></div><div class="inv-actions" style="justify-content: flex-end; margin-top:12px;"><button class="btn btn-secondary btn-sm" onclick="renderInventory()">Cancel</button><button class="btn btn-primary btn-sm" onclick="saveInlineEdit(${id})">Save</button></div>`;
+row.innerHTML = `
+<div>
+<div style="margin-bottom:8px;">
+<label style="font-size:11px; color:var(--text-muted);">Product Name</label>
+<input type="text" id="edit-name-${id}" class="form-control" value="${p.name}" style="height:36px;" />
+</div>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+<div><label style="font-size:11px; color:var(--text-muted);">Sell Price</label><input type="number" id="edit-price-${id}" class="form-control" value="${p.price}" style="height:36px;" /></div>
+<div><label style="font-size:11px; color:var(--text-muted);">Cost Price</label><input type="number" id="edit-cost-${id}" class="form-control" value="${p.cost}" style="height:36px;" /></div>
+</div>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+<div><label style="font-size:11px; color:var(--text-muted);">Stock</label><input type="number" id="edit-stock-${id}" class="form-control" value="${p.stock}" style="height:36px;" /></div>
+<div><label style="font-size:11px; color:var(--text-muted);">Min Alert</label><input type="number" id="edit-low-${id}" class="form-control" value="${p.lowStock || CONFIG.DEFAULT_LOW_STOCK}" style="height:36px;" /></div>
+</div>
+<div>
+<label style="font-size:11px; color:var(--text-muted);">Category</label>
+<input type="text" id="edit-cat-${id}" class="form-control" value="${p.category || ''}" list="categories" style="height:36px;">
+</div>
+</div>
+<div class="inv-actions" style="justify-content: flex-end; margin-top:12px;">
+<button class="btn btn-secondary btn-sm" onclick="renderInventory()">Cancel</button>
+<button class="btn btn-primary btn-sm" onclick="saveInlineEdit(${id})">Save</button>
+</div>
+`;
 }
-
 function saveInlineEdit(id) {
 if(!hasPermission('canEditInventory') || state.isReadOnly) return;
 const name = document.getElementById(`edit-name-${id}`).value.trim();
@@ -3633,7 +3510,6 @@ renderCategoryTabs();
 renderStockAlerts();
 showToast("Product updated");
 }
-
 function deleteProduct(id) {
 if(!hasPermission('canEditInventory') || state.isReadOnly) return;
 if(confirm("Delete this product?")) {
@@ -3645,7 +3521,6 @@ renderCategoryTabs();
 renderStockAlerts();
 }
 }
-
 function saveProduct() {
 if(!hasPermission('canEditInventory') || state.isReadOnly) return;
 const id = document.getElementById('prod-id').value;
@@ -3673,7 +3548,6 @@ renderCategoryTabs();
 renderStockAlerts();
 showToast("Product saved");
 }
-
 // ============================================
 // BACKUP & RESTORE
 // ============================================
@@ -3713,7 +3587,6 @@ console.error(err);
 showToast("Backup failed: " + err.message);
 }
 }
-
 function renderBackupStatus() {
 const backupTimestamp = localStorage.getItem("lastBackupTimestamp");
 const backupCard = document.getElementById("dash-backup-card");
@@ -3748,7 +3621,6 @@ backupText.innerText = "Recently backed up";
 backupCard.classList.remove("warning", "danger");
 }
 }
-
 async function restoreBackup() {
 if(!hasPermission('canRestoreBackup') || state.isReadOnly) return;
 const fileInput = document.getElementById("restoreFile");
@@ -3790,7 +3662,6 @@ setTimeout(() => location.reload(), 1500);
 };
 reader.readAsText(file);
 }
-
 // ============================================
 // RECONCILIATION
 // ============================================
@@ -3802,7 +3673,6 @@ return saleDate === today && s.method === 'Cash' && !s.voided && !s.refunded;
 });
 return todayCashSales.reduce((sum, s) => sum + s.total, 0);
 }
-
 function openReconcileModal() {
 if(!hasPermission('canReconcile')) { showToast("Permission denied"); return; }
 const expected = getExpectedCash();
@@ -3812,7 +3682,6 @@ document.getElementById('rec-diff').innerText = formatMoney(0);
 document.getElementById('rec-diff').className = '';
 openModal('modal-reconcile');
 }
-
 function calculateReconciliationDiff() {
 const counted = parseFloat(document.getElementById('rec-counted').value) || 0;
 const expected = getExpectedCash();
@@ -3822,7 +3691,6 @@ diffEl.innerText = formatMoney(diff);
 if (diff > 0.01) diffEl.className = 'text-success';
 else if (diff < -0.01) diffEl.className = 'text-danger';
 }
-
 function saveReconciliation() {
 const counted = parseFloat(document.getElementById('rec-counted').value) || 0;
 const expected = getExpectedCash();
@@ -3833,7 +3701,6 @@ closeModal('modal-reconcile');
 renderReconciliationHistory();
 showToast("Reconciliation Saved");
 }
-
 function renderReconciliationHistory() {
 const list = document.getElementById('reconciliation-history');
 list.innerHTML = '';
@@ -3845,11 +3712,16 @@ div.className = 'rec-item';
 const dateStr = new Date(rec.timestamp).toLocaleString();
 const diffClass = rec.difference > 0 ? 'positive' : (rec.difference < 0 ? 'negative' : '');
 const diffSign = rec.difference > 0 ? '+' : '';
-div.innerHTML = `<div><div style="font-weight:600;">${dateStr}</div><div class="text-small text-muted">Exp: ${formatMoney(rec.expected)} | Count: ${formatMoney(rec.counted)}</div></div><div class="rec-variance ${diffClass}">${diffSign}${formatMoney(rec.difference)}</div>`;
+div.innerHTML = `
+<div>
+<div style="font-weight:600;">${dateStr}</div>
+<div class="text-small text-muted">Exp: ${formatMoney(rec.expected)} | Count: ${formatMoney(rec.counted)}</div>
+</div>
+<div class="rec-variance ${diffClass}">${diffSign}${formatMoney(rec.difference)}</div>
+`;
 list.appendChild(div);
 });
 }
-
 // ============================================
 // VOID/REFUND
 // ============================================
@@ -3874,7 +3746,6 @@ renderPOS();
 renderStockAlerts();
 showToast("Sale voided - Inventory updated");
 }
-
 function refundSale(saleId) {
 if(!hasPermission('canRefundSale') || state.isReadOnly) { showToast("Permission denied"); return; }
 if(!confirm("REFUND: Return stock and mark as Returned?")) return;
@@ -3903,7 +3774,6 @@ renderPOS();
 renderStockAlerts();
 showToast("Sale refunded - Stock restored");
 }
-
 function voidTransactionItem(saleId, itemIndex) {
 if(!hasPermission('canVoidSale') || state.isReadOnly) { showToast("Permission denied"); return; }
 if(!confirm("Void this item? Stock will be restored.")) return;
@@ -3922,7 +3792,6 @@ renderPOS();
 renderStockAlerts();
 showToast("Item voided - Stock restored");
 }
-
 // ============================================
 // REPORTS & TOP SELLERS
 // ============================================
@@ -3948,7 +3817,6 @@ productMap.set(productId, { productId: productId, name: item.name, totalSold: qt
 });
 return Array.from(productMap.values()).sort((a, b) => b.totalSold - a.totalSold);
 }
-
 function renderTopSellersTable(data = null) {
 const tbody = document.getElementById('top-sellers-table-body');
 const emptyMsg = document.getElementById('top-sellers-empty');
@@ -3964,10 +3832,15 @@ emptyMsg.style.display = 'none';
 tbody.innerHTML = top10.map((item, index) => {
 const rank = index + 1;
 const rankClass = rank <= 3 ? 'top-sellers-rank top-3' : 'top-sellers-rank';
-return `<tr><td class="${rankClass}">#${rank}</td><td><span class="truncate" style="display: block; max-width: 200px;">${item.name}</span></td><td style="text-align: right; font-weight: 600;">${item.totalSold}</td></tr>`;
+return `
+<tr>
+<td class="${rankClass}">#${rank}</td>
+<td><span class="truncate" style="display: block; max-width: 200px;">${item.name}</span></td>
+<td style="text-align: right; font-weight: 600;">${item.totalSold}</td>
+</tr>
+`;
 }).join('');
 }
-
 function renderReports() {
 const today = new Date().toDateString();
 const todaysSales = state.sales.filter(s => new Date(s.timestamp).toDateString() === today);
@@ -4018,7 +3891,6 @@ renderTransactionsList(todaysSales);
 renderReconciliationHistory();
 renderBackupStatus();
 }
-
 function openTransactionDetails(saleId) {
 const sale = state.sales.find(s => s.id === saleId);
 if(!sale) return;
@@ -4033,13 +3905,18 @@ if(!item.voided) netTotal += (item.price * item.qty);
 const div = document.createElement('div');
 div.className = `inv-item ${item.voided ? 'item-voided' : ''}`;
 const voidBtn = item.voided ? `<span class="text-small text-muted">Voided</span>` : (state.isReadOnly ? `` : `<button class="btn btn-danger btn-sm" onclick="voidTransactionItem('${sale.id}', ${index})">Void</button>`);
-div.innerHTML = `<div class="inv-details"><div style="font-weight:600;">${item.name} x${item.qty}</div><div class="text-small text-muted">${formatMoney(item.price)}</div></div>${voidBtn}`;
+div.innerHTML = `
+<div class="inv-details">
+<div style="font-weight:600;">${item.name} x${item.qty}</div>
+<div class="text-small text-muted">${formatMoney(item.price)}</div>
+</div>
+${voidBtn}
+`;
 list.appendChild(div);
 });
 document.getElementById('trans-details-total').innerText = formatMoney(netTotal);
 openModal('modal-transaction-details');
 }
-
 // ============================================
 // SETTINGS
 // ============================================
@@ -4051,12 +3928,10 @@ saveState();
 renderPOS(); renderInventory(); renderReports();
 showToast("Settings Saved");
 }
-
 function renderSettingsView() {
 const dangerZone = document.getElementById('settings-danger-zone');
 if(state.isReadOnly) dangerZone.classList.add('hidden'); else dangerZone.classList.remove('hidden');
 }
-
 function exportCSV() {
 if (!hasPermission('canExportData')) { showToast("Permission denied"); return; }
 if (!isAppUnlocked()) { showToast("License required"); return; }
@@ -4075,7 +3950,11 @@ let status = 'Completed';
 if (s.voided) status = 'Voided';
 else if (s.refunded) status = 'Refunded';
 const itemSummary = activeItems.map(i => `${i.name.replace(/"/g, '""')} x${i.qty} @${i.price}`).slice(0, 5).join('; ');
-const row = [`"${s.id}"`, `"${d.toLocaleDateString()}"`, `"${d.toLocaleTimeString()}"`, netTotal.toFixed(2), netCost.toFixed(2), profit.toFixed(2), `"${s.method}"`, `"${status}"`, `"${itemSummary}"`];
+const row = [
+`"${s.id}"`, `"${d.toLocaleDateString()}"`, `"${d.toLocaleTimeString()}"`,
+netTotal.toFixed(2), netCost.toFixed(2), profit.toFixed(2),
+`"${s.method}"`, `"${status}"`, `"${itemSummary}"`
+];
 csvContent += row.join(',') + '\n';
 });
 const encodedUri = encodeURI(csvContent);
@@ -4087,7 +3966,6 @@ link.click();
 document.body.removeChild(link);
 showToast(`Exported ${state.sales.length} transactions`);
 }
-
 function clearAllData() {
 if(!hasPermission('canResetData')) { showToast("Owner access required"); return; }
 const confirmMessage = "FACTORY RESET WARNING\nThis will PERMANENTLY delete all data.\nType 'RESET' to confirm:";
@@ -4127,7 +4005,6 @@ saveState();
 showToast("Factory reset complete");
 setTimeout(() => { location.reload(); }, 1500);
 }
-
 function getTransactionSummary(items) {
 if (!items || items.length === 0) return "No items";
 const displayLimit = 3;
@@ -4138,7 +4015,6 @@ const activeCount = items.filter(i => !i.voided).length;
 if (activeCount > displayLimit) result += ` +${activeCount - displayLimit} more`;
 return result;
 }
-
 // ============================================
 // MODAL UTILS
 // ============================================
