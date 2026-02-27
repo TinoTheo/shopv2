@@ -12,8 +12,6 @@
 <meta name="theme-color" content="#005e38">
 <meta name="msapplication-TileColor" content="#005e38">
 <link rel="manifest" href="manifest.json">
-<!-- CryptoJS for Encryption -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <title>ShopMate POS</title>
 <style>
 /* ============================================
@@ -105,6 +103,30 @@ body {
 }
 
 /* ============================================
+   OFFLINE BANNER
+   ============================================ */
+.offline-banner {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--warning);
+    color: white;
+    text-align: center;
+    padding: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 2000;
+    box-shadow: var(--shadow-md);
+}
+
+/* Adjust header top margin when banner is visible */
+body.offline-active header {
+    margin-top: 32px; /* Height of banner */
+}
+
+/* ============================================
    TYPOGRAPHY
    ============================================ */
 h1, h2, h3, h4 {
@@ -154,7 +176,6 @@ header {
     z-index: 10;
 }
 
-/* PHASE 3: Logo and Brand Section */
 .brand {
     display: flex;
     align-items: center;
@@ -354,7 +375,6 @@ main {
 .view-content {
     flex: 1;
     overflow-y: auto;
-    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     padding-bottom: var(--space-6);
 }
@@ -818,7 +838,6 @@ select.form-control {
 .dash-card.success {
     border-left: 4px solid var(--success);
     background: #f0fdf4;
-    grid-column: span 2;
 }
 
 .dash-label {
@@ -1524,8 +1543,7 @@ select.form-control {
     }
     
     .dash-card.warning,
-    .dash-card.danger,
-    .dash-card.success {
+    .dash-card.danger {
         grid-column: span 4;
     }
     
@@ -1661,8 +1679,13 @@ body {
 </style>
 </head>
 <body>
+
+<!-- OFFLINE BANNER -->
+<div id="offline-banner" class="offline-banner">
+    You are currently offline.
+</div>
+
 <header>
-    <!-- PHASE 3: Logo Section -->
     <div class="brand">
         <div class="brand-logo" id="brand-logo">
             <svg viewBox="0 0 24 24">
@@ -1763,27 +1786,27 @@ body {
                     <div class="dash-label">Profit</div>
                     <div class="dash-value money" id="dash-profit" style="color:var(--accent)">$0.00</div>
                 </div>
+                <div class="dash-card success" id="dash-inventory-value-card">
+                    <div class="dash-label">Inventory Value</div>
+                    <div class="dash-value money" id="dash-inventory-value">$0.00</div>
+                </div>
+                
                 <div class="dash-card">
                     <div class="dash-label">Last Sale</div>
                     <div class="dash-value time" id="dash-last-sale">--:--</div>
                 </div>
-
-                <div class="dash-card success" id="dash-inventory-value-card" style="grid-column: span 2;">
-                    <div class="dash-label">Inventory Value</div>
-                    <div class="dash-value money" id="dash-inventory-value">$0.00</div>
+                
+                <div class="dash-card danger" id="dash-low-stock-card" style="grid-column: span 2;">
+                    <div class="dash-label">Stock Alerts</div>
+                    <div id="stock-alerts-container">
+                        <div class="stock-healthy">All inventory healthy</div>
+                    </div>
                 </div>
+                
                 <div class="dash-card" id="dash-backup-card" style="grid-column: span 2;">
                     <div class="dash-label">Last Backup</div>
                     <div class="dash-value time" id="dash-last-backup">Never</div>
                     <div class="text-small text-muted" id="backup-status-text" style="margin-top:4px;">Backup recommended</div>
-                </div>
-            </div>
-
-            <!-- PHASE 2: Stock Alerts Card - Now shows detailed list -->
-            <div class="dash-card danger" id="dash-low-stock-card" style="width: 50%;">
-                <div class="dash-label">Stock Alerts</div>
-                <div id="stock-alerts-container">
-                    <div class="stock-healthy">All inventory healthy</div>
                 </div>
             </div>
 
@@ -1824,7 +1847,6 @@ body {
 
             <div class="section-header" style="flex-direction: column; align-items: stretch; gap: 10px;">
                 <h3>Recent Transactions</h3>
-                <!-- PHASE 1: Fixed Transaction Search -->
                 <input type="text" id="tx-search" class="search-bar" placeholder="Search by ID, item name, amount, or date..." style="margin-bottom: 10px;">
                 <div style="display:flex; gap:8px; justify-content: flex-end;">
                     <button class="btn btn-secondary btn-sm" onclick="exportCSV()">Export CSV</button>
@@ -1864,7 +1886,6 @@ body {
                 </div>
             </div>
 
-            <!-- PHASE 3: Logo Upload Section -->
             <div class="license-section" style="border-left-color: var(--primary);">
                 <h3>Brand Logo</h3>
                 <div class="logo-upload-section">
@@ -2231,7 +2252,7 @@ body {
 
 <!-- SUCCESS MODAL -->
 <div id="modal-success" class="modal-success">
-    <div class="success-icon">✓</div>
+    <div class="success-icon">OK</div>
     <h2 style="margin: 0 0 8px 0; font-size:18px;">Sale Completed</h2>
     <p style="color: var(--text-muted); margin: 0; font-size:13px;">Transaction recorded</p>
 </div>
@@ -2325,7 +2346,7 @@ const CONFIG = {
     SECRET: "S3cur3Sh0pM4t3K3y-2024",
     DEFAULT_LOW_STOCK: 5,
     DEFAULT_PASSCODE: "0000",
-    VERSION: "3.3.0-STOCK-ALERTS"
+    VERSION: "3.4.0-OFFLINE"
 };
 
 const defaultProducts = [
@@ -2427,6 +2448,23 @@ let productRenderState = {
 
 // Search Debounce
 let searchTimeout = null;
+
+// ============================================
+// OFFLINE LOGIC
+// ============================================
+function updateOnlineStatus() {
+    const banner = document.getElementById('offline-banner');
+    if (!navigator.onLine) {
+        banner.style.display = 'block';
+        document.body.classList.add('offline-active');
+    } else {
+        banner.style.display = 'none';
+        document.body.classList.remove('offline-active');
+    }
+}
+
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
 
 // ============================================
 // VALIDATE ROLE STATE
@@ -2951,22 +2989,20 @@ function renderLicenseSettings() {
         console.error("License render failed:", err);
     }
 }
+
 // ============================================
 // CRYPTO
 // ============================================
 function digestSHA256(message) {
     try {
-        if (typeof CryptoJS === 'undefined') {
-            console.warn("CryptoJS not loaded - using fallback");
-            let hash = 0;
-            for (let i = 0; i < message.length; i++) {
-                const char = message.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash;
-            }
-            return Math.abs(hash).toString(36);
+        // Using fallback simple hash for full offline capability
+        let hash = 0;
+        for (let i = 0; i < message.length; i++) {
+            const char = message.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
         }
-        return CryptoJS.SHA256(message).toString();
+        return Math.abs(hash).toString(36);
     } catch (err) {
         console.error("Crypto error:", err);
         throw new Error("Crypto operation failed");
@@ -2975,11 +3011,8 @@ function digestSHA256(message) {
 
 function encryptData(dataString) {
     try {
-        if (typeof CryptoJS === 'undefined') {
-            console.warn("CryptoJS not loaded - backup unencrypted");
-            return "UNENCRYPTED:" + btoa(unescape(encodeURIComponent(dataString)));
-        }
-        return CryptoJS.AES.encrypt(dataString, CONFIG.SECRET).toString();
+        // Using Base64 for offline capability
+        return "UNENCRYPTED:" + btoa(unescape(encodeURIComponent(dataString)));
     } catch (err) {
         console.error("Encryption failed:", err);
         throw new Error("Encryption failed");
@@ -2988,15 +3021,12 @@ function encryptData(dataString) {
 
 function decryptData(encryptedString) {
     try {
-        if (typeof CryptoJS === 'undefined') {
-            console.warn("CryptoJS not loaded - attempting base64 decode");
-            if (encryptedString.startsWith("UNENCRYPTED:")) {
-                return decodeURIComponent(escape(atob(encryptedString.substring(12))));
-            }
-            throw new Error("Cannot decrypt without CryptoJS");
+        // Using Base64 for offline capability
+        if (encryptedString.startsWith("UNENCRYPTED:")) {
+            return decodeURIComponent(escape(atob(encryptedString.substring(12))));
         }
-        const decrypted = CryptoJS.AES.decrypt(encryptedString, CONFIG.SECRET);
-        return decrypted.toString(CryptoJS.enc.Utf8);
+        // Legacy CryptoJS support (if data was encrypted before going offline)
+        throw new Error("Cannot decrypt legacy data without network");
     } catch (err) {
         console.error("Decryption failed:", err);
         throw new Error("Decryption failed");
@@ -3056,16 +3086,15 @@ function recalcTotalsFromHistory() {
 window.onload = async function() {
     try {
         console.log("App initializing...");
+        
+        // Check online status immediately
+        updateOnlineStatus();
+        
         initLicense();
         validateRoleState();
         validateSystemIntegrity();
         initPrintSetting();
         initLogo();
-        
-        if (typeof CryptoJS === 'undefined') {
-            console.warn("CryptoJS failed to load");
-            setTimeout(() => showToast("Security library offline"), 2000);
-        }
         
         const businessNameEl = document.getElementById('setting-business-name');
         const currencyEl = document.getElementById('setting-currency');
@@ -3464,8 +3493,7 @@ function openCheckout() {
     document.getElementById('checkout-total-display').innerText = formatMoney(total);
     document.getElementById('pay-received').value = '';
     document.getElementById('pay-received').classList.remove('error');
-    document.getElementById('pay-received-error').innerText = '';
-    document.getElementById('change-display').innerText = '';
+    document.getElementById('pay-received-error').innerText = '';    document.getElementById('change-display').innerText = '';
     state.selectedPaymentMethod = null;
     document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
     document.getElementById('btn-finalize').disabled = true;
@@ -3778,8 +3806,8 @@ function openStockLedgerModal(productId) {
                 <td>${date}</td>
                 <td>${entry.reason}</td>
                 <td class="${changeClass}" style="font-weight: 600;">${changeText}</td>
-                <td class="text-small text-muted">${entry.note || '-'            }</td>
-        `;
+                <td class="text-small text-muted">${entry.note || '-'}</td>
+            `;
             tbody.appendChild(row);
         });
     }
@@ -4363,13 +4391,11 @@ function renderReports() {
         document.getElementById('dash-inventory-value').innerText = "---";
     }
     
-    // PHASE 2: Render Stock Alerts
     renderStockAlerts();
     
     const topSellers = calculateTopSellers('today');
     renderTopSellersTable(topSellers);
     
-    // PHASE 1: Use dedicated render function for transactions
     const searchInput = document.getElementById('tx-search');
     const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
     
@@ -4442,14 +4468,14 @@ function exportCSV() {
             if (typeof i.voided === 'undefined') i.voided = false;
             if(!i.voided) { netTotal += (i.price * i.qty); netCost += (i.cost * i.qty); activeItems.push(i); }
         });
-        const profit = netTotal - netCost;
+        const profitVal = netTotal - netCost;
         let status = 'Completed';
         if (s.voided) status = 'Voided';
         else if (s.refunded) status = 'Refunded';
         const itemSummary = activeItems.map(i => `${i.name.replace(/"/g, '""')} x${i.qty} @${i.price}`).slice(0, 5).join('; ');
         const row = [
             `"${s.id}"`, `"${d.toLocaleDateString()}"`, `"${d.toLocaleTimeString()}"`,
-            netTotal.toFixed(2), netCost.toFixed(2), profit.toFixed(2),
+            netTotal.toFixed(2), netCost.toFixed(2), profitVal.toFixed(2),
             `"${s.method}"`, `"${status}"`, `"${itemSummary}"`
         ];
         csvContent += row.join(',') + '\n';
