@@ -1,157 +1,126 @@
 // ============================================
-// SERVICE WORKER — SIMPLE CACHE-FIRST STRATEGY
-// Compatible with older Android WebView (Android 5+)
+// SERVICE WORKER — Enhanced Offline-First Strategy
 // ============================================
 
-const CACHE_NAME = 'shopmate-v1';
-const CACHE_VERSION = '20240101';
+const CACHE_NAME = 'shopmate-v2';  // Increment version to force update
+const CORE_CACHE = 'shopmate-core-v2';
 
-// Assets to cache immediately on install
-const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+// Only cache the essential HTML file during install
+const CORE_ASSETS = [
+  '/index.html'   // This is the only critical file; the rest is inline
 ];
 
 // ============================================
-// INSTALL EVENT — Cache core assets
+// INSTALL EVENT — Cache core HTML
 // ============================================
 self.addEventListener('install', function(event) {
-  console.log('[SW] Installing service worker...');
+  console.log('[SW] Installing...');
   
-  // Force immediate activation (skip waiting)
+  // Skip waiting so the new SW activates immediately
   self.skipWaiting();
   
   event.waitUntil(
-    caches.open(CACHE_NAME)
+    caches.open(CORE_CACHE)
       .then(function(cache) {
-        console.log('[SW] Caching core assets...');
-        return cache.addAll(ASSETS_TO_CACHE).catch(function(err) {
-          // Some assets may fail (e.g., if offline during install)
-          // That's okay - we'll cache them on first fetch
-          console.warn('[SW] Some assets failed to cache:', err);
-        });
-      })
-      .then(function() {
-        console.log('[SW] Installation complete');
-      })
-      .catch(function(err) {
-        console.error('[SW] Installation failed:', err);
-      })
-  );
-});
-
-// ============================================
-// ACTIVATE EVENT — Clear old caches
-// ============================================
-self.addEventListener('activate', function(event) {
-  console.log('[SW] Activating service worker...');
-  
-  // Claim all clients immediately
-  self.clients.claim();
-  
-  event.waitUntil(
-    caches.keys()
-      .then(function(cacheNames) {
-        return Promise.all(
-          cacheNames.map(function(cacheName) {
-            // Delete old cache versions
-            if (cacheName !== CACHE_NAME) {
-              console.log('[SW] Deleting old cache:', cacheName);
-              return caches.delete(cacheName);
-            }
-          })
+        // Use addAll but catch individual failures – we want the install to succeed
+        // even if one asset fails (e.g., if offline during first install)
+        return Promise.allSettled(
+          CORE_ASSETS.map(url => 
+            cache.add(url).catch(err => {
+              console.warn(`[SW] Failed to cache ${url}:`, err);
+            })
+          )
         );
       })
       .then(function() {
-        console.log('[SW] Activation complete');
+        console.log('[SW] Core assets cached');
       })
   );
 });
 
 // ============================================
-// FETCH EVENT — Cache-first strategy with fallback
+// ACTIVATE EVENT — Clean up old caches
+// ============================================
+self.addEventListener('activate', function(event) {
+  console.log('[SW] Activating...');
+  
+  // Claim all clients so the page is controlled immediately
+  event.waitUntil(self.clients.claim());
+  
+  // Delete old caches
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          if (cacheName !== CORE_CACHE) {
+            console.log('[SW] Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+
+// ============================================
+// FETCH EVENT — Cache‑first with navigation fallback
 // ============================================
 self.addEventListener('fetch', function(event) {
   // Skip non-GET requests
-  if (event.request.method !== 'GET') {
+  if (event.request.method !== 'GET') return;
+  
+  // Skip cross-origin requests
+  const url = new URL(event.request.url);
+  if (url.origin !== self.location.origin) return;
+  
+  // For navigation requests, we always want to serve the cached index.html
+  // even if the URL has query parameters or fragments
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .catch(function() {
+          // Network failed – serve index.html from cache
+          return caches.match('/index.html')
+            .then(function(cached) {
+              if (cached) return cached;
+              // If even index.html is missing, return a simple offline page
+              return new Response('Offline – Please check your connection.', {
+                status: 503,
+                statusText: 'Service Unavailable'
+              });
+            });
+        })
+    );
     return;
   }
   
-  // Skip cross-origin requests (let them go to network)
-  if (!event.request.url.startsWith(self.location.origin)) {
-    return;
-  }
-  
+  // For all other requests (assets, API calls, etc.), try cache first, then network
   event.respondWith(
     caches.match(event.request)
       .then(function(cachedResponse) {
-        // Return cached version if available
         if (cachedResponse) {
-          console.log('[SW] Serving from cache:', event.request.url);
           return cachedResponse;
         }
         
-        // Not in cache - fetch from network
-        console.log('[SW] Fetching from network:', event.request.url);
+        // Not in cache – fetch from network
         return fetch(event.request)
           .then(function(networkResponse) {
-            // Cache successful responses
+            // Cache successful responses (e.g., images, scripts, styles)
             if (networkResponse && networkResponse.status === 200) {
-              // Clone the response (streams can only be read once)
-              var responseToCache = networkResponse.clone();
-              caches.open(CACHE_NAME)
-                .then(function(cache) {
-                  cache.put(event.request, responseToCache);
-                });
+              const responseToCache = networkResponse.clone();
+              caches.open(CORE_CACHE)
+                .then(cache => cache.put(event.request, responseToCache))
+                .catch(err => console.warn('[SW] Cache put failed:', err));
             }
             return networkResponse;
           })
           .catch(function(err) {
-            // Network failed - try to serve offline page
-            console.warn('[SW] Network fetch failed:', err);
-            
-            // For navigation requests, serve a fallback
-            if (event.request.mode === 'navigate') {
-              return caches.match('/index.html');
-            }
-            
-            // Return error response
-            return new Response('Offline - Content not cached', {
-              status: 503,
-              statusText: 'Service Unavailable'
-            });
+            console.warn('[SW] Fetch failed for', event.request.url, err);
+            // No fallback – return a generic offline error
+            return new Response('Offline content unavailable', { status: 503 });
           });
-      })
-      .catch(function(err) {
-        console.error('[SW] Cache match failed:', err);
-        // Last resort - try network directly
-        return fetch(event.request).catch(function() {
-          return new Response('Offline', { status: 503 });
-        });
       })
   );
 });
 
-// ============================================
-// MESSAGE HANDLER — For communication with main app
-// ============================================
-self.addEventListener('message', function(event) {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-  
-  if (event.data && event.data.type === 'CLEAR_CACHE') {
-    caches.keys().then(function(cacheNames) {
-      return Promise.all(
-        cacheNames.map(function(cacheName) {
-          return caches.delete(cacheName);
-        })
-      );
-    }).then(function() {
-      event.ports[0].postMessage({ type: 'CACHE_CLEARED' });
-    });
-  }
-});
-
-console.log('[SW] Service worker loaded');
+console.log('[SW] Service worker loaded (enhanced offline support)');
