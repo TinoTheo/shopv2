@@ -1423,7 +1423,7 @@ z-index: 9999;
 display: none;
 }
 #offline-indicator.visible {
-display: block;
+display: none;
 }
 </style>
 </head>
@@ -2170,7 +2170,7 @@ let deferredPrompt = null;
 function registerServiceWorker() {
 if ('serviceWorker' in navigator) {
 window.addEventListener('load', function() {
-navigator.serviceWorker.register('service-worker.js.js')
+navigator.serviceWorker.register('service-worker.js')
 .then(function(registration) {
 console.log('[PWA] SW registered:', registration.scope);
 })
