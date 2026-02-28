@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#005e38">
 <meta name="msapplication-TileColor" content="#005e38">
 <link rel="manifest" href="manifest.json">
-<!-- NO CDN - All code is self-contained for offline -->
+<!-- NO CDN - All code is self-contained for offline --> 
 <title>ShopMate POS</title>
 <style>
 /* ============================================
@@ -2168,17 +2168,18 @@ let deferredPrompt = null;
 // PWA & SERVICE WORKER
 // ============================================
 function registerServiceWorker() {
-if ('serviceWorker' in navigator) {
-window.addEventListener('load', function() {
-navigator.serviceWorker.register('service-worker.js')
-.then(function(registration) {
-console.log('[PWA] SW registered:', registration.scope);
-})
-.catch(function(error) {
-console.log('[PWA] SW registration failed:', error);
-});
-});
-}
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => {
+        console.log('[PWA] SW registered:', reg.scope);
+        // STEP 6: FORCE UPDATE
+        // Ensures we check for a new version immediately on load
+        reg.update();
+      })
+      .catch(err => {
+        console.error('[PWA] SW registration failed:', err);
+      });
+  }
 }
 function updateOfflineIndicator() {
 const indicator = document.getElementById('offline-indicator');

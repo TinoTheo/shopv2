@@ -1,8 +1,7 @@
 {
   "name": "ShopMate POS",
   "short_name": "ShopMate",
-  "description": "Offline Point of Sale System",
-  "start_url": "/",
+  "start_url": "/index.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#f3f4f6",
@@ -10,18 +9,10 @@
   "orientation": "any",
   "icons": [
     {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23005e38'><path d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h2v5h5v2h-5v5H7v-2h5V5z'/></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     }
-  ],
-  "categories": ["business", "finance"],
-  "lang": "en"
+  ]
 }
