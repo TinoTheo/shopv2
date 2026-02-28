@@ -1,87 +1,103 @@
-const CACHE_VERSION = 'shopmate-v3';
-const STATIC_CACHE = `shopmate-static-${CACHE_VERSION}`;
+// Define a unique cache name. Update the version number (v2, v3, etc.) 
+// whenever you update your icons or code to force a refresh.
+const CACHE_NAME = 'my-app-cache-v1';
 
-// STEP 1: STRICT PRECACHE
-// We include '/', '/index.html', and the manifest.
-// We REMOVED external icon files to prevent install failure if they are missing.
-const STATIC_ASSETS = [
+// List of assets to cache for offline use.
+// This includes your icons, manifest, and core app files.
+const ASSETS_TO_CACHE = [
   '/',
-  '/index.html',
-  '/manifest.json'
+  '/index.html',        // Ensure this matches your main HTML file name
+  '/manifest.json',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/styles.css',        // Uncomment/rename to match your CSS file
+  '/app.js'             // Uncomment/rename to match your main JS file
 ];
 
-// Install Event: Strict caching. If ANY of these fail, the SW will not install.
+// 1. INSTALL EVENT
+// This triggers when the service worker is first installed.
+// We open the cache and add all the assets defined above.
 self.addEventListener('install', (event) => {
+  console.log('[Service Worker] Installing...');
+  
   event.waitUntil(
-    caches.open(STATIC_CACHE)
-      .then(cache => {
-        console.log('[SW] Precaching App Shell');
-        return cache.addAll(STATIC_ASSETS);
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        console.log('[Service Worker] Caching app shell and icons');
+        return cache.addAll(ASSETS_TO_CACHE);
       })
-      .then(() => self.skipWaiting()) // Force activation
+      .then(() => {
+        // Forces the waiting service worker to become the active service worker.
+        return self.skipWaiting();
+      })
+      .catch((error) => {
+        console.error('[Service Worker] Cache failed:', error);
+      })
   );
 });
 
-// STEP 2: PROPER ACTIVATION
-// Clean up old caches and claim clients immediately.
+// 2. ACTIVATE EVENT
+// This cleans up old caches so they don't take up unnecessary space.
 self.addEventListener('activate', (event) => {
+  console.log('[Service Worker] Activating...');
+  
   event.waitUntil(
-    caches.keys().then(keys => {
+    caches.keys().then((cacheNames) => {
       return Promise.all(
-        keys.map(key => {
-          if (!key.includes(CACHE_VERSION)) {
-            console.log('[SW] Removing old cache:', key);
-            return caches.delete(key);
+        cacheNames.map((cacheName) => {
+          // Delete any cache that isn't the current one (CACHE_NAME)
+          if (cacheName !== CACHE_NAME) {
+            console.log('[Service Worker] Clearing old cache:', cacheName);
+            return caches.delete(cacheName);
           }
         })
       );
-    }).then(() => self.clients.claim())
+    }).then(() => {
+      // Takes control of all open clients (pages) immediately.
+      return self.clients.claim();
+    })
   );
 });
 
-// STEP 3: NAVIGATION CACHE-FIRST
-// Navigation requests (HTML) never hit the network first.
-// Static assets are cached on the fly.
+// 3. FETCH EVENT
+// This intercepts network requests.
+// Strategy: Cache-First (Serve from cache if available, else fetch from network).
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-
-  const url = new URL(event.request.url);
-
-  // Skip cross-origin requests
-  if (url.origin !== self.location.origin) return;
-
-  // Handle Navigation (HTML requests)
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      caches.match('/index.html')
-        .then(response => {
-          if (response) return response;
-          // Fallback just in case, though strict install prevents this
-          return fetch(event.request); 
-        })
-    );
-    return;
-  }
-
-  // Handle Static Assets (Cache-First with Network Fallback)
   event.respondWith(
     caches.match(event.request)
-      .then(cached => {
-        if (cached) return cached;
+      .then((response) => {
+        // 1. If the resource is in the cache, return it.
+        if (response) {
+          return response;
+        }
 
-        return fetch(event.request)
-          .then(networkResponse => {
-            // Cache valid responses on the fly
-            if (!networkResponse || networkResponse.status !== 200) {
-              return networkResponse;
-            }
-
-            const clone = networkResponse.clone();
-            caches.open(STATIC_CACHE)
-              .then(cache => cache.put(event.request, clone));
-
+        // 2. If not in cache, fetch from the network.
+        return fetch(event.request).then((networkResponse) => {
+          // Optional: Cache new requests dynamically.
+          // This allows pages visited offline to be available later.
+          
+          // Check if we received a valid response
+          if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
             return networkResponse;
-          });
+          }
+
+          // IMPORTANT: Clone the response. A response is a stream
+          // and because we want the browser to consume the response
+          // as well as the cache consuming the response, we need two copies.
+          const responseToCache = networkResponse.clone();
+
+          caches.open(CACHE_NAME)
+            .then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+
+          return networkResponse;
+        });
+      })
+      .catch(() => {
+        // Optional: Fallback logic if both cache and network fail
+        // For example, return a custom offline page:
+        // return caches.match('/offline.html');
       })
   );
 });

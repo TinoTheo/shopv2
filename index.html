@@ -2172,8 +2172,6 @@ function registerServiceWorker() {
     navigator.serviceWorker.register('service-worker.js')
       .then(reg => {
         console.log('[PWA] SW registered:', reg.scope);
-        // STEP 6: FORCE UPDATE
-        // Ensures we check for a new version immediately on load
         reg.update();
       })
       .catch(err => {
