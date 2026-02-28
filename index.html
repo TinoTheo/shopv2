@@ -2875,7 +2875,7 @@ div.innerHTML = `
 <div class="text-small truncate" title="${itemSummary}">${itemSummary} - ${s.method}</div>
 </div>
 <div style="font-weight:600; color:${isFullyVoided ? 'var(--text-muted)' : 'var(--primary)'}">${formatMoney(listFinancials.total)}</div>
-${actionBtn}
+ ${actionBtn}
 `;
 list.appendChild(div);
 });
@@ -3309,7 +3309,7 @@ div.innerHTML = `
 <div class="text-small text-muted">Sell: ${formatMoney(p.price)} | Cost: ${formatMoney(p.cost)} | Value: ${formatMoney(calculateProductValue(p))} | <span style="font-size:11px; color:#888;">${p.category || 'Uncategorized'}</span></div>
 <div>${stockDisplay} ${varianceDisplay} <span class="text-small text-muted">(Min: ${threshold})</span></div>
 </div>
-${actionsHtml}
+ ${actionsHtml}
 `;
 list.appendChild(div);
 });
@@ -3341,712 +3341,727 @@ varianceEl.style.fontWeight = '600';
 });
 function confirmStockAdjustment() {
 if(!hasPermission('canAdjustStock') || state.isReadOnly) { showToast("Permission denied"); return; }
-const productId = document.getElementById('adjust-prod-id').value;
-const physicalQty = parseInt(document.getElementById('adjust-physical-qty').value);
-const reason = document.getElementById('adjust-reason').value;
-const note = document.getElementById('adjust-note').value;
-if (isNaN(physicalQty) || physicalQty < 0) { showToast("Enter valid physical count"); return; }
-if (!reason) { showToast("Select adjustment reason"); return; }
-const p = state.products.find(prod => prod.id == productId);
-if (!p) return;
-const previousQty = p.stock;
-p.stock = physicalQty;
-p.physicalStock = physicalQty;
-p.lastStocktake = new Date().toISOString();
-createStockLedgerEntry(p.id, p.name, previousQty, physicalQty, reason, note, state.currentUserRole);
-saveState();
-closeModal('modal-stock-adjust');
-renderInventory();
-renderPOS();
-renderStockAlerts();
-showToast("Stock adjustment posted");
+    const productId = document.getElementById('adjust-prod-id').value;
+    const physicalQty = parseInt(document.getElementById('adjust-physical-qty').value);
+    const reason = document.getElementById('adjust-reason').value;
+    const note = document.getElementById('adjust-note').value;
+    if (isNaN(physicalQty) || physicalQty < 0) { showToast("Enter valid physical count"); return; }
+    if (!reason) { showToast("Select adjustment reason"); return; }
+    const p = state.products.find(prod => prod.id == productId);
+    if (!p) return;
+    const previousQty = p.stock;
+    p.stock = physicalQty;
+    p.physicalStock = physicalQty;
+    p.lastStocktake = new Date().toISOString();
+    createStockLedgerEntry(p.id, p.name, previousQty, physicalQty, reason, note, state.currentUserRole);
+    saveState();
+    closeModal('modal-stock-adjust');
+    renderInventory();
+    renderPOS();
+    renderStockAlerts();
+    showToast("Stock adjustment posted");
 }
+
 function openStockLedgerModal(productId) {
-if(!hasPermission('canViewLedger')) { showToast("Permission denied"); return; }
-const p = state.products.find(prod => prod.id == productId);
-if (!p) return;
-document.getElementById('ledger-prod-id').value = p.id;
-document.getElementById('ledger-prod-name').innerText = p.name;
-const ledger = getStockLedger(p.id);
-const tbody = document.getElementById('ledger-table-body');
-tbody.innerHTML = '';
-if (ledger.length === 0) {
-tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No movement history</td></tr>';
-} else {
-ledger.forEach(entry => {
-const row = document.createElement('tr');
-const date = new Date(entry.timestamp).toLocaleString();
-const changeClass = entry.adjustment > 0 ? 'text-success' : (entry.adjustment < 0 ? 'text-danger' : '');
-const changeText = entry.adjustment > 0 ? `+${entry.adjustment}` : entry.adjustment;
-row.innerHTML = `
-<td>${date}</td>
-<td>${entry.reason}</td>
-<td class="${changeClass}" style="font-weight: 600;">${changeText}</td>
-<td class="text-small text-muted">${entry.note || '-'}</td>
-`;
-tbody.appendChild(row);
-});
+    if(!hasPermission('canViewLedger')) { showToast("Permission denied"); return; }
+    const p = state.products.find(prod => prod.id == productId);
+    if (!p) return;
+    document.getElementById('ledger-prod-id').value = p.id;
+    document.getElementById('ledger-prod-name').innerText = p.name;
+    const ledger = getStockLedger(p.id);
+    const tbody = document.getElementById('ledger-table-body');
+    tbody.innerHTML = '';
+    if (ledger.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No movement history</td></tr>';
+    } else {
+        ledger.forEach(entry => {
+            const row = document.createElement('tr');
+            const date = new Date(entry.timestamp).toLocaleString();
+            const changeClass = entry.adjustment > 0 ? 'text-success' : (entry.adjustment < 0 ? 'text-danger' : '');
+            const changeText = entry.adjustment > 0 ? `+${entry.adjustment}` : entry.adjustment;
+            row.innerHTML = `
+                <td>${date}</td>
+                <td>${entry.reason}</td>
+                <td class="${changeClass}" style="font-weight: 600;">${changeText}</td>
+                <td class="text-small text-muted">${entry.note || '-'}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+    openModal('modal-stock-ledger');
 }
-openModal('modal-stock-ledger');
-}
+
 function openReconciliationWorkspace() {
-if(!hasPermission('canReconcile') || state.isReadOnly) { showToast("Permission denied"); return; }
-const tbody = document.getElementById('reconciliation-table-body');
-tbody.innerHTML = '';
-let totalVarianceValue = 0;
-state.products.forEach(p => {
-const row = document.createElement('tr');
-const variance = (p.physicalStock || p.stock) - p.stock;
-const valueImpact = variance * p.cost;
-totalVarianceValue += valueImpact;
-row.innerHTML = `
-<td>${p.name}</td>
-<td>${p.stock}</td>
-<td><input type="number" class="form-control recon-physical" data-product-id="${p.id}" data-cost="${p.cost}" value="${p.physicalStock || p.stock}" style="width: 80px;" onchange="updateReconciliationRow(this)"></td>
-<td class="recon-variance" style="font-weight: 600;">${variance > 0 ? '+' : ''}${variance}</td>
-<td class="recon-value-impact" style="font-weight: 600;">${formatMoney(valueImpact)}</td>
-`;
-tbody.appendChild(row);
-});
-document.getElementById('reconciliation-total-variance').innerText = formatMoney(totalVarianceValue);
-document.getElementById('reconciliation-total-variance').style.color = totalVarianceValue > 0 ? 'var(--success)' : (totalVarianceValue < 0 ? 'var(--danger)' : 'var(--text-main)');
-openModal('modal-reconciliation-workspace');
+    if(!hasPermission('canReconcile') || state.isReadOnly) { showToast("Permission denied"); return; }
+    const tbody = document.getElementById('reconciliation-table-body');
+    tbody.innerHTML = '';
+    let totalVarianceValue = 0;
+    state.products.forEach(p => {
+        const row = document.createElement('tr');
+        const variance = (p.physicalStock || p.stock) - p.stock;
+        const valueImpact = variance * p.cost;
+        totalVarianceValue += valueImpact;
+        row.innerHTML = `
+            <td>${p.name}</td>
+            <td>${p.stock}</td>
+            <td><input type="number" class="form-control recon-physical" data-product-id="${p.id}" data-cost="${p.cost}" value="${p.physicalStock || p.stock}" style="width: 80px;" onchange="updateReconciliationRow(this)"></td>
+            <td class="recon-variance" style="font-weight: 600;">${variance > 0 ? '+' : ''}${variance}</td>
+            <td class="recon-value-impact" style="font-weight: 600;">${formatMoney(valueImpact)}</td>
+        `;
+        tbody.appendChild(row);
+    });
+    document.getElementById('reconciliation-total-variance').innerText = formatMoney(totalVarianceValue);
+    document.getElementById('reconciliation-total-variance').style.color = totalVarianceValue > 0 ? 'var(--success)' : (totalVarianceValue < 0 ? 'var(--danger)' : 'var(--text-main)');
+    openModal('modal-reconciliation-workspace');
 }
+
 function updateReconciliationRow(input) {
-const productId = input.dataset.productId;
-const cost = parseFloat(input.dataset.cost);
-const physicalQty = parseInt(input.value) || 0;
-const p = state.products.find(prod => prod.id == productId);
-if (!p) return;
-const variance = physicalQty - p.stock;
-const valueImpact = variance * cost;
-const row = input.closest('tr');
-const varianceCell = row.querySelector('.recon-variance');
-const valueCell = row.querySelector('.recon-value-impact');
-varianceCell.innerText = (variance > 0 ? '+' : '') + variance;
-varianceCell.style.color = variance > 0 ? 'var(--success)' : (variance < 0 ? 'var(--danger)' : 'var(--text-main)');
-valueCell.innerText = formatMoney(valueImpact);
-valueCell.style.color = valueImpact > 0 ? 'var(--success)' : (valueImpact < 0 ? 'var(--danger)' : 'var(--text-main)');
-let totalVarianceValue = 0;
-document.querySelectorAll('.recon-value-impact').forEach(cell => {
-const value = parseFloat(cell.innerText.replace(/[^0-9.-]/g, '')) || 0;
-totalVarianceValue += value;
-});
-document.getElementById('reconciliation-total-variance').innerText = formatMoney(totalVarianceValue);
-document.getElementById('reconciliation-total-variance').style.color = totalVarianceValue > 0 ? 'var(--success)' : (totalVarianceValue < 0 ? 'var(--danger)' : 'var(--text-main)');
+    const productId = input.dataset.productId;
+    const cost = parseFloat(input.dataset.cost);
+    const physicalQty = parseInt(input.value) || 0;
+    const p = state.products.find(prod => prod.id == productId);
+    if (!p) return;
+    const variance = physicalQty - p.stock;
+    const valueImpact = variance * cost;
+    const row = input.closest('tr');
+    const varianceCell = row.querySelector('.recon-variance');
+    const valueCell = row.querySelector('.recon-value-impact');
+    varianceCell.innerText = (variance > 0 ? '+' : '') + variance;
+    varianceCell.style.color = variance > 0 ? 'var(--success)' : (variance < 0 ? 'var(--danger)' : 'var(--text-main)');
+    valueCell.innerText = formatMoney(valueImpact);
+    valueCell.style.color = valueImpact > 0 ? 'var(--success)' : (valueImpact < 0 ? 'var(--danger)' : 'var(--text-main)');
+    let totalVarianceValue = 0;
+    document.querySelectorAll('.recon-value-impact').forEach(cell => {
+        const value = parseFloat(cell.innerText.replace(/[^0-9.-]/g, '')) || 0;
+        totalVarianceValue += value;
+    });
+    document.getElementById('reconciliation-total-variance').innerText = formatMoney(totalVarianceValue);
+    document.getElementById('reconciliation-total-variance').style.color = totalVarianceValue > 0 ? 'var(--success)' : (totalVarianceValue < 0 ? 'var(--danger)' : 'var(--text-main)');
 }
+
 function postReconciliationAdjustments() {
-if(!hasPermission('canReconcile') || state.isReadOnly) { showToast("Permission denied"); return; }
-const note = document.getElementById('reconciliation-note').value || 'Stock reconciliation';
-let adjustmentsMade = 0;
-document.querySelectorAll('.recon-physical').forEach(input => {
-const productId = input.dataset.productId;
-const physicalQty = parseInt(input.value) || 0;
-const p = state.products.find(prod => prod.id == productId);
-if (!p) return;
-if (physicalQty !== p.stock) {
-const previousQty = p.stock;
-p.stock = physicalQty;
-p.physicalStock = physicalQty;
-p.lastStocktake = new Date().toISOString();
-createStockLedgerEntry(p.id, p.name, previousQty, physicalQty, 'stocktake', note, state.currentUserRole);
-adjustmentsMade++;
+    if(!hasPermission('canReconcile') || state.isReadOnly) { showToast("Permission denied"); return; }
+    const note = document.getElementById('reconciliation-note').value || 'Stock reconciliation';
+    let adjustmentsMade = 0;
+    document.querySelectorAll('.recon-physical').forEach(input => {
+        const productId = input.dataset.productId;
+        const physicalQty = parseInt(input.value) || 0;
+        const p = state.products.find(prod => prod.id == productId);
+        if (!p) return;
+        if (physicalQty !== p.stock) {
+            const previousQty = p.stock;
+            p.stock = physicalQty;
+            p.physicalStock = physicalQty;
+            p.lastStocktake = new Date().toISOString();
+            createStockLedgerEntry(p.id, p.name, previousQty, physicalQty, 'stocktake', note, state.currentUserRole);
+            adjustmentsMade++;
+        }
+    });
+    saveState();
+    closeModal('modal-reconciliation-workspace');
+    renderInventory();
+    renderPOS();
+    renderStockAlerts();
+    showToast(`${adjustmentsMade} adjustments posted`);
 }
-});
-saveState();
-closeModal('modal-reconciliation-workspace');
-renderInventory();
-renderPOS();
-renderStockAlerts();
-showToast(`${adjustmentsMade} adjustments posted`);
-}
+
 function enableInlineEdit(id) {
-if(!hasPermission('canEditInventory') || state.isReadOnly) return;
-const p = state.products.find(prod => prod.id == id);
-const row = document.getElementById(`inv-item-${id}`);
-if (!row) return;
-row.innerHTML = `
-<div>
-<div style="margin-bottom:8px;">
-<label style="font-size:11px; color:var(--text-muted);">Product Name</label>
-<input type="text" id="edit-name-${id}" class="form-control" value="${p.name}" style="height:36px;" />
-</div>
-<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
-<div><label style="font-size:11px; color:var(--text-muted);">Sell Price</label><input type="number" id="edit-price-${id}" class="form-control" value="${p.price}" style="height:36px;" /></div>
-<div><label style="font-size:11px; color:var(--text-muted);">Cost Price</label><input type="number" id="edit-cost-${id}" class="form-control" value="${p.cost}" style="height:36px;" /></div>
-</div>
-<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
-<div><label style="font-size:11px; color:var(--text-muted);">Stock</label><input type="number" id="edit-stock-${id}" class="form-control" value="${p.stock}" style="height:36px;" /></div>
-<div><label style="font-size:11px; color:var(--text-muted);">Min Alert</label><input type="number" id="edit-low-${id}" class="form-control" value="${p.lowStock || CONFIG.DEFAULT_LOW_STOCK}" style="height:36px;" /></div>
-</div>
-<div>
-<label style="font-size:11px; color:var(--text-muted);">Category</label>
-<input type="text" id="edit-cat-${id}" class="form-control" value="${p.category || ''}" list="categories" style="height:36px;">
-</div>
-</div>
-<div class="inv-actions" style="justify-content: flex-end; margin-top:12px;">
-<button class="btn btn-secondary btn-sm" onclick="renderInventory()">Cancel</button>
-<button class="btn btn-primary btn-sm" onclick="saveInlineEdit(${id})">Save</button>
-</div>
-`;
+    if(!hasPermission('canEditInventory') || state.isReadOnly) return;
+    const p = state.products.find(prod => prod.id == id);
+    const row = document.getElementById(`inv-item-${id}`);
+    if (!row) return;
+    row.innerHTML = `
+    <div>
+        <div style="margin-bottom:8px;">
+            <label style="font-size:11px; color:var(--text-muted);">Product Name</label>
+            <input type="text" id="edit-name-${id}" class="form-control" value="${p.name}" style="height:36px;" />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+            <div><label style="font-size:11px; color:var(--text-muted);">Sell Price</label><input type="number" id="edit-price-${id}" class="form-control" value="${p.price}" style="height:36px;" /></div>
+            <div><label style="font-size:11px; color:var(--text-muted);">Cost Price</label><input type="number" id="edit-cost-${id}" class="form-control" value="${p.cost}" style="height:36px;" /></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+            <div><label style="font-size:11px; color:var(--text-muted);">Stock</label><input type="number" id="edit-stock-${id}" class="form-control" value="${p.stock}" style="height:36px;" /></div>
+            <div><label style="font-size:11px; color:var(--text-muted);">Min Alert</label><input type="number" id="edit-low-${id}" class="form-control" value="${p.lowStock || CONFIG.DEFAULT_LOW_STOCK}" style="height:36px;" /></div>
+        </div>
+        <div>
+            <label style="font-size:11px; color:var(--text-muted);">Category</label>
+            <input type="text" id="edit-cat-${id}" class="form-control" value="${p.category || ''}" list="categories" style="height:36px;">
+        </div>
+    </div>
+    <div class="inv-actions" style="justify-content: flex-end; margin-top:12px;">
+        <button class="btn btn-secondary btn-sm" onclick="renderInventory()">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="saveInlineEdit('${id}')">Save</button>
+    </div>
+    `;
 }
+
 function saveInlineEdit(id) {
-if(!hasPermission('canEditInventory') || state.isReadOnly) return;
-const name = document.getElementById(`edit-name-${id}`).value.trim();
-const price = Number(document.getElementById(`edit-price-${id}`).value);
-const cost = Number(document.getElementById(`edit-cost-${id}`).value);
-const stock = Number(document.getElementById(`edit-stock-${id}`).value);
-const lowStock = Number(document.getElementById(`edit-low-${id}`).value);
-const category = document.getElementById(`edit-cat-${id}`).value;
-if (!name || isNaN(price) || isNaN(cost) || isNaN(stock)) { showToast("Invalid data"); return; }
-const index = state.products.findIndex(p => p.id == id);
-if (index === -1) return;
-state.products[index] = { ...state.products[index], name, price, cost, stock, lowStock, category };
-saveState();
-renderInventory();
-renderPOS();
-renderCategoryTabs();
-renderStockAlerts();
-showToast("Product updated");
+    if(!hasPermission('canEditInventory') || state.isReadOnly) return;
+    const name = document.getElementById(`edit-name-${id}`).value.trim();
+    const price = Number(document.getElementById(`edit-price-${id}`).value);
+    const cost = Number(document.getElementById(`edit-cost-${id}`).value);
+    const stock = Number(document.getElementById(`edit-stock-${id}`).value);
+    const lowStock = Number(document.getElementById(`edit-low-${id}`).value);
+    const category = document.getElementById(`edit-cat-${id}`).value;
+    if (!name || isNaN(price) || isNaN(cost) || isNaN(stock)) { showToast("Invalid data"); return; }
+    const index = state.products.findIndex(p => p.id == id);
+    if (index === -1) return;
+    state.products[index] = { ...state.products[index], name, price, cost, stock, lowStock, category };
+    saveState();
+    renderInventory();
+    renderPOS();
+    renderCategoryTabs();
+    renderStockAlerts();
+    showToast("Product updated");
 }
+
 function deleteProduct(id) {
-if(!hasPermission('canEditInventory') || state.isReadOnly) return;
-if(confirm("Delete this product?")) {
-state.products = state.products.filter(p => p.id != id);
-saveState();
-renderInventory();
-renderPOS();
-renderCategoryTabs();
-renderStockAlerts();
+    if(!hasPermission('canEditInventory') || state.isReadOnly) return;
+    if(confirm("Delete this product?")) {
+        state.products = state.products.filter(p => p.id != id);
+        saveState();
+        renderInventory();
+        renderPOS();
+        renderCategoryTabs();
+        renderStockAlerts();
+    }
 }
-}
+
 function saveProduct() {
-if(!hasPermission('canEditInventory') || state.isReadOnly) return;
-const id = document.getElementById('prod-id').value;
-const name = document.getElementById('prod-name').value;
-const price = parseFloat(document.getElementById('prod-price').value);
-const cost = parseFloat(document.getElementById('prod-cost').value);
-const stock = parseInt(document.getElementById('prod-stock').value);
-const lowStock = parseInt(document.getElementById('prod-min').value);
-const category = document.getElementById('prod-category') ? document.getElementById('prod-category').value : "Uncategorized";
-if(!name || isNaN(price) || isNaN(cost) || isNaN(stock)) { showToast("Please fill all fields"); return; }
-if(id) {
-const p = state.products.find(prod => prod.id == id);
-if (p) {
-p.name = name; p.price = price; p.cost = cost; p.stock = stock; p.lowStock = lowStock; p.category = category;
-if (p.physicalStock === undefined) p.physicalStock = stock;
+    if(!hasPermission('canEditInventory') || state.isReadOnly) return;
+    const id = document.getElementById('prod-id').value;
+    const name = document.getElementById('prod-name').value;
+    const price = parseFloat(document.getElementById('prod-price').value);
+    const cost = parseFloat(document.getElementById('prod-cost').value);
+    const stock = parseInt(document.getElementById('prod-stock').value);
+    const lowStock = parseInt(document.getElementById('prod-min').value);
+    const category = document.getElementById('prod-category') ? document.getElementById('prod-category').value : "Uncategorized";
+    if(!name || isNaN(price) || isNaN(cost) || isNaN(stock)) { showToast("Please fill all fields"); return; }
+    if(id) {
+        const p = state.products.find(prod => prod.id == id);
+        if (p) {
+            p.name = name; p.price = price; p.cost = cost; p.stock = stock; p.lowStock = lowStock; p.category = category;
+            if (p.physicalStock === undefined) p.physicalStock = stock;
+        }
+    } else {
+        state.products.push({ id: generateId(), name, price, cost, stock, lowStock, category, physicalStock: stock });
+    }
+    saveState();
+    closeModal('modal-product');
+    renderInventory();
+    renderPOS();
+    renderCategoryTabs();
+    renderStockAlerts();
+    showToast("Product saved");
 }
-} else {
-state.products.push({ id: generateId(), name, price, cost, stock, lowStock, category, physicalStock: stock });
-}
-saveState();
-closeModal('modal-product');
-renderInventory();
-renderPOS();
-renderCategoryTabs();
-renderStockAlerts();
-showToast("Product saved");
-}
+
 // ============================================
 // BACKUP & RESTORE
 // ============================================
 async function triggerBackup() {
-try {
-const backupPayload = {
-version: CONFIG.VERSION,
-deviceId: getDeviceID(),
-inventory: state.products,
-sales: state.sales,
-totals: state.totals,
-settings: state.settings,
-reconciliations: state.reconciliations,
-stockLedger: state.stockLedger,
-periodLocks: state.periodLocks,
-exportedAt: Date.now()
-};
-const payloadString = JSON.stringify(backupPayload);
-const signature = digestSHA256(payloadString + CONFIG.SECRET);
-const signedPayload = { ...backupPayload, signature };
-const signedPayloadString = JSON.stringify(signedPayload);
-const encryptedData = encryptData(signedPayloadString);
-const blob = new Blob([encryptedData], { type: "application/octet-stream" });
-const url = URL.createObjectURL(blob);
-const a = document.createElement("a");
-a.href = url;
-a.download = `shopmate-backup-${Date.now()}.smb`;
-a.click();
-URL.revokeObjectURL(url);
-const backupTimestamp = Date.now();
-localStorage.setItem("lastBackupDate", new Date(backupTimestamp).toDateString());
-localStorage.setItem("lastBackupTimestamp", backupTimestamp.toString());
-showToast("Backup downloaded");
-renderBackupStatus();
-} catch (err) {
-console.error(err);
-showToast("Backup failed: " + err.message);
+    try {
+        const backupPayload = {
+            version: CONFIG.VERSION,
+            deviceId: getDeviceID(),
+            inventory: state.products,
+            sales: state.sales,
+            totals: state.totals,
+            settings: state.settings,
+            reconciliations: state.reconciliations,
+            stockLedger: state.stockLedger,
+            periodLocks: state.periodLocks,
+            exportedAt: Date.now()
+        };
+        const payloadString = JSON.stringify(backupPayload);
+        const signature = digestSHA256(payloadString + CONFIG.SECRET);
+        const signedPayload = { ...backupPayload, signature };
+        const signedPayloadString = JSON.stringify(signedPayload);
+        const encryptedData = encryptData(signedPayloadString);
+        const blob = new Blob([encryptedData], { type: "application/octet-stream" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `shopmate-backup-${Date.now()}.smb`;
+        a.click();
+        URL.revokeObjectURL(url);
+        const backupTimestamp = Date.now();
+        localStorage.setItem("lastBackupDate", new Date(backupTimestamp).toDateString());
+        localStorage.setItem("lastBackupTimestamp", backupTimestamp.toString());
+        showToast("Backup downloaded");
+        renderBackupStatus();
+    } catch (err) {
+        console.error(err);
+        showToast("Backup failed: " + err.message);
+    }
 }
-}
+
 function renderBackupStatus() {
-const backupTimestamp = localStorage.getItem("lastBackupTimestamp");
-const backupCard = document.getElementById("dash-backup-card");
-const backupValue = document.getElementById("dash-last-backup");
-const backupText = document.getElementById("backup-status-text");
-if (!backupCard || !backupValue || !backupText) return;
-if (!backupTimestamp) {
-backupValue.innerText = "Never";
-backupValue.style.color = "var(--danger)";
-backupText.innerText = "No backup found. Create one now.";
-backupCard.classList.add("danger");
-backupCard.classList.remove("warning");
-return;
+    const backupTimestamp = localStorage.getItem("lastBackupTimestamp");
+    const backupCard = document.getElementById("dash-backup-card");
+    const backupValue = document.getElementById("dash-last-backup");
+    const backupText = document.getElementById("backup-status-text");
+    if (!backupCard || !backupValue || !backupText) return;
+    if (!backupTimestamp) {
+        backupValue.innerText = "Never";
+        backupValue.style.color = "var(--danger)";
+        backupText.innerText = "No backup found. Create one now.";
+        backupCard.classList.add("danger");
+        backupCard.classList.remove("warning");
+        return;
+    }
+    const now = Date.now();
+    const lastBackup = parseInt(backupTimestamp);
+    const daysSinceBackup = (now - lastBackup) / (1000 * 60 * 60 * 24);
+    const backupDate = new Date(lastBackup);
+    backupValue.innerText = backupDate.toLocaleDateString();
+    backupValue.style.color = "var(--dark)";
+    if (daysSinceBackup >= 7) {
+        backupValue.style.color = "var(--danger)";
+        backupText.innerText = "Backup is over 7 days old";
+        backupCard.classList.add("danger");
+    } else if (daysSinceBackup >= 1) {
+        backupValue.style.color = "var(--accent)";
+        backupText.innerText = "Backup is " + Math.floor(daysSinceBackup) + " day(s) old";
+        backupCard.classList.add("warning");
+    } else {
+        backupValue.style.color = "var(--success)";
+        backupText.innerText = "Recently backed up";
+        backupCard.classList.remove("warning", "danger");
+    }
 }
-const now = Date.now();
-const lastBackup = parseInt(backupTimestamp);
-const daysSinceBackup = (now - lastBackup) / (1000 * 60 * 60 * 24);
-const backupDate = new Date(lastBackup);
-backupValue.innerText = backupDate.toLocaleDateString();
-backupValue.style.color = "var(--dark)";
-if (daysSinceBackup >= 7) {
-backupValue.style.color = "var(--danger)";
-backupText.innerText = "Backup is over 7 days old";
-backupCard.classList.add("danger");
-} else if (daysSinceBackup >= 1) {
-backupValue.style.color = "var(--accent)";
-backupText.innerText = "Backup is " + Math.floor(daysSinceBackup) + " day(s) old";
-backupCard.classList.add("warning");
-} else {
-backupValue.style.color = "var(--success)";
-backupText.innerText = "Recently backed up";
-backupCard.classList.remove("warning", "danger");
-}
-}
+
 async function restoreBackup() {
-if(!hasPermission('canRestoreBackup') || state.isReadOnly) return;
-const fileInput = document.getElementById("restoreFile");
-const file = fileInput.files[0];
-if (!file) return showToast("Select a backup file.");
-const reader = new FileReader();
-reader.onload = async function(e) {
-try {
-const fileContent = e.target.result;
-let decryptedString;
-if (fileContent.startsWith("UNENCRYPTED:")) {
-decryptedString = decodeURIComponent(escape(atob(fileContent.substring(12))));
-} else {
-decryptedString = decryptData(fileContent);
+    if(!hasPermission('canRestoreBackup') || state.isReadOnly) return;
+    const fileInput = document.getElementById("restoreFile");
+    const file = fileInput.files[0];
+    if (!file) return showToast("Select a backup file.");
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        try {
+            const fileContent = e.target.result;
+            let decryptedString;
+            if (fileContent.startsWith("UNENCRYPTED:")) {
+                decryptedString = decodeURIComponent(escape(atob(fileContent.substring(12))));
+            } else {
+                decryptedString = decryptData(fileContent);
+            }
+            if (!decryptedString) throw new Error("Decryption failed.");
+            const signedPayload = JSON.parse(decryptedString);
+            const { signature, ...payloadWithoutSignature } = signedPayload;
+            const expectedSignature = digestSHA256(JSON.stringify(payloadWithoutSignature) + CONFIG.SECRET);
+            if (signature !== expectedSignature) {
+                return showToast("Security Alert: Backup signature mismatch.");
+            }
+            if (!confirm("Valid Backup Detected. Restore ID: " + signedPayload.deviceId + "\nThis will overwrite current data. Continue?")) return;
+            state.products = signedPayload.inventory.map(p => ({ ...p, category: p.category || "Uncategorized", lowStock: p.lowStock || CONFIG.DEFAULT_LOW_STOCK, physicalStock: p.physicalStock || p.stock }));
+            state.sales = Array.isArray(signedPayload.sales) ? signedPayload.sales : [];
+            state.settings = signedPayload.settings || state.settings;
+            state.totals = signedPayload.totals || { gross: 0, profit: 0, transactions: 0 };
+            state.reconciliations = Array.isArray(signedPayload.reconciliations) ? signedPayload.reconciliations : [];
+            state.stockLedger = Array.isArray(signedPayload.stockLedger) ? signedPayload.stockLedger : [];
+            state.periodLocks = Array.isArray(signedPayload.periodLocks) ? signedPayload.periodLocks : [];
+            saveState();
+            document.getElementById('setting-business-name').value = state.settings.name;
+            document.getElementById('setting-currency').value = state.settings.currency;
+            document.getElementById('business-name-display').innerText = state.settings.name;
+            renderInventory(); renderPOS(); renderCategoryTabs(); renderReports();
+            showToast("Restore successful. Reloading...");
+            setTimeout(() => location.reload(), 1500);
+        } catch (err) { showToast("Restore failed: Invalid file"); console.error(err); }
+    };
+    reader.readAsText(file);
 }
-if (!decryptedString) throw new Error("Decryption failed.");
-const signedPayload = JSON.parse(decryptedString);
-const { signature, ...payloadWithoutSignature } = signedPayload;
-const expectedSignature = digestSHA256(JSON.stringify(payloadWithoutSignature) + CONFIG.SECRET);
-if (signature !== expectedSignature) {
-return showToast("Security Alert: Backup signature mismatch.");
-}
-if (!confirm("Valid Backup Detected. Restore ID: " + signedPayload.deviceId + "\nThis will overwrite current data. Continue?")) return;
-state.products = signedPayload.inventory.map(p => ({ ...p, category: p.category || "Uncategorized", lowStock: p.lowStock || CONFIG.DEFAULT_LOW_STOCK, physicalStock: p.physicalStock || p.stock }));
-state.sales = Array.isArray(signedPayload.sales) ? signedPayload.sales : [];
-state.settings = signedPayload.settings || state.settings;
-state.totals = signedPayload.totals || { gross: 0, profit: 0, transactions: 0 };
-state.reconciliations = Array.isArray(signedPayload.reconciliations) ? signedPayload.reconciliations : [];
-state.stockLedger = Array.isArray(signedPayload.stockLedger) ? signedPayload.stockLedger : [];
-state.periodLocks = Array.isArray(signedPayload.periodLocks) ? signedPayload.periodLocks : [];
-saveState();
-document.getElementById('setting-business-name').value = state.settings.name;
-document.getElementById('setting-currency').value = state.settings.currency;
-document.getElementById('business-name-display').innerText = state.settings.name;
-renderInventory(); renderPOS(); renderCategoryTabs(); renderReports();
-showToast("Restore successful. Reloading...");
-setTimeout(() => location.reload(), 1500);
-} catch (err) { showToast("Restore failed: Invalid file"); console.error(err); }
-};
-reader.readAsText(file);
-}
+
 // ============================================
 // RECONCILIATION
 // ============================================
 function getExpectedCash() {
-const today = new Date().toDateString();
-const todayCashSales = state.sales.filter(s => {
-const saleDate = new Date(s.timestamp).toDateString();
-return saleDate === today && s.method === 'Cash' && !s.voided && !s.refunded;
-});
-return todayCashSales.reduce((sum, s) => sum + s.total, 0);
+    const today = new Date().toDateString();
+    const todayCashSales = state.sales.filter(s => {
+        const saleDate = new Date(s.timestamp).toDateString();
+        return saleDate === today && s.method === 'Cash' && !s.voided && !s.refunded;
+    });
+    return todayCashSales.reduce((sum, s) => sum + s.total, 0);
 }
 function openReconcileModal() {
-if(!hasPermission('canReconcile')) { showToast("Permission denied"); return; }
-const expected = getExpectedCash();
-document.getElementById('rec-expected').value = formatMoney(expected);
-document.getElementById('rec-counted').value = '';
-document.getElementById('rec-diff').innerText = formatMoney(0);
-document.getElementById('rec-diff').className = '';
-openModal('modal-reconcile');
+    if(!hasPermission('canReconcile')) { showToast("Permission denied"); return; }
+    const expected = getExpectedCash();
+    document.getElementById('rec-expected').value = formatMoney(expected);
+    document.getElementById('rec-counted').value = '';
+    document.getElementById('rec-diff').innerText = formatMoney(0);
+    document.getElementById('rec-diff').className = '';
+    openModal('modal-reconcile');
 }
 function calculateReconciliationDiff() {
-const counted = parseFloat(document.getElementById('rec-counted').value) || 0;
-const expected = getExpectedCash();
-const diff = counted - expected;
-const diffEl = document.getElementById('rec-diff');
-diffEl.innerText = formatMoney(diff);
-if (diff > 0.01) diffEl.className = 'text-success';
-else if (diff < -0.01) diffEl.className = 'text-danger';
+    const counted = parseFloat(document.getElementById('rec-counted').value) || 0;
+    const expected = getExpectedCash();
+    const diff = counted - expected;
+    const diffEl = document.getElementById('rec-diff');
+    diffEl.innerText = formatMoney(diff);
+    if (diff > 0.01) diffEl.className = 'text-success';
+    else if (diff < -0.01) diffEl.className = 'text-danger';
 }
 function saveReconciliation() {
-const counted = parseFloat(document.getElementById('rec-counted').value) || 0;
-const expected = getExpectedCash();
-const diff = counted - expected;
-state.reconciliations.push({ id: generateId(), timestamp: new Date().toISOString(), expected, counted, difference: diff });
-saveState();
-closeModal('modal-reconcile');
-renderReconciliationHistory();
-showToast("Reconciliation Saved");
+    const counted = parseFloat(document.getElementById('rec-counted').value) || 0;
+    const expected = getExpectedCash();
+    const diff = counted - expected;
+    state.reconciliations.push({ id: generateId(), timestamp: new Date().toISOString(), expected, counted, difference: diff });
+    saveState();
+    closeModal('modal-reconcile');
+    renderReconciliationHistory();
+    showToast("Reconciliation Saved");
 }
 function renderReconciliationHistory() {
-const list = document.getElementById('reconciliation-history');
-list.innerHTML = '';
-if(state.reconciliations.length === 0) { list.innerHTML = '<div style="text-align:center; color:gray;">No records yet.</div>'; return; }
-const sorted = [...state.reconciliations].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-sorted.forEach(rec => {
-const div = document.createElement('div');
-div.className = 'rec-item';
-const dateStr = new Date(rec.timestamp).toLocaleString();
-const diffClass = rec.difference > 0 ? 'positive' : (rec.difference < 0 ? 'negative' : '');
-const diffSign = rec.difference > 0 ? '+' : '';
-div.innerHTML = `
-<div>
-<div style="font-weight:600;">${dateStr}</div>
-<div class="text-small text-muted">Exp: ${formatMoney(rec.expected)} | Count: ${formatMoney(rec.counted)}</div>
-</div>
-<div class="rec-variance ${diffClass}">${diffSign}${formatMoney(rec.difference)}</div>
-`;
-list.appendChild(div);
-});
+    const list = document.getElementById('reconciliation-history');
+    list.innerHTML = '';
+    if(state.reconciliations.length === 0) { list.innerHTML = '<div style="text-align:center; color:gray;">No records yet.</div>'; return; }
+    const sorted = [...state.reconciliations].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    sorted.forEach(rec => {
+        const div = document.createElement('div');
+        div.className = 'rec-item';
+        const dateStr = new Date(rec.timestamp).toLocaleString();
+        const diffClass = rec.difference > 0 ? 'positive' : (rec.difference < 0 ? 'negative' : '');
+        const diffSign = rec.difference > 0 ? '+' : '';
+        div.innerHTML = `
+        <div>
+            <div style="font-weight:600;">${dateStr}</div>
+            <div class="text-small text-muted">Exp: ${formatMoney(rec.expected)} | Count: ${formatMoney(rec.counted)}</div>
+        </div>
+        <div class="rec-variance ${diffClass}">${diffSign}${formatMoney(rec.difference)}</div>
+        `;
+        list.appendChild(div);
+    });
 }
+
 // ============================================
 // VOID/REFUND
 // ============================================
 function voidFullSale(saleId) {
-if(!hasPermission('canVoidSale') || state.isReadOnly) { showToast("Permission denied"); return; }
-if(!confirm("Void this sale? Stock will be restored.")) return;
-const saleIndex = state.sales.findIndex(s => s.id === saleId);
-if(saleIndex === -1) return;
-const sale = state.sales[saleIndex];
-if (sale.voided) { showToast("Sale already voided"); return; }
-sale.voided = true;
-sale.items.forEach(item => {
-if(!item.voided) {
-const product = state.products.find(p => p.id === item.id);
-if(product) product.stock += item.qty;
-}
-});
-recalcTotalsFromHistory();
-saveState();
-renderReports();
-renderPOS();
-renderStockAlerts();
-showToast("Sale voided - Inventory updated");
+    if(!hasPermission('canVoidSale') || state.isReadOnly) { showToast("Permission denied"); return; }
+    if(!confirm("Void this sale? Stock will be restored.")) return;
+    const saleIndex = state.sales.findIndex(s => s.id === saleId);
+    if(saleIndex === -1) return;
+    const sale = state.sales[saleIndex];
+    if (sale.voided) { showToast("Sale already voided"); return; }
+    sale.voided = true;
+    sale.items.forEach(item => {
+        if(!item.voided) {
+            const product = state.products.find(p => p.id === item.id);
+            if(product) product.stock += item.qty;
+        }
+    });
+    recalcTotalsFromHistory();
+    saveState();
+    renderReports();
+    renderPOS();
+    renderStockAlerts();
+    showToast("Sale voided - Inventory updated");
 }
 function refundSale(saleId) {
-if(!hasPermission('canRefundSale') || state.isReadOnly) { showToast("Permission denied"); return; }
-if(!confirm("REFUND: Return stock and mark as Returned?")) return;
-const saleIndex = state.sales.findIndex(s => s.id === saleId);
-if(saleIndex === -1) return;
-const sale = state.sales[saleIndex];
-if (sale.refunded) { showToast("Sale already refunded"); return; }
-sale.items.forEach(item => {
-if(!item.voided) {
-const product = state.products.find(p => p.id === item.id);
-if(product) product.stock += item.qty;
-}
-});
-const refundRecord = {
-id: generateId(), timestamp: new Date().toISOString(),
-items: sale.items.map(i => ({ ...i, voided: false, refunded: false })),
-total: -sale.total, cost: -sale.cost, profit: -sale.profit,
-method: sale.method, voided: false, refunded: true, originalTxId: sale.id
-};
-state.sales.push(refundRecord);
-sale.refunded = true;
-recalcTotalsFromHistory();
-saveState();
-renderReports();
-renderPOS();
-renderStockAlerts();
-showToast("Sale refunded - Stock restored");
+    if(!hasPermission('canRefundSale') || state.isReadOnly) { showToast("Permission denied"); return; }
+    if(!confirm("REFUND: Return stock and mark as Returned?")) return;
+    const saleIndex = state.sales.findIndex(s => s.id === saleId);
+    if(saleIndex === -1) return;
+    const sale = state.sales[saleIndex];
+    if (sale.refunded) { showToast("Sale already refunded"); return; }
+    sale.items.forEach(item => {
+        if(!item.voided) {
+            const product = state.products.find(p => p.id === item.id);
+            if(product) product.stock += item.qty;
+        }
+    });
+    const refundRecord = {
+        id: generateId(), timestamp: new Date().toISOString(),
+        items: sale.items.map(i => ({ ...i, voided: false, refunded: false })),
+        total: -sale.total, cost: -sale.cost, profit: -sale.profit,
+        method: sale.method, voided: false, refunded: true, originalTxId: sale.id
+    };
+    state.sales.push(refundRecord);
+    sale.refunded = true;
+    recalcTotalsFromHistory();
+    saveState();
+    renderReports();
+    renderPOS();
+    renderStockAlerts();
+    showToast("Sale refunded - Stock restored");
 }
 function voidTransactionItem(saleId, itemIndex) {
-if(!hasPermission('canVoidSale') || state.isReadOnly) { showToast("Permission denied"); return; }
-if(!confirm("Void this item? Stock will be restored.")) return;
-const sale = state.sales.find(s => s.id === saleId);
-if(!sale) return;
-const item = sale.items[itemIndex];
-if(item.voided) return;
-item.voided = true;
-const product = state.products.find(p => p.id === item.id);
-if(product) product.stock += item.qty;
-recalcTotalsFromHistory();
-saveState();
-openTransactionDetails(saleId);
-renderReports();
-renderPOS();
-renderStockAlerts();
-showToast("Item voided - Stock restored");
+    if(!hasPermission('canVoidSale') || state.isReadOnly) { showToast("Permission denied"); return; }
+    if(!confirm("Void this item? Stock will be restored.")) return;
+    const sale = state.sales.find(s => s.id === saleId);
+    if(!sale) return;
+    const item = sale.items[itemIndex];
+    if(item.voided) return;
+    item.voided = true;
+    const product = state.products.find(p => p.id === item.id);
+    if(product) product.stock += item.qty;
+    recalcTotalsFromHistory();
+    saveState();
+    openTransactionDetails(saleId);
+    renderReports();
+    renderPOS();
+    renderStockAlerts();
+    showToast("Item voided - Stock restored");
 }
+
 // ============================================
 // REPORTS & TOP SELLERS
 // ============================================
 function calculateTopSellers(timeRange = 'today') {
-const now = new Date();
-const today = now.toDateString();
-const transactions = state.sales || [];
-const productMap = new Map();
-transactions.forEach(tx => {
-if (tx.voided || tx.refunded) return;
-const txDate = new Date(tx.timestamp).toDateString();
-if (timeRange === 'today' && txDate !== today) return;
-tx.items.forEach(item => {
-if (item.voided) return;
-const productId = item.id;
-const qty = Number(item.qty) || 0;
-if (productMap.has(productId)) {
-productMap.get(productId).totalSold += qty;
-} else {
-productMap.set(productId, { productId: productId, name: item.name, totalSold: qty });
-}
-});
-});
-return Array.from(productMap.values()).sort((a, b) => b.totalSold - a.totalSold);
+    const now = new Date();
+    const today = now.toDateString();
+    const transactions = state.sales || [];
+    const productMap = new Map();
+    transactions.forEach(tx => {
+        if (tx.voided || tx.refunded) return;
+        const txDate = new Date(tx.timestamp).toDateString();
+        if (timeRange === 'today' && txDate !== today) return;
+        tx.items.forEach(item => {
+            if (item.voided) return;
+            const productId = item.id;
+            const qty = Number(item.qty) || 0;
+            if (productMap.has(productId)) {
+                productMap.get(productId).totalSold += qty;
+            } else {
+                productMap.set(productId, { productId: productId, name: item.name, totalSold: qty });
+            }
+        });
+    });
+    return Array.from(productMap.values()).sort((a, b) => b.totalSold - a.totalSold);
 }
 function renderTopSellersTable(data = null) {
-const tbody = document.getElementById('top-sellers-table-body');
-const emptyMsg = document.getElementById('top-sellers-empty');
-if (!tbody) return;
-if (!data) data = calculateTopSellers('today');
-const top10 = data.slice(0, 10);
-if (top10.length === 0) {
-tbody.innerHTML = '';
-emptyMsg.style.display = 'block';
-return;
-}
-emptyMsg.style.display = 'none';
-tbody.innerHTML = top10.map((item, index) => {
-const rank = index + 1;
-const rankClass = rank <= 3 ? 'top-sellers-rank top-3' : 'top-sellers-rank';
-return `
-<tr>
-<td class="${rankClass}">#${rank}</td>
-<td><span class="truncate" style="display: block; max-width: 200px;">${item.name}</span></td>
-<td style="text-align: right; font-weight: 600;">${item.totalSold}</td>
-</tr>
-`;
-}).join('');
+    const tbody = document.getElementById('top-sellers-table-body');
+    const emptyMsg = document.getElementById('top-sellers-empty');
+    if (!tbody) return;
+    if (!data) data = calculateTopSellers('today');
+    const top10 = data.slice(0, 10);
+    if (top10.length === 0) {
+        tbody.innerHTML = '';
+        emptyMsg.style.display = 'block';
+        return;
+    }
+    emptyMsg.style.display = 'none';
+    tbody.innerHTML = top10.map((item, index) => {
+        const rank = index + 1;
+        const rankClass = rank <= 3 ? 'top-sellers-rank top-3' : 'top-sellers-rank';
+        return `
+        <tr>
+            <td class="${rankClass}">#${rank}</td>
+            <td><span class="truncate" style="display: block; max-width: 200px;">${item.name}</span></td>
+            <td style="text-align: right; font-weight: 600;">${item.totalSold}</td>
+        </tr>
+        `;
+    }).join('');
 }
 function renderReports() {
-const today = new Date().toDateString();
-const todaysSales = state.sales.filter(s => new Date(s.timestamp).toDateString() === today);
-const unlocked = isAppUnlocked();
-let txCount = 0, grossSales = 0, profit = 0, cashTotal = 0, ecoTotal = 0;
-let lastSaleTimeStr = "No sales";
-const inventoryValue = calculateInventoryValue();
-todaysSales.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-todaysSales.forEach(s => {
-if (s.voided || s.refunded) return;
-const financials = calculateFinancialsFromItems(s.items);
-grossSales += financials.total;
-profit += financials.profit;
-txCount++;
-if(s.method === 'Cash') cashTotal += financials.total;
-else ecoTotal += financials.total;
-});
-if (todaysSales.length > 0 && !todaysSales[0].voided && !todaysSales[0].refunded) {
-lastSaleTimeStr = new Date(todaysSales[0].timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-if (unlocked) {
-document.getElementById('dash-tx-count').innerText = txCount;
-document.getElementById('dash-gross').innerText = formatMoney(grossSales);
-document.getElementById('dash-profit').innerText = formatMoney(profit);
-document.getElementById('dash-last-sale').innerText = lastSaleTimeStr;
-document.getElementById('report-cash').innerText = formatMoney(cashTotal);
-document.getElementById('report-ecocash').innerText = formatMoney(ecoTotal);
-document.getElementById('dash-inventory-value').innerText = formatMoney(inventoryValue);
-} else {
-document.getElementById('dash-tx-count').innerText = "---";
-document.getElementById('dash-gross').innerText = "---";
-document.getElementById('dash-profit').innerText = "---";
-document.getElementById('dash-last-sale').innerText = "---";
-document.getElementById('report-cash').innerText = "---";
-document.getElementById('report-ecocash').innerText = "---";
-document.getElementById('dash-inventory-value').innerText = "---";
-}
-renderStockAlerts();
-const topSellers = calculateTopSellers('today');
-renderTopSellersTable(topSellers);
-const searchInput = document.getElementById('tx-search');
-const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
-if (query) {
-handleTransactionSearch();
-} else {
-renderTransactionsList(todaysSales);
-}
-renderReconciliationHistory();
-renderBackupStatus();
+    const today = new Date().toDateString();
+    const todaysSales = state.sales.filter(s => new Date(s.timestamp).toDateString() === today);
+    const unlocked = isAppUnlocked();
+    let txCount = 0, grossSales = 0, profit = 0, cashTotal = 0, ecoTotal = 0;
+    let lastSaleTimeStr = "No sales";
+    const inventoryValue = calculateInventoryValue();
+    todaysSales.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    todaysSales.forEach(s => {
+        if (s.voided || s.refunded) return;
+        const financials = calculateFinancialsFromItems(s.items);
+        grossSales += financials.total;
+        profit += financials.profit;
+        txCount++;
+        if(s.method === 'Cash') cashTotal += financials.total;
+        else ecoTotal += financials.total;
+    });
+    if (todaysSales.length > 0 && !todaysSales[0].voided && !todaysSales[0].refunded) {
+        lastSaleTimeStr = new Date(todaysSales[0].timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+    if (unlocked) {
+        document.getElementById('dash-tx-count').innerText = txCount;
+        document.getElementById('dash-gross').innerText = formatMoney(grossSales);
+        document.getElementById('dash-profit').innerText = formatMoney(profit);
+        document.getElementById('dash-last-sale').innerText = lastSaleTimeStr;
+        document.getElementById('report-cash').innerText = formatMoney(cashTotal);
+        document.getElementById('report-ecocash').innerText = formatMoney(ecoTotal);
+        document.getElementById('dash-inventory-value').innerText = formatMoney(inventoryValue);
+    } else {
+        document.getElementById('dash-tx-count').innerText = "---";
+        document.getElementById('dash-gross').innerText = "---";
+        document.getElementById('dash-profit').innerText = "---";
+        document.getElementById('dash-last-sale').innerText = "---";
+        document.getElementById('report-cash').innerText = "---";
+        document.getElementById('report-ecocash').innerText = "---";
+        document.getElementById('dash-inventory-value').innerText = "---";
+    }
+    renderStockAlerts();
+    const topSellers = calculateTopSellers('today');
+    renderTopSellersTable(topSellers);
+    const searchInput = document.getElementById('tx-search');
+    const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+    if (query) {
+        handleTransactionSearch();
+    } else {
+        renderTransactionsList(todaysSales);
+    }
+    renderReconciliationHistory();
+    renderBackupStatus();
 }
 function openTransactionDetails(saleId) {
-const sale = state.sales.find(s => s.id === saleId);
-if(!sale) return;
-document.getElementById('trans-details-time').innerText = new Date(sale.timestamp).toLocaleString();
-document.getElementById('trans-details-method').innerText = sale.method;
-const list = document.getElementById('trans-items-list');
-list.innerHTML = '';
-let netTotal = 0;
-sale.items.forEach((item, index) => {
-if (typeof item.voided === 'undefined') item.voided = false;
-if(!item.voided) netTotal += (item.price * item.qty);
-const div = document.createElement('div');
-div.className = `inv-item ${item.voided ? 'item-voided' : ''}`;
-const voidBtn = item.voided ? `<span class="text-small text-muted">Voided</span>` : (state.isReadOnly ? `` : `<button class="btn btn-danger btn-sm" onclick="voidTransactionItem('${sale.id}', ${index})">Void</button>`);
-div.innerHTML = `
-<div class="inv-details">
-<div style="font-weight:600;">${item.name} x${item.qty}</div>
-<div class="text-small text-muted">${formatMoney(item.price)}</div>
-</div>
-${voidBtn}
-`;
-list.appendChild(div);
-});
-document.getElementById('trans-details-total').innerText = formatMoney(netTotal);
-openModal('modal-transaction-details');
+    const sale = state.sales.find(s => s.id === saleId);
+    if(!sale) return;
+    document.getElementById('trans-details-time').innerText = new Date(sale.timestamp).toLocaleString();
+    document.getElementById('trans-details-method').innerText = sale.method;
+    const list = document.getElementById('trans-items-list');
+    list.innerHTML = '';
+    let netTotal = 0;
+    sale.items.forEach((item, index) => {
+        if (typeof item.voided === 'undefined') item.voided = false;
+        if(!item.voided) netTotal += (item.price * item.qty);
+        const div = document.createElement('div');
+        div.className = `inv-item ${item.voided ? 'item-voided' : ''}`;
+        const voidBtn = item.voided ? `<span class="text-small text-muted">Voided</span>` : (state.isReadOnly ? `` : `<button class="btn btn-danger btn-sm" onclick="voidTransactionItem('${sale.id}', ${index})">Void</button>`);
+        div.innerHTML = `
+        <div class="inv-details">
+            <div style="font-weight:600;">${item.name} x${item.qty}</div>
+            <div class="text-small text-muted">${formatMoney(item.price)}</div>
+        </div>
+        ${voidBtn}
+        `;
+        list.appendChild(div);
+    });
+    document.getElementById('trans-details-total').innerText = formatMoney(netTotal);
+    openModal('modal-transaction-details');
 }
+
 // ============================================
 // SETTINGS
 // ============================================
 function updateSettings() {
-state.settings.name = document.getElementById('setting-business-name').value;
-state.settings.currency = document.getElementById('setting-currency').value;
-document.getElementById('business-name-display').innerText = state.settings.name;
-saveState();
-renderPOS(); renderInventory(); renderReports();
-showToast("Settings Saved");
+    state.settings.name = document.getElementById('setting-business-name').value;
+    state.settings.currency = document.getElementById('setting-currency').value;
+    document.getElementById('business-name-display').innerText = state.settings.name;
+    saveState();
+    renderPOS(); renderInventory(); renderReports();
+    showToast("Settings Saved");
 }
 function renderSettingsView() {
-const dangerZone = document.getElementById('settings-danger-zone');
-if(state.isReadOnly) dangerZone.classList.add('hidden'); else dangerZone.classList.remove('hidden');
+    const dangerZone = document.getElementById('settings-danger-zone');
+    if(state.isReadOnly) dangerZone.classList.add('hidden'); else dangerZone.classList.remove('hidden');
 }
 function exportCSV() {
-if (!hasPermission('canExportData')) { showToast("Permission denied"); return; }
-if (!isAppUnlocked()) { showToast("License required"); return; }
-if(state.sales.length === 0) { showToast("No data"); return; }
-const BOM = '\uFEFF';
-let csvContent = BOM + "Transaction ID,Date,Time,Total,Cost,Profit,Payment Method,Status,Items\n";
-state.sales.forEach(s => {
-const d = new Date(s.timestamp);
-let netTotal = 0, netCost = 0, activeItems = [];
-s.items.forEach(i => {
-if (typeof i.voided === 'undefined') i.voided = false;
-if(!i.voided) { netTotal += (i.price * i.qty); netCost += (i.cost * i.qty); activeItems.push(i); }
-});
-const profit = netTotal - netCost;
-let status = 'Completed';
-if (s.voided) status = 'Voided';
-else if (s.refunded) status = 'Refunded';
-const itemSummary = activeItems.map(i => `${i.name.replace(/"/g, '""')} x${i.qty} @${i.price}`).slice(0, 5).join('; ');
-const row = [
-`"${s.id}"`, `"${d.toLocaleDateString()}"`, `"${d.toLocaleTimeString()}"`,
-netTotal.toFixed(2), netCost.toFixed(2), profit.toFixed(2),
-`"${s.method}"`, `"${status}"`, `"${itemSummary}"`
-];
-csvContent += row.join(',') + '\n';
-});
-const encodedUri = encodeURI(csvContent);
-const link = document.createElement("a");
-link.setAttribute("href", encodedUri);
-link.setAttribute("download", `sales_export_${new Date().toISOString().slice(0,10)}.csv`);
-document.body.appendChild(link);
-link.click();
-document.body.removeChild(link);
-showToast(`Exported ${state.sales.length} transactions`);
+    if (!hasPermission('canExportData')) { showToast("Permission denied"); return; }
+    if (!isAppUnlocked()) { showToast("License required"); return; }
+    if(state.sales.length === 0) { showToast("No data"); return; }
+    const BOM = '\uFEFF';
+    let csvContent = BOM + "Transaction ID,Date,Time,Total,Cost,Profit,Payment Method,Status,Items\n";
+    state.sales.forEach(s => {
+        const d = new Date(s.timestamp);
+        let netTotal = 0, netCost = 0, activeItems = [];
+        s.items.forEach(i => {
+            if (typeof i.voided === 'undefined') i.voided = false;
+            if(!i.voided) { netTotal += (i.price * i.qty); netCost += (i.cost * i.qty); activeItems.push(i); }
+        });
+        const profit = netTotal - netCost;
+        let status = 'Completed';
+        if (s.voided) status = 'Voided';
+        else if (s.refunded) status = 'Refunded';
+        const itemSummary = activeItems.map(i => `${i.name.replace(/"/g, '""')} x${i.qty} @${i.price}`).slice(0, 5).join('; ');
+        const row = [
+            `"${s.id}"`, `"${d.toLocaleDateString()}"`, `"${d.toLocaleTimeString()}"`,
+            netTotal.toFixed(2), netCost.toFixed(2), profit.toFixed(2),
+            `"${s.method}"`, `"${status}"`, `"${itemSummary}"`
+        ];
+        csvContent += row.join(',') + '\n';
+    });
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `sales_export_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast(`Exported ${state.sales.length} transactions`);
 }
 function clearAllData() {
-if(!hasPermission('canResetData')) { showToast("Owner access required"); return; }
-const confirmMessage = "FACTORY RESET WARNING\nThis will PERMANENTLY delete all data.\nType 'RESET' to confirm:";
-const userInput = prompt(confirmMessage);
-if (userInput !== 'RESET') { showToast("Reset cancelled"); return; }
-const preservedData = {
-license: localStorage.getItem('license_data'),
-deviceId: localStorage.getItem('device_id'),
-firstLaunch: localStorage.getItem('first_launch_date'),
-businessName: localStorage.getItem('sme_settings'),
-readOnlyMode: localStorage.getItem('sme_readonly_mode'),
-lastBackup: localStorage.getItem('lastBackupTimestamp'),
-lastBackupDate: localStorage.getItem('lastBackupDate'),
-logo: localStorage.getItem('sme_logo')
-};
-const keysToClear = ['sme_products', 'sme_sales', 'sme_totals', 'sme_reconciliations', 'sme_cart', 'sme_readonly_mode', 'sme_stock_ledger', 'sme_period_locks'];
-keysToClear.forEach(key => { try { localStorage.removeItem(key); } catch (e) {} });
-try {
-if (preservedData.license) localStorage.setItem('license_data', preservedData.license);
-if (preservedData.deviceId) localStorage.setItem('device_id', preservedData.deviceId);
-if (preservedData.firstLaunch) localStorage.setItem('first_launch_date', preservedData.firstLaunch);
-if (preservedData.businessName) localStorage.setItem('sme_settings', preservedData.businessName);
-if (preservedData.lastBackup) localStorage.setItem('lastBackupTimestamp', preservedData.lastBackup);
-if (preservedData.logo) localStorage.setItem('sme_logo', preservedData.logo);
-} catch (e) {}
-state.products = JSON.parse(JSON.stringify(defaultProducts));
-state.sales = [];
-state.totals = { gross: 0, profit: 0, transactions: 0 };
-state.reconciliations = [];
-state.stockLedger = [];
-state.periodLocks = [];
-state.cart = [];
-try {
-if (preservedData.businessName) state.settings = JSON.parse(preservedData.businessName);
-} catch (e) { state.settings = { name: "My Shop", currency: "$" }; }
-saveState();
-showToast("Factory reset complete");
-setTimeout(() => { location.reload(); }, 1500);
+    if(!hasPermission('canResetData')) { showToast("Owner access required"); return; }
+    const confirmMessage = "FACTORY RESET WARNING\nThis will PERMANENTLY delete all data.\nType 'RESET' to confirm:";
+    const userInput = prompt(confirmMessage);
+    if (userInput !== 'RESET') { showToast("Reset cancelled"); return; }
+    const preservedData = {
+        license: localStorage.getItem('license_data'),
+        deviceId: localStorage.getItem('device_id'),
+        firstLaunch: localStorage.getItem('first_launch_date'),
+        businessName: localStorage.getItem('sme_settings'),
+        readOnlyMode: localStorage.getItem('sme_readonly_mode'),
+        lastBackup: localStorage.getItem('lastBackupTimestamp'),
+        lastBackupDate: localStorage.getItem('lastBackupDate'),
+        logo: localStorage.getItem('sme_logo')
+    };
+    const keysToClear = ['sme_products', 'sme_sales', 'sme_totals', 'sme_reconciliations', 'sme_cart', 'sme_readonly_mode', 'sme_stock_ledger', 'sme_period_locks'];
+    keysToClear.forEach(key => { try { localStorage.removeItem(key); } catch (e) {} });
+    try {
+        if (preservedData.license) localStorage.setItem('license_data', preservedData.license);
+        if (preservedData.deviceId) localStorage.setItem('device_id', preservedData.deviceId);
+        if (preservedData.firstLaunch) localStorage.setItem('first_launch_date', preservedData.firstLaunch);
+        if (preservedData.businessName) localStorage.setItem('sme_settings', preservedData.businessName);
+        if (preservedData.lastBackup) localStorage.setItem('lastBackupTimestamp', preservedData.lastBackup);
+        if (preservedData.logo) localStorage.setItem('sme_logo', preservedData.logo);
+    } catch (e) {}
+    state.products = JSON.parse(JSON.stringify(defaultProducts));
+    state.sales = [];
+    state.totals = { gross: 0, profit: 0, transactions: 0 };
+    state.reconciliations = [];
+    state.stockLedger = [];
+    state.periodLocks = [];
+    state.cart = [];
+    try {
+        if (preservedData.businessName) state.settings = JSON.parse(preservedData.businessName);
+    } catch (e) { state.settings = { name: "My Shop", currency: "$" }; }
+    saveState();
+    showToast("Factory reset complete");
+    setTimeout(() => { location.reload(); }, 1500);
 }
 function getTransactionSummary(items) {
-if (!items || items.length === 0) return "No items";
-const displayLimit = 3;
-const limitedItems = items.filter(i => !i.voided).slice(0, displayLimit);
-const itemStrings = limitedItems.map(i => `${i.name} x${i.qty}`);
-let result = itemStrings.join(", ");
-const activeCount = items.filter(i => !i.voided).length;
-if (activeCount > displayLimit) result += ` +${activeCount - displayLimit} more`;
-return result;
+    if (!items || items.length === 0) return "No items";
+    const displayLimit = 3;
+    const limitedItems = items.filter(i => !i.voided).slice(0, displayLimit);
+    const itemStrings = limitedItems.map(i => `${i.name} x${i.qty}`);
+    let result = itemStrings.join(", ");
+    const activeCount = items.filter(i => !i.voided).length;
+    if (activeCount > displayLimit) result += ` +${activeCount - displayLimit} more`;
+    return result;
 }
 // ============================================
 // MODAL UTILS
 // ============================================
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) {
-document.getElementById(id).classList.remove('open');
-if(id === 'modal-product') document.getElementById('prod-id').value = '';
+    document.getElementById(id).classList.remove('open');
+    if(id === 'modal-product') document.getElementById('prod-id').value = '';
 }
 window.onclick = function(event) {
-if (event.target.classList.contains('modal-overlay')) {
-event.target.classList.remove('open');
-if(event.target.id === 'modal-product') document.getElementById('prod-id').value = '';
-}
+    if (event.target.classList.contains('modal-overlay')) {
+        event.target.classList.remove('open');
+        if(event.target.id === 'modal-product') document.getElementById('prod-id').value = '';
+    }
 }
 function openStockModal(id) { openStockAdjustModal(id); }
 function processStockAdjustment() {
-const id = document.getElementById('stock-prod-id').value;
-const qty = parseInt(document.getElementById('stock-adj-qty').value);
-if (isNaN(qty)) { showToast("Invalid quantity"); return; }
-const p = state.products.find(prod => prod.id == id);
-if (!p) return;
-const previousQty = p.stock;
-const newQty = previousQty + qty;
-if (newQty < 0) { showToast("Stock cannot be negative"); return; }
-p.stock = newQty;
-p.physicalStock = newQty;
-createStockLedgerEntry(p.id, p.name, previousQty, newQty, qty > 0 ? 'stockin' : 'stockout', `Quick adjust: ${qty > 0 ? '+' : ''}${qty}`, state.currentUserRole);
-saveState();
-closeModal('modal-stock');
-renderInventory();
-renderPOS();
-renderStockAlerts();
-showToast("Stock updated");
+    const id = document.getElementById('stock-prod-id').value;
+    const qty = parseInt(document.getElementById('stock-adj-qty').value);
+    if (isNaN(qty)) { showToast("Invalid quantity"); return; }
+    const p = state.products.find(prod => prod.id == id);
+    if (!p) return;
+    const previousQty = p.stock;
+    const newQty = previousQty + qty;
+    if (newQty < 0) { showToast("Stock cannot be negative"); return; }
+    p.stock = newQty;
+    p.physicalStock = newQty;
+    createStockLedgerEntry(p.id, p.name, previousQty, newQty, qty > 0 ? 'stockin' : 'stockout', `Quick adjust: ${qty > 0 ? '+' : ''}${qty}`, state.currentUserRole);
+    saveState();
+    closeModal('modal-stock');
+    renderInventory();
+    renderPOS();
+    renderStockAlerts();
+    showToast("Stock updated");
 }
 </script>
 </body>
